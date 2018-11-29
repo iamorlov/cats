@@ -6,14 +6,14 @@ import { Component ,OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  random:number = 2;
-  cat:string;
-  ngOnInit() {
+  random:number = Math.floor(Math.random()*3);
+  cat:string = "wall-" + this.random +".jpg";
+  
+  constructor() {
     setInterval(function(){
-      var random = Math.floor(Math.random()*3);
+      this.random = Math.floor(Math.random()*3);
       console.log(random);
-      return random;
-    }, 1000);
-    var cat = "wall-" + this.random +".jpg";
-  };
+    }, 2000);
+  }
+  ngOnInit() {};
 }
