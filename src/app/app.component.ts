@@ -6,7 +6,7 @@ import { Component ,OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  images:number = 33;
+  images:number = 41;
   random:number = Math.floor(Math.random()*this.images);
   random_new:number;
   cat:string = "wall-" + this.random +".jpg";
@@ -19,8 +19,21 @@ export class AppComponent implements OnInit {
       setTimeout(() => {
         this.cat = "wall-" + random_new +".jpg";
       }, 2000);
-    }, 5000);
+    }, 9000);
   };
+
+  getFullScreen() {
+    var fullscreen = document.getElementById("cats-fullscreen");
+    if (fullscreen.requestFullscreen) {
+      fullscreen.requestFullscreen();
+    } else if (fullscreen.mozRequestFullScreen) { /* Firefox */
+      fullscreen.mozRequestFullScreen();
+    } else if (fullscreen.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      fullscreen.webkitRequestFullscreen();
+    } else if (fullscreen.msRequestFullscreen) { /* IE/Edge */
+      fullscreen.msRequestFullscreen();
+    }
+  }
 
   ngOnInit() {};
 }

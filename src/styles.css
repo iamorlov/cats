@@ -1,10 +1,21 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 body {
   background: #333333;
+  font-family: 'Cormorant Upright', serif;
+}
+
+.aniation {
+  -webkit-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  transition: all ease 0.3s;
 }
 
 #preload {
@@ -16,12 +27,11 @@ body {
   height: 100vh;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 0 175px 25px #000 inset;
 }
 
 .cats-wall {
   height: 100vh;
-  transition: background 1.2s linear;
-  box-shadow: 0 0 175px #000 inset;
   background-position: center, center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -30,19 +40,76 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  -webkit-animation: zoomin 20s ease-in infinite;
-  animation: zoomin 20s ease-in infinite;
-  transition: all .5s ease-in-out;
+  -webkit-animation: zoomin 30s ease-in infinite;
+  animation: zoomin 30s ease-in infinite;
+  transition: all 1.2s ease-in-out;
+}
+
+#fullscreen, #music, #title {
+  position: absolute;
+  font-weight: 100;
+  color: #fff;
+  font-size: 1.2em;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+}
+
+#fullscreen, #player-icon {
+  max-width: 40px;
+  max-height: 40px;
+  opacity: 0.7;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#fullscreen:hover, #player-icon:hover {
+  border-radius: 15px;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+#fullscreen {
+  top: 25px;
+  right: 25px;
+}
+
+#music {
+  bottom: 25px;
+  right: 25px;
+}
+
+#title {
+  bottom: 25px;
+  left: 25px;
 }
 
 /* Zoom in Keyframes */
 @-webkit-keyframes zoomin {
-  0% {transform: scale(1);}
-  50% {transform: scale(1.15);}
-  100% {transform: scale(1);}
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
+
 @keyframes zoomin {
-  0% {transform: scale(1);}
-  50% {transform: scale(1.15);}
-  100% {transform: scale(1);}
-} /*End of Zoom in Keyframes */
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/*End of Zoom in Keyframes */
