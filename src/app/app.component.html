@@ -1,2 +1,8 @@
-<div [style.background-image]="'url(/assets/walls/' + cat + ')'" class="cats-wall">
+
+<div class="cats-wrapper">
+  <div
+      [style.background-image]="'url(/assets/walls/' + cat + ')'"
+      class="cats-wall">
+  </div>
+  <img [src]="preload" id="preload">
 </div>
