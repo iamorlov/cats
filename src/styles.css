@@ -8,7 +8,7 @@
 
 body {
   background: #333333;
-  font-family: 'Cormorant Upright', serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .aniation {
@@ -18,8 +18,17 @@ body {
   transition: all ease 0.3s;
 }
 
+.cats-wall, #options-icons, #player, #fullscreen, #player-icon, #settings-icon, #favorite-icon, .show_player, .hide_player {
+  will-change: auto;
+}
+
+.cf {
+  width: 100%;
+  clear: both;
+}
+
 #preload {
-  display: none;
+  height: 0;
 }
 
 .cats-wrapper {
@@ -45,7 +54,23 @@ body {
   transition: all 1.2s ease-in-out;
 }
 
-#fullscreen, #music, #title {
+.borders {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 175px #000 inset;
+  top: 0;
+  right: 0;
+  position: absolute;
+}
+
+#title {
+  color: #fff;
+  font-weight: 100;
+  padding: 12px;
+  line-height: 48px;
+}
+
+#fullscreen, #options {
   position: absolute;
   font-weight: 100;
   color: #fff;
@@ -53,19 +78,32 @@ body {
   text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
 }
 
-#fullscreen, #player-icon {
-  max-width: 40px;
-  max-height: 40px;
-  opacity: 0.7;
-  padding: 10px;
+#fullscreen, #player-icon, #settings-icon, #info-icon, #favorite-icon {
+  opacity: 0.9;
+  padding: 10px 12px;
   cursor: pointer;
 }
 
-#fullscreen:hover, #player-icon:hover {
-  border-radius: 15px;
+#fullscreen:hover, #player-icon:hover, #settings-icon:hover, #info-icon:hover, #favorite-icon:hover {
   opacity: 1;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
+}
+
+#fullscreen:hover {
+  background: rgba(0, 0, 0, 0.2);
+  text-shadow: none;
+  border-radius: 5px;
+}
+
+#player-icon, #settings-icon, #info-icon, #favorite-icon {
+  float: right;
+  border-bottom: 2px solid transparent;
+}
+
+#player-icon:hover, #settings-icon:hover, #info-icon:hover, #favorite-icon:hover {
+  color: #673ab7;
+  text-shadow: none;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 2px solid #673ab7;
 }
 
 #fullscreen {
@@ -73,14 +111,20 @@ body {
   right: 25px;
 }
 
-#music {
+#options {
   bottom: 25px;
   right: 25px;
 }
 
-#title {
-  bottom: 25px;
-  left: 25px;
+#options-icons {
+  opacity: 0.7;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#options-icons:hover {
+  opacity: 1;
 }
 
 /* Zoom in Keyframes */

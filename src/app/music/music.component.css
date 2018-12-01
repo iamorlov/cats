@@ -1,1 +1,17 @@
+.show_player {
+  height: 100%;
+  transform:scaleY(1);
+}
 
+.hide_player {
+  height: 0;
+  transform:scaleY(0);
+}
+
+#player {
+  opacity: .7;
+}
+
+#player:hover {
+  opacity: 1;
+}

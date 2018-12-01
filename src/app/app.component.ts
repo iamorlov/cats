@@ -1,39 +1,39 @@
-import { Component ,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
-  images:number = 41;
-  random:number = Math.floor(Math.random()*this.images);
-  random_new:number;
-  cat:string = "wall-" + this.random +".jpg";
-  preload:string = "/assets/walls/" + this.cat;
+  images: number = 55; // Count of cat walls ♥
+  random: number = Math.floor(Math.random() * this.images);
+  random_new: number;
+  cat: string = "wall-" + this.random + ".jpg";
+  preload: string = "/assets/walls/" + this.cat;
+
 
   constructor() {
     setInterval(() => {
-      var random_new = Math.floor(Math.random()*this.images);
-      this.preload = "/assets/walls/wall-" + random_new +".jpg";
+      var random_new = Math.floor(Math.random() * this.images);
+      this.preload = "/assets/walls/wall-" + random_new + ".jpg";
       setTimeout(() => {
-        this.cat = "wall-" + random_new +".jpg";
-      }, 2000);
+        this.cat = "wall-" + random_new + ".jpg";
+      }, 3000);
     }, 9000);
   };
 
   getFullScreen() {
-    var fullscreen = document.getElementById("cats-fullscreen");
-    if (fullscreen.requestFullscreen) {
-      fullscreen.requestFullscreen();
-    } else if (fullscreen.mozRequestFullScreen) { /* Firefox */
-      fullscreen.mozRequestFullScreen();
-    } else if (fullscreen.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-      fullscreen.webkitRequestFullscreen();
-    } else if (fullscreen.msRequestFullscreen) { /* IE/Edge */
-      fullscreen.msRequestFullscreen();
+    const screen = document.body;
+    if (screen['requestFullScreen']) {
+      screen['requestFullScreen']();
+    } else if (screen['mozRequestFullScreen']) {
+      screen['mozRequestFullScreen']();
+    } else if (screen['webkitRequestFullScreen']) {
+      screen['webkitRequestFullScreen']();
     }
   }
 
-  ngOnInit() {};
+  ngOnInit() { };
 }

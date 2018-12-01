@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./music.component.css']
 })
 export class MusicComponent implements OnInit {
-  icon:any = document.getElementById("player-icon");
   music:boolean = false;
 
   constructor() { }

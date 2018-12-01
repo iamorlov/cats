@@ -4,13 +4,11 @@
       [style.background-image]="'url(/assets/walls/' + cat + ')'"
       class="cats-wall">
   </div>
+  <div class="borders"></div>
   <div id="fullscreen" class="aniation" (click)="getFullScreen()">
-    <i class="fas fa-expand"></i>
+    <i class="pe-7s-expand1"></i>
   </div>
-  <div id="title">
-    Cats non-stop
-  </div>
-  <div id="music">
+  <div id="options" class="aniation">
     <app-music></app-music>
   </div>
   <img [src]="preload" id="preload">
