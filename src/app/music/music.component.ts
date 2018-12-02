@@ -24,7 +24,23 @@ export class MusicComponent implements OnInit {
     this.settings = !this.settings;
   }
 
+  toggleClock() {
+    let checkbox = document.getElementById('show-clock');
+    if(checkbox['checked'] == true) {
+      localStorage.setItem('clock', 'true');
+    }
+    if(checkbox['checked'] == false) {
+      localStorage.setItem('clock', 'false');
+    }
+  }
+
   ngOnInit() {
+    (function() {
+      var checked = localStorage.getItem('clock');
+      if (checked == 'true') {
+        document.getElementById("show-clock")['checked'] = checked;
+      }
+    })();
   }
 
 }

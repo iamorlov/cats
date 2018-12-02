@@ -9,6 +9,10 @@
     <i class="pe-7s-expand1"></i>
   </div>
 
+  <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
+    {{ time | date:'HH:mm'}}
+  </div>
+
   <div id="options" class="aniation">
     <app-music></app-music>
   </div>

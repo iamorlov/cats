@@ -1,0 +1,46 @@
+#time-clock {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: #fff;
+  font-size: 2.2em;
+  font-weight: 100;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+  opacity: 0.8;
+}
+
+.show_clock {
+  height: auto;
+  animation: clockAnimate 2s ease-in;
+}
+
+.hide_clock {
+  height: 0;
+  display: none;
+  overflow: hidden;
+  animation: clockAnimate 2s ease-out;
+}
+
+@-webkit-keyframes clockAnimate {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes clockAnimate {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

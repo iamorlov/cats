@@ -7,12 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  images: number = 73; // Count of cat walls ♥
+  images: number = 88; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = "wall-" + this.random + ".jpg";
   preload: string = "/assets/walls/" + this.cat;
-
+  clock:string = localStorage.getItem('clock');
+  time:number = Date.now();
 
   constructor() {
     setInterval(() => {
@@ -22,6 +23,11 @@ export class AppComponent implements OnInit {
         this.cat = "wall-" + random_new + ".jpg";
       }, 3000);
     }, 9000);
+
+    setInterval(() => {
+      this.time = Date.now();
+      this.clock = localStorage.getItem('clock');
+    }, 100);
   };
 
   getFullScreen() {
@@ -35,5 +41,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() { };
+  ngOnInit() {
+    console.log(this.clock);
+  };
 }
