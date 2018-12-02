@@ -11,6 +11,48 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+/* Loader */
+#app-loading {
+  height: 100vh;
+  width: 100%;
+  background-image: url('assets/img/loading.jpg');
+  background-position: center, center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+#app-loading h1 {
+  color: #fff;
+  font-weight: 100;
+  font-size: 2em;
+  line-height: 100vh;
+  text-align: center;
+}
+
+.dot {
+  opacity: 0;
+  -webkit-animation: showHideDot 1.5s ease-in-out infinite;
+  animation: showHideDot 1.5s ease-in-out infinite;
+}
+
+.dot_one {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s;
+}
+.dot_two {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+.dot_three {
+  -webkit-animation-delay: 0.6s;
+          animation-delay: 0.6s;
+}
+
 .aniation {
   -webkit-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
@@ -18,7 +60,7 @@ body {
   transition: all ease 0.3s;
 }
 
-.cats-wall, #options-icons, #player, #fullscreen, #player-icon, #settings-icon, #favorite-icon, .show_player, .hide_player {
+.cats-wall, #options-icons, #player, #fullscreen, #player-icon, #settings-icon, .show_player, .hide_player, .modal {
   will-change: auto;
 }
 
@@ -78,13 +120,13 @@ body {
   text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
 }
 
-#fullscreen, #player-icon, #settings-icon, #info-icon, #favorite-icon {
+#fullscreen, #player-icon, #settings-icon, #info-icon {
   opacity: 0.9;
   padding: 10px 12px;
   cursor: pointer;
 }
 
-#fullscreen:hover, #player-icon:hover, #settings-icon:hover, #info-icon:hover, #favorite-icon:hover {
+#fullscreen:hover, #player-icon:hover, #settings-icon:hover, #info-icon:hover {
   opacity: 1;
 }
 
@@ -94,12 +136,12 @@ body {
   border-radius: 5px;
 }
 
-#player-icon, #settings-icon, #info-icon, #favorite-icon {
+#player-icon, #settings-icon, #info-icon {
   float: right;
   border-bottom: 2px solid transparent;
 }
 
-#player-icon:hover, #settings-icon:hover, #info-icon:hover, #favorite-icon:hover {
+#player-icon:hover, #settings-icon:hover, #info-icon:hover {
   color: #673ab7;
   text-shadow: none;
   background: rgba(255, 255, 255, 0.9);
@@ -107,13 +149,14 @@ body {
 }
 
 #fullscreen {
-  top: 25px;
-  right: 25px;
+  top: 15px;
+  right: 15px;
 }
 
 #options {
-  bottom: 25px;
-  right: 25px;
+  bottom: 15px;
+  right: 15px;
+  max-width: 400px;
 }
 
 #options-icons {
@@ -157,3 +200,33 @@ body {
 }
 
 /*End of Zoom in Keyframes */
+
+@-webkit-keyframes showHideDot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes showHideDot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  images: number = 55; // Count of cat walls ♥
+  images: number = 73; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = "wall-" + this.random + ".jpg";
