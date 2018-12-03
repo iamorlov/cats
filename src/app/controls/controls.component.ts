@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-music',
-  templateUrl: './music.component.html',
-  styleUrls: ['./music.component.css']
+  selector: 'app-controls',
+  templateUrl: './controls.component.html',
+  styleUrls: ['./controls.component.css']
 })
-export class MusicComponent implements OnInit {
+export class ControlsComponent implements OnInit {
   music:boolean = false;
   info:boolean = false;
   settings:boolean = false;

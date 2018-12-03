@@ -230,3 +230,12 @@ body {
     opacity: 0;
   }
 }
+
+@media screen and (max-width: 720px) {
+  #time-clock {
+    top: 15px;
+  }
+  #options {
+    max-width: calc(100% - 30px);
+  }
+}
