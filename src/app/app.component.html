@@ -6,9 +6,10 @@
   </div>
   <div class="borders"></div>
   <div id="rotate-phone" class="animation">
-    <i class="pe-7s-phone" id="rotate-icon"></i>&nbsp;&nbsp;For the best experience, rotate your device
+    <i class="pe-7s-phone" id="rotate-icon"></i>
+    <p>For the best experience, rotate your device</p>
   </div>
-  <div id="fullscreen" class="aniation" (click)="getFullScreen()">
+  <div id="fullscreen" class="animation" (click)="getFullScreen()">
     <i class="pe-7s-expand1"></i>
   </div>
 
@@ -16,7 +17,7 @@
     {{ time | date:'HH:mm'}}
   </div>
 
-  <div id="options" class="aniation">
+  <div id="options" class="animation">
     <app-controls></app-controls>
   </div>
   <img [src]="preload" id="preload">
