@@ -21,15 +21,19 @@
 
 <div id="settings" [ngClass]="settings ? 'show_modal' : 'hide_modal'" class="animation modal">
   <p><strong>Settings</strong></p>
-  <label class="pure-material-checkbox">
-    <input type="checkbox" id="show-clock" (click)="toggleClock();">
-    <span>Show clock</span>
-  </label>
-
-  <select (change)="chooseFilter($event)">
-    <option></option>
-    <option *ngFor="let filter of filters">{{ filter }}</option>
-  </select>
+  <div class="settings-item">
+    <label class="pure-material-checkbox">
+      <input type="checkbox" id="show-clock" (click)="toggleClock();">
+      <span>Show clock</span>
+    </label>
+  </div>
+  <div class="settings-item">
+    <label class="settings-label">Additional image filter:</label>
+    <select (change)="chooseFilter($event)" class="select-option animation">
+      <option>Choose filter...</option>
+      <option *ngFor="let filter of filters">{{ filter }}</option>
+    </select>
+  </div>
 </div>
 
 <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">

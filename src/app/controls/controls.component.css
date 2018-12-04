@@ -99,6 +99,36 @@
   background: rgba(0, 0, 0, 0.7);
 }
 
+.settings-item {
+  padding: 10px 0;
+}
+
+.settings-label {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 16px;
+}
+
+/* Select */
+.select-option {
+  cursor: pointer;
+  background: none;
+  padding: 10px 15px;
+  border: none;
+  border-bottom: 2px solid #673ab6;
+  min-width: 100%;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.select-option:hover {
+  border-radius: 5px;
+  background: #e4e4e4;
+}
+
+.select-option:focus {
+  outline: none
+}
+
 /* Checkbox */
 .pure-material-checkbox {
   z-index: 0;
