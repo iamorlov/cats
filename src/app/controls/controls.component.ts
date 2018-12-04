@@ -15,6 +15,8 @@ export class ControlsComponent implements OnInit {
   ambient_song:boolean = false;
   house_song:boolean = false;
 
+  filters:any = ['1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn'];
+
   constructor() { }
 
   // main navigation
@@ -67,6 +69,13 @@ export class ControlsComponent implements OnInit {
       this.nature_song = false;
       this.ambient_song = false;
     }
+  }
+
+  // instagram filters
+
+  chooseFilter(event) {
+    var filter = event.target.value;
+    console.log(filter);
   }
 
   toggleClock() {

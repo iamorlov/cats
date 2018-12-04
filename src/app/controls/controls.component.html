@@ -25,6 +25,11 @@
     <input type="checkbox" id="show-clock" (click)="toggleClock();">
     <span>Show clock</span>
   </label>
+
+  <select (change)="chooseFilter($event)">
+    <option></option>
+    <option *ngFor="let filter of filters">{{ filter }}</option>
+  </select>
 </div>
 
 <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">
