@@ -156,6 +156,8 @@ body {
   right: 15px;
 }
 
+/* For fullscreen */
+
 :fullscreen #fullscreen {
   display: none;
 }
@@ -166,6 +168,30 @@ body {
 
 :-moz-full-screen #fullscreen {
   display: none;
+}
+
+:fullscreen #options-icons {
+  background: none;
+}
+
+:-webkit-full-screen #options-icons {
+  background: none;
+}
+
+:-moz-full-screen #options-icons {
+  background: none;
+}
+
+:fullscreen #options-icons:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:-webkit-full-screen #options-icons:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:-moz-full-screen #options-icons:hover {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 #options {
