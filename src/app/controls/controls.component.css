@@ -129,6 +129,13 @@
   outline: none
 }
 
+.select-option-item {
+  border: none;
+  background: #fff;
+  color: #424242;
+  padding: 10px;
+}
+
 /* Checkbox */
 .pure-material-checkbox {
   z-index: 0;

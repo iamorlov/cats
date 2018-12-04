@@ -15,7 +15,7 @@ export class ControlsComponent implements OnInit {
   ambient_song:boolean = false;
   house_song:boolean = false;
 
-  filters:any = ['1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn'];
+  filters:any = ['1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
 
   constructor() { }
 
@@ -75,7 +75,10 @@ export class ControlsComponent implements OnInit {
 
   chooseFilter(event) {
     var filter = event.target.value;
-    console.log(filter);
+    var css_filter = "filter-" + filter;
+    
+    localStorage.removeItem('filter');
+    localStorage.setItem('filter', css_filter);
   }
 
   toggleClock() {

@@ -30,8 +30,8 @@
   <div class="settings-item">
     <label class="settings-label">Additional image filter:</label>
     <select (change)="chooseFilter($event)" class="select-option animation">
-      <option>Choose filter...</option>
-      <option *ngFor="let filter of filters">{{ filter }}</option>
+      <option class="select-option-item" value="default">No filter</option>
+      <option class="select-option-item" *ngFor="let filter of filters">{{ filter }}</option>
     </select>
   </div>
 </div>

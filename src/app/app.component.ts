@@ -7,13 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  images: number = 136; // Count of cat walls ♥
+  images: number = 156; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = "wall-" + this.random + ".jpg";
   preload: string = "/assets/walls/" + this.cat;
   clock:string = localStorage.getItem('clock');
   time:number = Date.now();
+  filter:string;
 
   constructor() {
     setInterval(() => {
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
     setInterval(() => {
       this.time = Date.now();
       this.clock = localStorage.getItem('clock');
+      this.filter = localStorage.getItem('filter');
     }, 100);
   };
 
