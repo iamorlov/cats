@@ -21,14 +21,15 @@
 }
 
 #player {
-  opacity: .8;
-  background: rgba(0, 0, 0, 0.4);
+  opacity: .9;
+  background: rgba(255, 255, 255, 0.9);
   overflow: hidden;
   border-radius: 5px;
 }
 
 #player:hover {
   opacity: 1;
+  background: #fff;
 }
 
 .player-wrapper {
@@ -41,7 +42,7 @@
 .modal {
   font-size: 0.9em;
   color: #444;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 5px;
   text-shadow: none;
   font-weight: 400;
@@ -78,7 +79,7 @@
 
 .player-tabs {
   font-family: 'Lobster', cursive;
-  color: #fff;
+  color: #673ab7;
 }
 
 .player-tabs:hover {
@@ -89,14 +90,17 @@
   padding: 5px 10px;
   display: inline-block;
   cursor: pointer;
+  text-shadow: none;
 }
 
 .player-tabs span:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: #673ab7;
+  color: #fff;
 }
 
 .player-tabs span.active {
-  background: rgba(0, 0, 0, 0.7);
+  background: #673ab7;
+  color: #fff;
 }
 
 .settings-item {
@@ -105,8 +109,8 @@
 
 .settings-label {
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.87);
-  font-size: 16px;
+  color: #444;
+  font-size: .8em;
 }
 
 /* Select */
@@ -141,9 +145,9 @@
   z-index: 0;
   position: relative;
   display: inline-block;
-  color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
-  font-size: 16px;
-  line-height: 1.5;
+  color: #444;
+  font-size: .8em;
+  line-height: 1.8;
 }
 
 /* Input */
