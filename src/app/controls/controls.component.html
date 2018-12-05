@@ -1,4 +1,4 @@
-<div id="player" [ngClass]="music ? 'show_player' : 'hide_player'" class="animation">
+<div id="player" [ngClass]="music ? 'show_modal' : 'hide_modal'" class="animation modal">
 
   <div class="player-tabs">
     <span (click)="musicOne()" class="animation" [ngClass]="nature_song ? 'active' : 'not-active'">Nature</span>
@@ -29,10 +29,14 @@
   </div>
   <div class="settings-item">
     <label class="settings-label">Additional image filter:</label>
-    <select (change)="chooseFilter($event)" class="select-option animation">
-      <option class="select-option-item" value="default">No filter</option>
-      <option class="select-option-item" *ngFor="let filter of filters">{{ filter }}</option>
-    </select>
+
+    <div class="filters-preview">
+      <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
+        <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
+        <span class="animation">{{filter}}</span>
+      </div>
+      <div class="filters-preview-bottom"></div>
+    </div>
   </div>
 </div>
 

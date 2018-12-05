@@ -15,7 +15,7 @@ export class ControlsComponent implements OnInit {
   ambient_song:boolean = false;
   house_song:boolean = false;
 
-  filters:any = ['1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+  filters:any = ['Original', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
 
   constructor() { }
 
@@ -23,14 +23,20 @@ export class ControlsComponent implements OnInit {
 
   showPlayer() {
     this.music = !this.music;
+    this.info = false;
+    this.settings = false;
   }
 
   showInfo() {
     this.info = !this.info;
+    this.music = false;
+    this.settings = false;
   }
 
   showSettings() {
     this.settings = !this.settings;
+    this.info = false;
+    this.music = false;
   }
 
   // music
@@ -73,10 +79,11 @@ export class ControlsComponent implements OnInit {
 
   // instagram filters
 
-  chooseFilter(event) {
-    var filter = event.target.value;
+  chooseFilter(filter) {
+    console.log(filter);
+    var filter = filter;
     var css_filter = "filter-" + filter;
-    
+
     localStorage.removeItem('filter');
     localStorage.setItem('filter', css_filter);
   }
