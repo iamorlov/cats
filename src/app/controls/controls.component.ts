@@ -15,7 +15,8 @@ export class ControlsComponent implements OnInit {
   ambient_song:boolean = false;
   house_song:boolean = false;
 
-  filters:any = ['Original', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+  filter_storage:string = localStorage.getItem('filter');
+  filters:any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
 
   constructor() { }
 
@@ -82,10 +83,9 @@ export class ControlsComponent implements OnInit {
   chooseFilter(filter) {
     console.log(filter);
     var filter = filter;
-    var css_filter = "filter-" + filter;
 
     localStorage.removeItem('filter');
-    localStorage.setItem('filter', css_filter);
+    localStorage.setItem('filter', filter);
   }
 
   toggleClock() {
@@ -99,12 +99,20 @@ export class ControlsComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (localStorage.getItem('filter') == null) {
+      localStorage.setItem('filter', 'No filter');
+    }
+
     (function() {
       var checked = localStorage.getItem('clock');
       if (checked == 'true') {
         document.getElementById("show-clock")['checked'] = checked;
       }
     })();
+
+    setInterval(() => {
+      this.filter_storage = localStorage.getItem('filter');
+    }, 100);
   }
 
 }

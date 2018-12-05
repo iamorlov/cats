@@ -33,7 +33,7 @@
     <div class="filters-preview">
       <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
         <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
-        <span class="animation">{{filter}}</span>
+        <span class="animation"><i class="pe-7s-check" *ngIf="filter_storage == filter"></i>{{filter}}</span>
       </div>
       <div class="filters-preview-bottom"></div>
     </div>

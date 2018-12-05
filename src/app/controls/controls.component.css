@@ -47,7 +47,7 @@
   color: #673ab7;
   margin-bottom: 7px;
   border-bottom: 1px solid rgba(51, 51, 51, 0.2);
-  font-size: 1.1em;
+  font-size: 1.4em;
 }
 
 .modal p#cred {
@@ -108,6 +108,7 @@
   overflow-y: scroll;
   max-height: 65vh;
   position: relative;
+  border-bottom: 2px solid #673ab7;
 }
 
 .filters-preview::-webkit-scrollbar {
@@ -141,6 +142,19 @@
 .filter-item span {
   color: #fff;
   font-size: .8em;
+  font-weight: 600;
+}
+
+.filter-item i {
+  position: absolute;
+  top: 1px;
+  padding: 3px;
+  left: 1px;
+  font-size: 2em;
+  background: #ffffff;
+  border-radius: 10%;
+  color: #00c853;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .filter-item:hover span {
@@ -183,7 +197,7 @@
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  background-color: rgba(var(--pure-material-onsurface-rgb, 255, 255, 255), 0.6);
   box-shadow: none;
   outline: none;
   opacity: 0;
@@ -208,7 +222,7 @@
   margin: 3px 11px 3px 1px;
   border: solid 2px;
   /* Safari */
-  border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  border-color: rgba(var(--pure-material-onsurface-rgb, 255, 255, 255), 0.6);
   border-radius: 2px;
   width: 18px;
   height: 18px;
@@ -300,4 +314,10 @@
 .pure-material-checkbox>input:indeterminate:disabled+span::before {
   border-color: transparent;
   background-color: currentColor;
+}
+
+@media screen and (max-width: 720px) {
+  .modal {
+    padding: 35px 15px 30px 15px;
+  }
 }
