@@ -1,21 +1,53 @@
 <div id="player" [ngClass]="music ? 'show_modal' : 'hide_modal'" class="animation modal">
 
-  <div class="player-tabs">
-    <span (click)="musicOne()" class="animation" [ngClass]="nature_song ? 'active' : 'not-active'">Nature</span>
-    <span (click)="musicTwo()" class="animation" [ngClass]="rain_song ? 'active' : 'not-active'">Rain</span>
-    <span (click)="musicThree()" class="animation" [ngClass]="ambient_song ? 'active' : 'not-active'">Relax</span>
-    <span (click)="musicFour()" class="animation" [ngClass]="house_song ? 'active' : 'not-active'">House</span>
+  <p><strong>Sounds and music</strong></p>
+
+  <div class="sounds-wrapper">
+    <div class="sound-item">
+      <i class="pe-7s-play animation" (click)="catSoundPlay()" *ngIf="!catSound"></i>
+      <i class="pe-7s-mute animation" (click)="catSoundStop()" *ngIf="catSound"></i>
+      Cat purring :3
+    </div>
+    <div class="sound-item">
+      <i class="pe-7s-play animation" (click)="rainSoundPlay()" *ngIf="!rainSound"></i>
+      <i class="pe-7s-mute animation" (click)="rainSoundStop()" *ngIf="rainSound"></i>
+      Rain drops
+    </div>
+    <div class="sound-item">
+      <i class="pe-7s-play animation" (click)="fireSoundPlay()" *ngIf="!fireSound"></i>
+      <i class="pe-7s-mute animation" (click)="fireSoundStop()" *ngIf="fireSound"></i>
+      Campfire
+    </div>
+    <div class="sound-item">
+      <i class="pe-7s-play animation" (click)="nightSoundPlay()" *ngIf="!nightSound"></i>
+      <i class="pe-7s-mute animation" (click)="nightSoundStop()" *ngIf="nightSound"></i>
+      Wild night
+    </div>
+    <div class="sound-item">
+      <i class="pe-7s-play animation" (click)="oceanSoundPlay()" *ngIf="!oceanSound"></i>
+      <i class="pe-7s-mute animation" (click)="oceanSoundStop()" *ngIf="oceanSound"></i>
+      Ocean waves
+    </div>
   </div>
 
-  <div class="player-wrapper">
-    <!-- Nature -->
-    <iframe *ngIf="nature_song" width="100%" height="200" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/175419128&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-    <!--  Rain -->
-    <iframe *ngIf="rain_song" width="100%" height="200" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/146823529&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-    <!-- Ambient -->
-    <iframe *ngIf="ambient_song" width="100%" height="200" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/237317520&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-    <!-- House -->
-    <iframe *ngIf="house_song" width="100%" height="200" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/512674650&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+  <div class="music-wrapper">
+    <div class="player-tabs">
+      <span (click)="musicOne()" class="animation" [ngClass]="nature_song ? 'active' : 'not-active'">Nature</span>
+      <span (click)="musicTwo()" class="animation" [ngClass]="rain_song ? 'active' : 'not-active'">Rain</span>
+      <span (click)="musicThree()" class="animation" [ngClass]="ambient_song ? 'active' : 'not-active'">Relax</span>
+      <span (click)="musicFour()" class="animation" [ngClass]="house_song ? 'active' : 'not-active'">House</span>
+    </div>
+
+    <div class="player-wrapper">
+      <!-- Nature -->
+      <iframe *ngIf="nature_song" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/175419128&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+      <!--  Rain -->
+      <iframe *ngIf="rain_song" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/146823529&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+      <!-- Ambient -->
+      <iframe *ngIf="ambient_song" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/237317520&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+      <!-- House -->
+      <iframe *ngIf="house_song" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/512674650&color=%23545c8c&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+    </div>
   </div>
 </div>
 

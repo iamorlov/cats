@@ -6,17 +6,29 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./controls.component.css']
 })
 export class ControlsComponent implements OnInit {
-  music:boolean = false;
-  info:boolean = false;
-  settings:boolean = false;
+  music: boolean = false;
+  info: boolean = false;
+  settings: boolean = false;
 
-  nature_song:boolean = true; // default active tab
-  rain_song:boolean = false;
-  ambient_song:boolean = false;
-  house_song:boolean = false;
+  nature_song: boolean = true; // default active tab
+  rain_song: boolean = false;
+  ambient_song: boolean = false;
+  house_song: boolean = false;
 
-  filter_storage:string = localStorage.getItem('filter');
-  filters:any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+  filter_storage: string = localStorage.getItem('filter');
+  filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+
+  catSound: boolean = false;
+  rainSound: boolean = false;
+  nightSound: boolean = false;
+  oceanSound: boolean = false;
+  fireSound: boolean = false;
+
+  cat_audio: any = new Audio('/assets/sounds/cat-purr.mp3');
+  rain_audio: any = new Audio('/assets/sounds/rain-drops.mp3');
+  night_audio: any = new Audio('/assets/sounds/wild-night.mp3');
+  ocean_audio: any = new Audio('/assets/sounds/ocean-waves.mp3');
+  fire_audio: any = new Audio('/assets/sounds/camp-fire.mp3');
 
   constructor() { }
 
@@ -40,10 +52,82 @@ export class ControlsComponent implements OnInit {
     this.music = false;
   }
 
+  // Sounds
+
+  catSoundPlay() {
+    this.cat_audio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    this.cat_audio.play();
+    this.catSound = !this.catSound;
+  }
+  catSoundStop() {
+    this.cat_audio.currentTime = 0;
+    this.cat_audio.pause();
+    this.catSound = !this.catSound;
+  }
+
+  rainSoundPlay() {
+    this.rain_audio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    this.rain_audio.play();
+    this.rainSound = !this.rainSound;
+  }
+  rainSoundStop() {
+    this.rain_audio.currentTime = 0;
+    this.rain_audio.pause();
+    this.rainSound = !this.rainSound;
+  }
+
+  nightSoundPlay() {
+    this.night_audio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    this.night_audio.play();
+    this.nightSound = !this.nightSound;
+  }
+  nightSoundStop() {
+    this.night_audio.currentTime = 0;
+    this.night_audio.pause();
+    this.nightSound = !this.nightSound;
+  }
+
+  oceanSoundPlay() {
+    this.ocean_audio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    this.ocean_audio.play();
+    this.oceanSound = !this.oceanSound;
+  }
+  oceanSoundStop() {
+    this.ocean_audio.currentTime = 0;
+    this.ocean_audio.pause();
+    this.oceanSound = !this.oceanSound;
+  }
+
+  fireSoundPlay() {
+    this.fire_audio.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+    }, false);
+    this.fire_audio.play();
+    this.fireSound = !this.fireSound;
+  }
+  fireSoundStop() {
+    this.fire_audio.currentTime = 0;
+    this.fire_audio.pause();
+    this.fireSound = !this.fireSound;
+  }
+
   // music
 
   musicOne() {
-    if(this.nature_song == false) {
+    if (this.nature_song == false) {
       this.nature_song = !this.nature_song;
       this.rain_song = false;
       this.ambient_song = false;
@@ -52,7 +136,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicTwo() {
-    if(this.rain_song == false) {
+    if (this.rain_song == false) {
       this.rain_song = !this.rain_song;
       this.ambient_song = false;
       this.nature_song = false;
@@ -61,7 +145,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicThree() {
-    if(this.ambient_song == false) {
+    if (this.ambient_song == false) {
       this.ambient_song = !this.ambient_song;
       this.rain_song = false;
       this.nature_song = false;
@@ -70,7 +154,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicFour() {
-    if(this.house_song == false) {
+    if (this.house_song == false) {
       this.house_song = !this.house_song;
       this.rain_song = false;
       this.nature_song = false;
@@ -90,10 +174,10 @@ export class ControlsComponent implements OnInit {
 
   toggleClock() {
     let checkbox = document.getElementById('show-clock');
-    if(checkbox['checked'] == true) {
+    if (checkbox['checked'] == true) {
       localStorage.setItem('clock', 'true');
     }
-    if(checkbox['checked'] == false) {
+    if (checkbox['checked'] == false) {
       localStorage.setItem('clock', 'false');
     }
   }
