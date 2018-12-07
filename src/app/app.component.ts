@@ -7,21 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  images: number = 280; // Count of cat walls ♥
+  images = 280; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
-  cat: string = "wall-" + this.random + ".jpg";
-  preload: string = "/assets/walls/" + this.cat;
-  clock:string = localStorage.getItem('clock');
-  time:number = Date.now();
-  filter:string;
+  cat: string = 'wall-' + this.random + '.jpg';
+  preload: string = '/assets/walls/' + this.cat;
+  clock: string = localStorage.getItem('clock');
+  time: number = Date.now();
+  filter: string;
 
   constructor() {
     setInterval(() => {
-      var random_new = Math.floor(Math.random() * this.images);
-      this.preload = "/assets/walls/wall-" + random_new + ".jpg";
+      const random_new = Math.floor(Math.random() * this.images);
+      this.preload = '/assets/walls/wall-' + random_new + '.jpg';
       setTimeout(() => {
-        this.cat = "wall-" + random_new + ".jpg";
+        this.cat = 'wall-' + random_new + '.jpg';
       }, 3000);
     }, 9000);
 
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
       this.clock = localStorage.getItem('clock');
       this.filter = localStorage.getItem('filter');
     }, 100);
-  };
+  }
 
   getFullScreen() {
     const screen = document.body;
@@ -43,5 +43,5 @@ export class AppComponent implements OnInit {
     }
   }
 
-  ngOnInit() { };
+  ngOnInit() { }
 }

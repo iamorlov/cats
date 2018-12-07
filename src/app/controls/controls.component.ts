@@ -6,23 +6,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./controls.component.css']
 })
 export class ControlsComponent implements OnInit {
-  music: boolean = false;
-  info: boolean = false;
-  settings: boolean = false;
+  music = false;
+  info = false;
+  settings = false;
 
-  nature_song: boolean = true; // default active tab
-  rain_song: boolean = false;
-  ambient_song: boolean = false;
-  house_song: boolean = false;
+  nature_song = true; // default active tab
+  rain_song = false;
+  ambient_song = false;
+  house_song = false;
 
   filter_storage: string = localStorage.getItem('filter');
-  filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan', 'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird', 'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin', 'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua', 'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson', 'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+  filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan',
+  'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird',
+  'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin',
+  'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua',
+  'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson',
+  'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
 
-  catSound: boolean = false;
-  rainSound: boolean = false;
-  nightSound: boolean = false;
-  oceanSound: boolean = false;
-  fireSound: boolean = false;
+  catSound = false;
+  rainSound = false;
+  nightSound = false;
+  oceanSound = false;
+  fireSound = false;
 
   cat_audio: any = new Audio('/assets/sounds/cat-purr.mp3');
   rain_audio: any = new Audio('/assets/sounds/rain-drops.mp3');
@@ -127,7 +132,7 @@ export class ControlsComponent implements OnInit {
   // music
 
   musicOne() {
-    if (this.nature_song == false) {
+    if (this.nature_song === false) {
       this.nature_song = !this.nature_song;
       this.rain_song = false;
       this.ambient_song = false;
@@ -136,7 +141,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicTwo() {
-    if (this.rain_song == false) {
+    if (this.rain_song === false) {
       this.rain_song = !this.rain_song;
       this.ambient_song = false;
       this.nature_song = false;
@@ -145,7 +150,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicThree() {
-    if (this.ambient_song == false) {
+    if (this.ambient_song === false) {
       this.ambient_song = !this.ambient_song;
       this.rain_song = false;
       this.nature_song = false;
@@ -154,7 +159,7 @@ export class ControlsComponent implements OnInit {
   }
 
   musicFour() {
-    if (this.house_song == false) {
+    if (this.house_song === false) {
       this.house_song = !this.house_song;
       this.rain_song = false;
       this.nature_song = false;
@@ -165,32 +170,29 @@ export class ControlsComponent implements OnInit {
   // instagram filters
 
   chooseFilter(filter) {
-    console.log(filter);
-    var filter = filter;
-
     localStorage.removeItem('filter');
     localStorage.setItem('filter', filter);
   }
 
   toggleClock() {
-    let checkbox = document.getElementById('show-clock');
-    if (checkbox['checked'] == true) {
+    const checkbox = document.getElementById('show-clock');
+    if (checkbox['checked'] === true) {
       localStorage.setItem('clock', 'true');
     }
-    if (checkbox['checked'] == false) {
+    if (checkbox['checked'] === false) {
       localStorage.setItem('clock', 'false');
     }
   }
 
   ngOnInit() {
-    if (localStorage.getItem('filter') == null) {
+    if (localStorage.getItem('filter') === null) {
       localStorage.setItem('filter', 'No filter');
     }
 
     (function() {
-      var checked = localStorage.getItem('clock');
-      if (checked == 'true') {
-        document.getElementById("show-clock")['checked'] = checked;
+      const checked = localStorage.getItem('clock');
+      if (checked === 'true') {
+        document.getElementById('show-clock')['checked'] = checked;
       }
     })();
 
