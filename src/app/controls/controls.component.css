@@ -39,7 +39,7 @@
 
 .modal p:first-child {
   font-family: 'Lobster', cursive;
-  color: #673ab7;
+  color: #ff6f61;
   margin-bottom: 7px;
   border-bottom: 1px solid rgba(51, 51, 51, 0.2);
   font-size: 1.4em;
@@ -47,7 +47,7 @@
 
 .modal p#cred {
   text-align: right;
-  color: #673ab7;
+  color: #ff6f61;
   padding-top: 10px;
   font-weight: 700;
   border-top: 1px solid rgba(51, 51, 51, 0.2);
@@ -59,7 +59,7 @@
 
 .player-tabs {
   font-family: 'Lobster', cursive;
-  color: #673ab7;
+  color: #ff6f61;
 }
 
 .player-tabs:hover {
@@ -74,12 +74,12 @@
 }
 
 .player-tabs span:hover {
-  background: #673ab7;
+  background: #ff6f61;
   color: #fff;
 }
 
 .player-tabs span.active {
-  background: #673ab7;
+  background: #ff6f61;
   color: #fff;
 }
 
@@ -103,7 +103,7 @@
   overflow-y: scroll;
   max-height: 65vh;
   position: relative;
-  border-bottom: 2px solid #673ab7;
+  border-bottom: 2px solid #ff6f61;
 }
 
 .filters-preview::-webkit-scrollbar {
@@ -117,8 +117,8 @@
 }
 
 .filters-preview::-webkit-scrollbar-thumb {
-	background-color: #673ab7;
-	border: 1px solid #673ab7;
+	background-color: #ff6f61;
+	border: 1px solid #ff6f61;
 }
 
 .filter-item {
@@ -148,12 +148,12 @@
   font-size: 2em;
   background: #ffffff;
   border-radius: 10%;
-  color: #673ab6;
+  color: #ff6f61;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .filter-item:hover span {
-  color: #673ab7;
+  color: #ff6f61;
   padding-left: 3px;
 }
 
@@ -183,7 +183,7 @@
 }
 
 .sound-item i {
-  color: #673ab6;
+  color: #ff6f61;
   font-size: 1.5em;
   border-radius: 50%;
   padding: 3px 1px 3px 4px;
@@ -280,13 +280,13 @@
 /* Checked, Indeterminate */
 .pure-material-checkbox>input:checked,
 .pure-material-checkbox>input:indeterminate {
-  background-color: rgb(var(--pure-material-primary-rgb, 103, 58, 183));
+  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
 .pure-material-checkbox>input:checked+span::before,
 .pure-material-checkbox>input:indeterminate+span::before {
-  border-color: rgb(var(--pure-material-primary-rgb, 103, 58, 183));
-  background-color: rgb(var(--pure-material-primary-rgb, 103, 58, 183));
+  border-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
+  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
 .pure-material-checkbox>input:checked+span::after,
