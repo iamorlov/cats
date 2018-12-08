@@ -29,11 +29,11 @@ export class ControlsComponent implements OnInit {
   oceanSound = false;
   fireSound = false;
 
-  cat_audio: any = new Audio('/assets/sounds/cat-purr.mp3');
-  rain_audio: any = new Audio('/assets/sounds/rain-drops.mp3');
-  night_audio: any = new Audio('/assets/sounds/wild-night.mp3');
-  ocean_audio: any = new Audio('/assets/sounds/ocean-waves.mp3');
-  fire_audio: any = new Audio('/assets/sounds/camp-fire.mp3');
+  cat_audio: any = new Audio('/assets/sounds/purring.mp3');
+  rain_audio: any = new Audio('/assets/sounds/rain.mp3');
+  night_audio: any = new Audio('/assets/sounds/night.mp3');
+  ocean_audio: any = new Audio('/assets/sounds/waves.mp3');
+  fire_audio: any = new Audio('/assets/sounds/fire.mp3');
 
   constructor() { }
 
