@@ -29,6 +29,8 @@ export class ControlsComponent implements OnInit {
   oceanSound = false;
   fireSound = false;
 
+  easter_egg = false;
+
   cat_audio: any = new Audio('/assets/sounds/purring.mp3');
   rain_audio: any = new Audio('/assets/sounds/rain.mp3');
   night_audio: any = new Audio('/assets/sounds/night.mp3');
@@ -165,6 +167,13 @@ export class ControlsComponent implements OnInit {
       this.nature_song = false;
       this.ambient_song = false;
     }
+  }
+
+  // easter easterEgg
+
+  easterEgg() {
+    this.easter_egg = !this.easter_egg;
+    sessionStorage.setItem('cat_doom', 'doom_cats');
   }
 
   // instagram filters

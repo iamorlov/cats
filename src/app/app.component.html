@@ -2,7 +2,7 @@
 <div class="cats-wrapper" id="cats-fullscreen">
   <div
       [style.background-image]="'url(/assets/walls/' + cat + ')'"
-      class="cats-wall filter-{{filter}}">
+      class="cats-wall filter-{{filter}} {{easter_egg}}">
   </div>
   <div class="borders"></div>
   <div id="rotate-phone" class="animation">
@@ -11,6 +11,10 @@
   </div>
   <div id="fullscreen" class="animation" (click)="getFullScreen()">
     <i class="pe-7s-expand1"></i>
+  </div>
+
+  <div class="easter_egg_pentagram" *ngIf="easter_egg">
+    <img src="/assets/img/pentagram.png">
   </div>
 
   <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
