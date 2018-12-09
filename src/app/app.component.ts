@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
       setTimeout(() => {
         this.cat = 'wall-' + random_new + '.jpg';
       }, 3000);
-    }, 9000);
+    }, 8000);
 
     setInterval(() => {
       this.time = Date.now();

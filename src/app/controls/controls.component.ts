@@ -176,6 +176,11 @@ export class ControlsComponent implements OnInit {
     sessionStorage.setItem('cat_doom', 'doom_cats');
   }
 
+  easterEggStop() {
+      this.easter_egg = false;
+      sessionStorage.clear();
+  }
+
   // instagram filters
 
   chooseFilter(filter) {

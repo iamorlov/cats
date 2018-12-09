@@ -378,6 +378,11 @@ body {
   #options-icons {
     width: calc(100% - 30px);
   }
+
+  .easter_egg_pentagram img {
+    width: 128px;
+    height: auto;
+  }
 }
 
 @media screen and (max-width: 720px) and (orientation: portrait) {
