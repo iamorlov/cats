@@ -188,6 +188,8 @@ export class ControlsComponent implements OnInit {
     localStorage.setItem('filter', filter);
   }
 
+  // clock
+
   toggleClock() {
     const checkbox = document.getElementById('show-clock');
     if (checkbox['checked'] === true) {
@@ -198,15 +200,31 @@ export class ControlsComponent implements OnInit {
     }
   }
 
+  // meow sounds
+
+  toggleMeows() {
+    const checkbox = document.getElementById('show-meows');
+    if (checkbox['checked'] === true) {
+      localStorage.setItem('meow', 'true');
+    }
+    if (checkbox['checked'] === false) {
+      localStorage.setItem('meow', 'false');
+    }
+  }
+
   ngOnInit() {
     if (localStorage.getItem('filter') === null) {
       localStorage.setItem('filter', 'No filter');
     }
 
     (function() {
-      const checked = localStorage.getItem('clock');
-      if (checked === 'true') {
-        document.getElementById('show-clock')['checked'] = checked;
+      const checked_clock = localStorage.getItem('clock');
+      if (checked_clock === 'true') {
+        document.getElementById('show-clock')['checked'] = checked_clock;
+      }
+      const checked_meow = localStorage.getItem('meow');
+      if (checked_meow === 'true') {
+        document.getElementById('show-meows')['checked'] = checked_meow;
       }
     })();
 

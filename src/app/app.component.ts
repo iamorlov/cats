@@ -7,12 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class AppComponent implements OnInit {
-  images = 340; // Count of cat walls ♥
+  images = 400; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
   preload: string = '/assets/walls/' + this.cat;
   clock: string = localStorage.getItem('clock');
+  meows: string = localStorage.getItem('meow');
   time: number = Date.now();
   filter: string;
   easter_egg: string;
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
     setInterval(() => {
       this.time = Date.now();
       this.clock = localStorage.getItem('clock');
+      this.meows = localStorage.getItem('meow');
       this.filter = localStorage.getItem('filter');
       this.easter_egg = sessionStorage.getItem('cat_doom');
     }, 100);
@@ -49,17 +51,19 @@ export class AppComponent implements OnInit {
     sessionStorage.clear();
 
     document.body.addEventListener('click', function() {
-      let meow_random: number = Math.floor(Math.random() * 8);
-      let meow_audio: any = new Audio('/assets/meows/' + meow_random + '.mp3');
-      meow_audio.play();
+      if (localStorage.getItem('meow') === 'true') {
+        const meow_random: number = Math.floor(Math.random() * 8);
+        const meow_audio: any = new Audio('/assets/meows/' + meow_random + '.mp3');
+        meow_audio.play();
+      }
     });
 
-    console.log(`%c
+  console.log(`%c
       |\\__/,|   (\`\\
     _.|o o  |_   ) )
 ---(((---(((---------
 ----- MEOW ----------
 ------------ iamorlov
-            `, "font-family:monospace")
+            `, 'font-family:monospace');
   }
 }
