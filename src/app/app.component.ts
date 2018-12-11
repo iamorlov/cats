@@ -47,5 +47,19 @@ export class AppComponent implements OnInit {
 
   ngOnInit( ) {
     sessionStorage.clear();
+
+    document.body.addEventListener('click', function() {
+      let meow_random: number = Math.floor(Math.random() * 8);
+      let meow_audio: any = new Audio('/assets/meows/' + meow_random + '.mp3');
+      meow_audio.play();
+    });
+
+    console.log(`%c
+      |\\__/,|   (\`\\
+    _.|o o  |_   ) )
+---(((---(((---------
+----- MEOW ----------
+------------ iamorlov
+            `, "font-family:monospace")
   }
 }
