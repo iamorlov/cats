@@ -6,6 +6,10 @@
   -webkit-box-sizing: border-box;
 }
 
+*:focus {
+    outline: none;
+}
+
 body {
   background: #333333;
   font-family: 'Open Sans', sans-serif;

@@ -21,6 +21,30 @@
   animation: clockAnimate 2s ease-out;
 }
 
+#cat-quotes {
+  width: 400px;
+  position: absolute;
+  bottom: 15px;
+  left: calc(50% - 200px);
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 100;
+  color: #fff;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+}
+
+#input-name {
+  background: none;
+  border: none;
+  border-bottom: 2px solid #f50;
+  width: 82%;
+  color: #fff;
+  padding: 7px 12px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+  font-weight: 100;
+}
+
 @-webkit-keyframes clockAnimate {
   0% {
     opacity: 0;

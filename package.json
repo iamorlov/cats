@@ -23,6 +23,7 @@
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
     "sitemap-generator": "^8.3.2",
+    "socket.io-client": "^2.2.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
