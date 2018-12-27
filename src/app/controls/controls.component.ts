@@ -10,10 +10,11 @@ export class ControlsComponent implements OnInit {
   info = false;
   settings = false;
 
-  nature_song = true; // default active tab
+  nature_song = false; // default active tab
   rain_song = false;
   ambient_song = false;
   house_song = false;
+  christmas_song = true; // default active tab only for Christmas!
 
   filter_storage: string = localStorage.getItem('filter');
   filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan',
@@ -133,12 +134,23 @@ export class ControlsComponent implements OnInit {
 
   // music
 
+  musicZero() {
+    if (this.christmas_song === false) {
+      this.christmas_song = !this.christmas_song;
+      this.nature_song = false;
+      this.rain_song = false;
+      this.ambient_song = false;
+      this.house_song = false;
+    }
+  }
+
   musicOne() {
     if (this.nature_song === false) {
       this.nature_song = !this.nature_song;
       this.rain_song = false;
       this.ambient_song = false;
       this.house_song = false;
+      this.christmas_song = false;
     }
   }
 
@@ -148,6 +160,7 @@ export class ControlsComponent implements OnInit {
       this.ambient_song = false;
       this.nature_song = false;
       this.house_song = false;
+      this.christmas_song = false;
     }
   }
 
@@ -157,6 +170,7 @@ export class ControlsComponent implements OnInit {
       this.rain_song = false;
       this.nature_song = false;
       this.house_song = false;
+      this.christmas_song = false;
     }
   }
 
@@ -166,6 +180,7 @@ export class ControlsComponent implements OnInit {
       this.rain_song = false;
       this.nature_song = false;
       this.ambient_song = false;
+      this.christmas_song = false;
     }
   }
 
