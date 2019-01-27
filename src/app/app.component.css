@@ -22,7 +22,7 @@
 }
 
 #cat-quotes {
-  display: none; // Work in progress
+  display: none;
   width: 400px;
   position: absolute;
   bottom: 15px;
