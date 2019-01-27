@@ -9,12 +9,35 @@
   opacity: 0.8;
 }
 
-.show_clock {
+#weather{
+  position: absolute;
+  text-align: center;
+  bottom: 70px;
+  left: 15px;
+  color: #fff;
+  font-weight: 100;
+  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+  opacity: 0.8;
+}
+
+.weather-icon {
+  font-size: 3.5em;
+}
+
+.weather-temp {
+  font-size: 3em;
+}
+
+.weather-location {
+  font-size: 1em;
+}
+
+.show_clock, .show_weather {
   height: auto;
   animation: clockAnimate 2s ease-in;
 }
 
-.hide_clock {
+.hide_clock, .hide_weather {
   height: 0;
   display: none;
   overflow: hidden;
