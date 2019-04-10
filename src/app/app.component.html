@@ -22,6 +22,9 @@
     <div class='weather-icon'>
       <i class="{{weather_icon}}"></i>
     </div>
+    <div class='weather-description'>
+      {{weatherJSON.weather[0].description}}
+    </div>
     <div class='weather-temp'>
       {{weatherJSON.main.temp - 273.15}}&#xb0;
     </div>
@@ -31,7 +34,7 @@
   </div>
 
   <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
-    {{ time | date:'HH:mm'}}
+    {{time | date:'HH:mm'}}
   </div>
 
   <div class="animation" id="cat-quotes">

@@ -4,11 +4,13 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { ControlsComponent } from './controls/controls.component';
+import { TruncatePipe } from './truncate.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ControlsComponent
+    ControlsComponent,
+    TruncatePipe
   ],
   imports: [
     BrowserModule,

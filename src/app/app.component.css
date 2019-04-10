@@ -24,6 +24,10 @@
   font-size: 3.5em;
 }
 
+.weather-description {
+  font-size: 0.8em;
+}
+
 .weather-temp {
   font-size: 3em;
 }
