@@ -18,28 +18,24 @@
     <img src="/assets/img/pentagram.png">
   </div>
 
-  <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'">
-    <div class='weather-icon'>
-      <i class="{{weather_icon}}"></i>
+  <div id='widgets'>
+    <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
+      {{time | date:'HH:mm'}}
     </div>
-    <div class='weather-description'>
-      {{weatherJSON.weather[0].description}}
-    </div>
-    <div class='weather-temp'>
-      {{weatherJSON.main.temp - 273.15}}&#xb0;
-    </div>
-    <div class='weather-location'>
-      <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
-    </div>
-  </div>
 
-  <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
-    {{time | date:'HH:mm'}}
-  </div>
-
-  <div class="animation" id="cat-quotes">
-    Meow, stranger! How can I call you?<br/>
-    <input type="text" id="input-name" autofocus>
+    <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'">
+      <div class='weather-icon'>
+        <span class='tooltop' title='{{weatherJSON.weather[0].description}}'>
+          <i class="{{weather_icon}}"></i>
+        </span>
+      </div>
+      <div class='weather-temp'>
+        {{weatherJSON.main.temp - 273.15}}&#xb0;
+      </div>
+      <div class='weather-location'>
+        <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
+      </div>
+    </div>
   </div>
 
   <div class="animation">

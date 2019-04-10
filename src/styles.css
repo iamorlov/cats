@@ -398,9 +398,6 @@ body {
 }
 
 @media screen and (max-width: 720px) {
-  #time-clock {
-    top: 15px;
-  }
 
   #options-icons {
     width: calc(100% - 30px);

@@ -1,39 +1,46 @@
-#time-clock {
+#widgets {
   position: absolute;
   bottom: 15px;
   left: 15px;
-  color: #fff;
-  font-size: 2.2em;
-  font-weight: 100;
-  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
-  opacity: 0.8;
 }
 
-#weather{
-  position: absolute;
+#widgets>div {
+  float: left;
+}
+
+#time-clock {
+  color: #fff;
+  font-weight: 100;
+}
+
+#time-clock, #weather {
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 10px;
+  padding: 3px 10px;
+}
+
+#weather {
   text-align: center;
-  bottom: 70px;
-  left: 15px;
   color: #fff;
   font-weight: 100;
-  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
-  opacity: 0.8;
 }
 
-.weather-icon {
-  font-size: 3.5em;
+#weather>div {
+  float: left;
+  margin: 0 5px;
 }
 
-.weather-description {
-  font-size: 0.8em;
-}
-
-.weather-temp {
-  font-size: 3em;
+#time-clock, .weather-icon, .weather-temp {
+  font-size: 2em;
 }
 
 .weather-location {
   font-size: 1em;
+  line-height: 2.7em;
 }
 
 .show_clock, .show_weather {
@@ -48,29 +55,10 @@
   animation: clockAnimate 2s ease-out;
 }
 
-#cat-quotes {
-  display: none;
-  width: 400px;
-  position: absolute;
-  bottom: 15px;
-  left: calc(50% - 200px);
-  text-align: center;
-  font-size: 1.3em;
-  font-weight: 100;
-  color: #fff;
-  text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
-}
-
-#input-name {
-  background: none;
-  border: none;
-  border-bottom: 2px solid #f50;
-  width: 82%;
-  color: #fff;
-  padding: 7px 12px;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1em;
-  font-weight: 100;
+@media screen and (max-width: 720px) {
+  #widgets {
+    bottom: 75px;
+  }
 }
 
 @-webkit-keyframes clockAnimate {

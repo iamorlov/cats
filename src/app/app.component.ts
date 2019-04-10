@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent {
-  images = 420; // Count of cat walls ♥
+  images = 440; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
@@ -22,8 +22,9 @@ export class AppComponent {
 
   // Weather api
   private api_key = '0ff4143b2f608054241845b65cee0dea';
-  private default_city = 'mykolayiv'; // TEMP! City Select will be added soon
-  private get_weather = 'https://api.openweathermap.org/data/2.5/weather?q=' + this.default_city + '&appid=' + this.api_key;
+  public lat: any = localStorage.getItem('geo_lat');
+  public lan: any = localStorage.getItem('geo_lan');
+
   weatherJSON: any = {
     name: 'loading...',
     main: {
@@ -423,23 +424,39 @@ export class AppComponent {
     }, 100);
 
     this.getWeatherJSON();
+    this.getGeoLocation();
   }
 
-  getWeatherJSON() {
-    return this.http.get(this.get_weather)
-    .map((res: Response) => res.json())
-    .subscribe(data => {
-      this.weatherJSON = data;
+  getGeoLocation() {
+    navigator.geolocation.getCurrentPosition(
+      function success(position) {
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
 
-      const prefix = 'wi wi-';
-      const code = this.weatherJSON.weather[0].id;
-      let icon = this.weather_icons[code].icon;
-      if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
-        icon = 'day-' + icon;
+        localStorage.setItem('geo_lat', String(latitude));
+        localStorage.setItem('geo_lan', String(longitude));
       }
-      icon = prefix + icon;
-      this.weather_icon = icon;
-    });
+  )};
+
+  getWeatherJSON() {
+    if (this.lat !== null || this.lan !== null) {
+      return this.http.get('https://api.openweathermap.org/data/2.5/weather?lat=' + this.lat + '&lon=' + this.lan + '&appid=' + this.api_key)
+      .map((res: Response) => res.json())
+      .subscribe(data => {
+        this.weatherJSON = data;
+
+        const prefix = 'wi wi-';
+        const code = this.weatherJSON.weather[0].id;
+        let icon = this.weather_icons[code].icon;
+        if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
+          icon = 'day-' + icon;
+        }
+        icon = prefix + icon;
+        this.weather_icon = icon;
+      });
+    } else {
+      console.log('Something meow wrong! Please, provide access to tracking location and refresh the page');
+    }
   }
 
   getFullScreen() {
