@@ -23,14 +23,14 @@
       {{time | date:'HH:mm'}}
     </div>
 
-    <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'">
+    <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'" title='{{weatherJSON.weather[0].description}}'>
       <div class='weather-icon'>
-        <span class='tooltop' title='{{weatherJSON.weather[0].description}}'>
+        <span class='tooltop'>
           <i class="{{weather_icon}}"></i>
         </span>
       </div>
       <div class='weather-temp'>
-        {{weatherJSON.main.temp - 273.15}}&#xb0;
+        {{weather_temp}}&#xb0;
       </div>
       <div class='weather-location'>
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}

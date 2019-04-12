@@ -200,6 +200,18 @@ export class ControlsComponent implements OnInit {
     }
   }
 
+  // clock
+
+  toggleWeather() {
+    const checkbox = document.getElementById('show-weather');
+    if (checkbox['checked'] === true) {
+      localStorage.setItem('weather', 'true');
+    }
+    if (checkbox['checked'] === false) {
+      localStorage.setItem('weather', 'false');
+    }
+  }
+
   // meow sounds
 
   toggleMeows() {
@@ -221,6 +233,10 @@ export class ControlsComponent implements OnInit {
       const checked_clock = localStorage.getItem('clock');
       if (checked_clock === 'true') {
         document.getElementById('show-clock')['checked'] = checked_clock;
+      }
+      const checked_weather = localStorage.getItem('weather');
+      if (checked_weather === 'true') {
+        document.getElementById('show-weather')['checked'] = checked_weather;
       }
       const checked_meow = localStorage.getItem('meow');
       if (checked_meow === 'true') {

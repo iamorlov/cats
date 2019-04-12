@@ -15,10 +15,12 @@ export class AppComponent {
   cat: string = 'wall-' + this.random + '.jpg';
   preload: string = '/assets/walls/' + this.cat;
   clock: string = localStorage.getItem('clock');
+  weather: string = localStorage.getItem('weather');
   meows: string = localStorage.getItem('meow');
   time: number = Date.now();
   filter: string;
   easter_egg: string;
+  vm = this;
 
   // Weather api
   private api_key = '0ff4143b2f608054241845b65cee0dea';
@@ -26,7 +28,7 @@ export class AppComponent {
   public lan: any = localStorage.getItem('geo_lan');
 
   weatherJSON: any = {
-    name: 'loading...',
+    name: 'Refrest the page',
     main: {
       temp: 'loading...'
     },
@@ -36,8 +38,8 @@ export class AppComponent {
       }
     }
   };
-  weather = 'true';
   weather_icon: string;
+  weather_temp: number;
   weather_icons = {
     '200': {
       'label': 'thunderstorm with light rain',
@@ -417,14 +419,15 @@ export class AppComponent {
 
     setInterval(() => {
       this.time = Date.now();
+      this.weather = localStorage.getItem('weather');
       this.clock = localStorage.getItem('clock');
       this.meows = localStorage.getItem('meow');
       this.filter = localStorage.getItem('filter');
       this.easter_egg = sessionStorage.getItem('cat_doom');
     }, 100);
 
-    this.getWeatherJSON();
     this.getGeoLocation();
+    this.getWeatherJSON();
   }
 
   getGeoLocation() {
@@ -436,7 +439,8 @@ export class AppComponent {
         localStorage.setItem('geo_lat', String(latitude));
         localStorage.setItem('geo_lan', String(longitude));
       }
-  )};
+    )
+  };
 
   getWeatherJSON() {
     if (this.lat !== null || this.lan !== null) {
@@ -453,6 +457,7 @@ export class AppComponent {
         }
         icon = prefix + icon;
         this.weather_icon = icon;
+        this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
       });
     } else {
       console.log('Something meow wrong! Please, provide access to tracking location and refresh the page');
