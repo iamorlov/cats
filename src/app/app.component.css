@@ -24,7 +24,6 @@
 }
 
 #weather {
-  cursor: pointer;
   text-align: center;
   color: #fff;
   font-weight: 100;
@@ -39,9 +38,22 @@
   font-size: 2em;
 }
 
-.weather-location {
+.weather-location, .refresh-weather {
   font-size: 1em;
   line-height: 2.7em;
+}
+
+.refresh-weather {
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.refresh-weather:hover {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .show_clock, .show_weather {

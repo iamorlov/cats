@@ -35,6 +35,9 @@
       <div class='weather-location'>
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
       </div>
+      <div>
+        <i class="pe-7s-refresh refresh-weather animation" (click)='getWeatherJSON()' title='Refrest'></i>
+      </div>
     </div>
   </div>
 
