@@ -1,12 +1,12 @@
 <div id="player" [ngClass]="music ? 'show_modal' : 'hide_modal'" class="animation modal">
 
-  <p><strong>Sounds and music</strong></p>
+  <p><strong>Sounds and Music</strong></p>
 
   <div class="sounds-wrapper">
     <div class="sound-item">
       <i class="pe-7s-play animation" (click)="catSoundPlay()" *ngIf="!catSound"></i>
       <i class="pe-7s-mute animation" (click)="catSoundStop()" *ngIf="catSound"></i>
-      <span>Cat purring :3</span>
+      <span>Cat purring</span>
     </div>
     <div class="sound-item">
       <i class="pe-7s-play animation" (click)="rainSoundPlay()" *ngIf="!rainSound"></i>
@@ -28,23 +28,24 @@
       <i class="pe-7s-mute animation" (click)="oceanSoundStop()" *ngIf="oceanSound"></i>
       <span>Ocean waves</span>
     </div>
+
+    <div class="music-by"><strong>Music by <a href="https://www.bensound.com/" target="_blank">bensound.com</a></strong></div>
+
+    <div class="sounds-wrapper">
+      <div class="sound-item">
+        <span>Memories</span>
+        <audio src="/assets/music/bensound-memories.mp3" controls loop></audio>
+      </div>
+      <div class="sound-item">
+        <span>Acoustic Breeze</span>
+        <audio src="/assets/music/bensound-acousticbreeze.mp3" controls loop></audio>
+      </div>
+      <div class="sound-item">
+        <span>Tenderness</span>
+        <audio src="/assets/music/bensound-tenderness.mp3" controls loop></audio>
+      </div>
+    </div>
   </div>
-
-  <!-- <div class="music-wrapper">
-    <div class="player-tabs">
-      <span (click)="musicOne()" class="animation" [ngClass]="nature_song ? 'active' : 'not-active'">Nature</span>
-      <span (click)="musicTwo()" class="animation" [ngClass]="rain_song ? 'active' : 'not-active'">Rain</span>
-      <span (click)="musicThree()" class="animation" [ngClass]="ambient_song ? 'active' : 'not-active'">Relax</span>
-      <span (click)="musicFour()" class="animation" [ngClass]="house_song ? 'active' : 'not-active'">House</span>
-    </div>
-
-    <div class="player-wrapper">
-      <iframe *ngIf="nature_song" width="100%" height="250" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/175419128&color=%23ff6f61&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-      <iframe *ngIf="rain_song" width="100%" height="250" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/146823529&color=%23ff6f61&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-      <iframe *ngIf="ambient_song" width="100%" height="250" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/237317520&color=%23ff6f61&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-      <iframe *ngIf="house_song" width="100%" height="250" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/512674650&color=%23ff6f61&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-    </div>
-  </div> -->
 </div>
 
 <div id="settings" [ngClass]="settings ? 'show_modal' : 'hide_modal'" class="animation modal">

@@ -149,44 +149,6 @@ export class ControlsComponent implements OnInit {
     this.fireSound = !this.fireSound;
   }
 
-  // music
-
-  musicOne() {
-    if (this.nature_song === false) {
-      this.nature_song = !this.nature_song;
-      this.rain_song = false;
-      this.ambient_song = false;
-      this.house_song = false;
-    }
-  }
-
-  musicTwo() {
-    if (this.rain_song === false) {
-      this.rain_song = !this.rain_song;
-      this.ambient_song = false;
-      this.nature_song = false;
-      this.house_song = false;
-    }
-  }
-
-  musicThree() {
-    if (this.ambient_song === false) {
-      this.ambient_song = !this.ambient_song;
-      this.rain_song = false;
-      this.nature_song = false;
-      this.house_song = false;
-    }
-  }
-
-  musicFour() {
-    if (this.house_song === false) {
-      this.house_song = !this.house_song;
-      this.rain_song = false;
-      this.nature_song = false;
-      this.ambient_song = false;
-    }
-  }
-
   // easter easterEgg
 
   easterEgg() {

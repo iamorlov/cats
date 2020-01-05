@@ -186,14 +186,23 @@
   margin-bottom: 30px;
 }
 
-.music-wrapper {
-  margin-left: -15px;
-  margin-right: -15px;
-}
-
 .sound-item {
   font-weight: 700;
   padding: 6px 0;
+}
+
+.music-by {
+  margin: 15px 0 10px 0;
+}
+
+.music-by a {
+  text-decoration: none;
+  color: #34558b;
+}
+
+audio { 
+  width: 270px;
+  margin: 5px 0;
 }
 
 .sound-item i {
