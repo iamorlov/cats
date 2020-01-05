@@ -261,7 +261,7 @@ body {
 
 /* Snow!!! */
 
-/*#let_it_snow {
+#let_it_snow {
   position: absolute;
   top: 0;
   left: 0;
@@ -269,17 +269,17 @@ body {
   height: 100%;
   z-index: 2;
 }
-*/
+
 /* And lights!!! */
 
-/*#christmas-lights {
+#christmas-lights {
   width: 100%;
   height: auto;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
-}*/
+}
 
 /* Zoom in Keyframes */
 @-webkit-keyframes zoomin {

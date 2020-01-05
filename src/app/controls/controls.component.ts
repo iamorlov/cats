@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-controls',
@@ -38,6 +38,19 @@ export class ControlsComponent implements OnInit {
   fire_audio: any = new Audio('/assets/sounds/fire.mp3');
 
   constructor() { }
+
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) { 
+    if (event.keyCode === 32) {
+      if (this.music || this.info || this.settings) {
+        this.music = false;
+        this.info = false;
+        this.settings = false;
+      } else {
+        this.info = true;
+      }
+    }
+  }
 
   // main navigation
 
