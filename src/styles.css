@@ -150,10 +150,10 @@ body {
 }
 
 #player-icon:hover, #settings-icon:hover, #info-icon:hover {
-  color: #ff6f61;
+  color: #34558b;
   text-shadow: none;
   background: rgba(255, 255, 255, 0.9);
-  border-bottom: 2px solid #ff6f61;
+  border-bottom: 2px solid #34558b;
 }
 
 #fullscreen {
@@ -358,7 +358,7 @@ body {
   z-index: 10;
   padding: 15px;
   text-align: center;
-  border-bottom: 2px solid #ff6f61;
+  border-bottom: 2px solid #34558b;
 }
 
 #rotate-icon {

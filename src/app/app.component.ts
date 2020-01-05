@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 440; // Count of cat walls ♥
+  images = 480; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';

@@ -40,7 +40,7 @@
 
 .modal p:first-child {
   font-family: 'Lobster', cursive;
-  color: #ff6f61;
+  color: #34558b;
   margin-bottom: 7px;
   border-bottom: 1px solid rgba(51, 51, 51, 0.2);
   font-size: 1.4em;
@@ -48,7 +48,7 @@
 
 .modal p#cred {
   text-align: right;
-  color: #ff6f61;
+  color: #34558b;
   padding-top: 10px;
   font-weight: 700;
   border-top: 1px solid rgba(51, 51, 51, 0.2);
@@ -60,7 +60,7 @@
 
 .player-tabs {
   font-family: 'Lobster', cursive;
-  color: #ff6f61;
+  color: #34558b;
 }
 
 .player-tabs:hover {
@@ -75,12 +75,12 @@
 }
 
 .player-tabs span:hover {
-  background: #ff6f61;
+  background: #34558b;
   color: #fff;
 }
 
 .player-tabs span.active {
-  background: #ff6f61;
+  background: #34558b;
   color: #fff;
 }
 
@@ -104,7 +104,7 @@
   overflow-y: scroll;
   max-height: 63vh;
   position: relative;
-  border-bottom: 2px solid #ff6f61;
+  border-bottom: 2px solid #34558b;
 }
 
 .filters-preview::-webkit-scrollbar {
@@ -118,8 +118,8 @@
 }
 
 .filters-preview::-webkit-scrollbar-thumb {
-	background-color: #ff6f61;
-	border: 1px solid #ff6f61;
+	background-color: #34558b;
+	border: 1px solid #34558b;
 }
 
 .filter-item {
@@ -149,12 +149,12 @@
   font-size: 2em;
   background: #ffffff;
   border-radius: 10%;
-  color: #ff6f61;
+  color: #34558b;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .filter-item:hover span {
-  color: #ff6f61;
+  color: #34558b;
   padding-left: 3px;
 }
 
@@ -184,7 +184,7 @@
 }
 
 .sound-item i {
-  color: #ff6f61;
+  color: #34558b;
   font-size: 1.5em;
   border-radius: 50%;
   padding: 3px 1px 3px 4px;
@@ -214,7 +214,7 @@
 
 #easter_egg_button {
   display: block;
-  border: 1px solid #ff6f61;
+  border: 1px solid #34558b;
   border-radius: 5px;
   padding: 10px 5px;
   text-align: center;
@@ -224,7 +224,7 @@
 }
 
 #easter_egg_button:hover {
-  background: #ff6f61;
+  background: #34558b;
   color: #fff;
   opacity: 0.9;
 }
@@ -309,13 +309,13 @@
 /* Checked, Indeterminate */
 .pure-material-checkbox>input:checked,
 .pure-material-checkbox>input:indeterminate {
-  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
+  background-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
 }
 
 .pure-material-checkbox>input:checked+span::before,
 .pure-material-checkbox>input:indeterminate+span::before {
-  border-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
-  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
+  border-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
+  background-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
 }
 
 .pure-material-checkbox>input:checked+span::after,
