@@ -69,6 +69,7 @@ export class ControlsComponent implements OnInit {
     this.cat_audio.play();
     this.catSound = !this.catSound;
   }
+
   catSoundStop() {
     this.cat_audio.currentTime = 0;
     this.cat_audio.pause();
@@ -83,6 +84,7 @@ export class ControlsComponent implements OnInit {
     this.rain_audio.play();
     this.rainSound = !this.rainSound;
   }
+
   rainSoundStop() {
     this.rain_audio.currentTime = 0;
     this.rain_audio.pause();
@@ -97,6 +99,7 @@ export class ControlsComponent implements OnInit {
     this.night_audio.play();
     this.nightSound = !this.nightSound;
   }
+
   nightSoundStop() {
     this.night_audio.currentTime = 0;
     this.night_audio.pause();
@@ -111,6 +114,7 @@ export class ControlsComponent implements OnInit {
     this.ocean_audio.play();
     this.oceanSound = !this.oceanSound;
   }
+
   oceanSoundStop() {
     this.ocean_audio.currentTime = 0;
     this.ocean_audio.pause();
@@ -125,6 +129,7 @@ export class ControlsComponent implements OnInit {
     this.fire_audio.play();
     this.fireSound = !this.fireSound;
   }
+
   fireSoundStop() {
     this.fire_audio.currentTime = 0;
     this.fire_audio.pause();

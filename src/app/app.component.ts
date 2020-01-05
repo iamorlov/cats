@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 
@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   images = 440; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
@@ -427,23 +427,24 @@ export class AppComponent {
     }, 100);
 
     this.getGeoLocation();
-    this.getWeatherJSON();
   }
 
   getGeoLocation() {
     navigator.geolocation.getCurrentPosition(
       function success(position) {
-        let latitude = position.coords.latitude;
-        let longitude = position.coords.longitude;
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
         localStorage.setItem('geo_lat', String(latitude));
         localStorage.setItem('geo_lan', String(longitude));
       }
-    )
-  };
+    );
+    this.getWeatherJSON();
+  }
 
   getWeatherJSON() {
     if (this.lat !== null || this.lan !== null) {
+      // tslint:disable-next-line:max-line-length
       return this.http.get('https://api.openweathermap.org/data/2.5/weather?lat=' + this.lat + '&lon=' + this.lan + '&appid=' + this.api_key)
       .map((res: Response) => res.json())
       .subscribe(data => {
