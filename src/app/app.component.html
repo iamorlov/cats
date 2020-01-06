@@ -1,5 +1,3 @@
-<img src="assets/img/christmas.png" id="christmas-lights" />
-
 <div class="cats-wrapper" id="cats-fullscreen">
   <div
       [style.background-image]="'url(/assets/walls/' + cat + ')'"
@@ -36,7 +34,7 @@
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
       </div>
       <div>
-        <i class="pe-7s-refresh refresh-weather animation" (click)='getWeatherJSON()' title='Refrest'></i>
+        <i class="pe-7s-refresh refresh-weather animation" (click)='refreshPage()' title='Refrest'></i>
       </div>
     </div>
   </div>

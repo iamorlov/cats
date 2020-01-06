@@ -270,18 +270,6 @@ body {
   z-index: 2;
 }
 
-/* And lights!!! */
-
-#christmas-lights {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  margin-top: -30px;
-}
-
 /* Zoom in Keyframes */
 @-webkit-keyframes zoomin {
   0% {

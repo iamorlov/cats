@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 500; // Count of cat walls ♥
+  images = 520; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
@@ -461,7 +461,7 @@ export class AppComponent implements OnInit {
         this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
       });
     } else {
-      console.log('Something meow wrong! Please, provide access to tracking location and refresh the page');
+      console.log('Something meow wrong! Please, provide access to tracking location and refresh the page :3');
     }
   }
 
@@ -474,6 +474,10 @@ export class AppComponent implements OnInit {
     } else if (screen['webkitRequestFullScreen']) {
       screen['webkitRequestFullScreen']();
     }
+  }
+
+  refreshPage() {
+    window.location.reload();
   }
 
   ngOnInit( ) {

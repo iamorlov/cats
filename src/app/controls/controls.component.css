@@ -7,13 +7,6 @@
   right: -300px !important;
 }
 
-.player-wrapper {
-  background-image: url('/../assets/img/loading_meme.png');
-  background-repeat: no-repeat;
-  background-position: center center;
-  margin-bottom: -6px;
-}
-
 .modal {
   z-index: 8;
   position: absolute;

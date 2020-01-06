@@ -44,6 +44,10 @@
         <span>Tenderness</span>
         <audio src="/assets/music/bensound-tenderness.mp3" controls loop></audio>
       </div>
+      <div class="sound-item">
+        <span>Adventure</span>
+        <audio src="/assets/music/bensound-adventure.mp3" controls loop></audio>
+      </div>
     </div>
   </div>
 </div>
@@ -85,14 +89,15 @@
   <p><strong>Love cats?</strong> We too!</p>
   <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos <i class="pe-7s-like"></i></p>
   <p>Also you can play music on the background for the best relaxing <i class="pe-7s-smile"></i></p>
+  <p>For the best experience use Google Chrome <i class="pe-7s-global"></i></p>
   <p>Use <strong>space</strong> key to hide menu items <i class="pe-7s-info"></i></p>
-  <p><strong>ver 0.3</strong></p>
+  <p><strong>Made with love...</strong></p>
   <p id="cred">by Vadim Orlov
     <a href="https://www.linkedin.com/in/iamorlov/" target="_blank"><img src="/assets/icons/linkedin.svg" title=""></a>
     <a href="https://www.facebook.com/iamorlov" target="_blank"><img src="/assets/icons/facebook.svg" title=""></a>
   </p>
   <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">¯\_(ツ)_/¯</span>
-  <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Stop it :)</span>
+  <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Enough</span>
 
   <div id="easter_egg" *ngIf="easter_egg" class="animation">
     <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/296145584&color=%23f20d0d&auto_play=true&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=true&visual=true"></iframe>
