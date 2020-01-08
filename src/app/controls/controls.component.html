@@ -65,12 +65,13 @@
         <input type="checkbox" id="show-weather" (click)="toggleWeather();">
         <span>Show weather</span>
       </label>
+      <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === true}" (click)="changeMetric('celsius')">°C</div>
+      <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === false}" (click)="changeMetric('fahrenheit')">°F</div>
     </div>
   <div class="settings-item">
-    <label class="pure-material-checkbox">
-      <input type="checkbox" id="show-meows" (click)="toggleMeows();">
-      <span>Meow on mouse click</span>
-    </label>
+    <div id="slideshow-speed"><i class='pe-7s-refresh-2'></i>Slideshow speed <i>(in seconds)</i></div>
+    <ng5-slider [(value)]="value" [options]="options" (valueChange)="changeSpeed($event)"></ng5-slider>
+    <div *ngIf="changed_speed || changed_temperature" (click)="applyChanges()" class="animation" id="save-settings">Apply</div>
   </div>
   <div class="settings-item">
     <label class="settings-label">Additional image filter:</label>

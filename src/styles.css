@@ -120,6 +120,8 @@ body {
 }
 
 #fullscreen {
+  top: 15px;
+  right: 15px;
   z-index: 20;
   position: absolute;
   font-weight: 100;
@@ -154,11 +156,6 @@ body {
   text-shadow: none;
   background: rgba(255, 255, 255, 0.9);
   border-bottom: 2px solid #34558b;
-}
-
-#fullscreen {
-  top: 15px;
-  right: 15px;
 }
 
 /* easter Egg */

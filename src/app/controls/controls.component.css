@@ -60,6 +60,33 @@
   transition: all ease 0.3s;
 }
 
+#slideshow-speed {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+#slideshow-speed i {
+  margin-right: 13px;
+  margin-left: 5px;
+  color: #34558b;
+}
+
+#save-settings {
+  font-weight: 600;
+  display: block;
+  border-radius: 5px;
+  padding: 10px 5px;
+  text-align: center;
+  margin: 10px 0;
+  cursor: pointer;
+  border: 1px solid #34558b;
+}
+
+#save-settings:hover {
+  background: #34558b;
+  color: #fff;
+}
+
 .modal i {
   font-weight: 700;
 }
@@ -108,7 +135,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   overflow-y: scroll;
-  max-height: 63vh;
+  max-height: 57vh;
   position: relative;
   border-bottom: 2px solid #34558b;
 }
@@ -173,6 +200,28 @@
   background: -moz-linear-gradient(top, rgba(30,87,153,0) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,1) 100%);
   background: -webkit-linear-gradient(top, rgba(30,87,153,0) 0%,rgba(0,0,0,0.6) 55%,rgba(0,0,0,1) 100%);
   background: linear-gradient(to bottom, rgba(30,87,153,0) 0%,rgba(0,0,0,0.6) 55%,rgba(0,0,0,1) 100%);
+}
+
+.temp-format {
+  float: right;
+  cursor: pointer;
+  border: 1px solid #fff;
+  padding: 2px 5px;
+  font-weight: 600;
+  margin-left: 5px;
+  margin-top: -1px;
+  border-radius: 5px;
+}
+
+.temp-format:hover {
+  background: #fff;
+  color: #34558b;
+}
+
+.temp-selected {
+  color: #fff;
+  background: #34558b;
+  border: 1px solid #34558b;
 }
 
 .sounds-wrapper {
@@ -389,6 +438,27 @@ audio {
 .pure-material-checkbox>input:indeterminate:disabled+span::before {
   border-color: transparent;
   background-color: currentColor;
+}
+
+/* Slider styling */
+
+::ng-deep .ng5-slider-pointer {
+  width: 26px !important;
+  height: 26px !important;
+  top: -12px !important;
+  background-color: #34558b !important;
+}
+
+::ng-deep .ng5-slider-pointer:after {
+  background: #34558b !important;
+}
+
+::ng-deep .ng5-slider-floor, ::ng-deep .ng5-slider-ceil, ::ng-deep .ng5-slider-model-value {
+  font-weight: 600 !important;
+}
+
+::ng-deep .ng5-slider-model-value {
+  color: #fff !important;
 }
 
 @media screen and (max-width: 960px) {

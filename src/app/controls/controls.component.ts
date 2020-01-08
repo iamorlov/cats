@@ -1,4 +1,5 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, EventEmitter, Output } from '@angular/core';
+import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'app-controls',
@@ -6,14 +7,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
   styleUrls: ['./controls.component.css']
 })
 export class ControlsComponent implements OnInit {
+
+  @Output() updated = new EventEmitter<string>();
+
   music = false;
   info = false;
   settings = false;
-
-  nature_song = false; // default active tab
-  rain_song = false;
-  ambient_song = false;
-  house_song = false;
 
   filter_storage: string = localStorage.getItem('filter');
   filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan',
@@ -30,12 +29,37 @@ export class ControlsComponent implements OnInit {
   fireSound = false;
 
   easter_egg = false;
+  changed_speed = false;
+  changed_temperature = false;
+
+  isCelsius = true;
 
   cat_audio: any = new Audio('/assets/sounds/purring.mp3');
   rain_audio: any = new Audio('/assets/sounds/rain.mp3');
   night_audio: any = new Audio('/assets/sounds/night.mp3');
   ocean_audio: any = new Audio('/assets/sounds/waves.mp3');
   fire_audio: any = new Audio('/assets/sounds/fire.mp3');
+
+  current_speed: string = localStorage.getItem('speed');
+  temperature: string = localStorage.getItem('temperature');
+  
+  value: number = +this.current_speed || 8;
+  options: Options = {
+    stepsArray: [
+      { value: 5 },
+      { value: 6 },
+      { value: 7 },
+      { value: 8 },
+      { value: 10 },
+      { value: 12 },
+      { value: 15 },
+      { value: 20 },
+      { value: 30 },
+      { value: 60 },
+      { value: 120 },
+      { value: 300 },
+    ]
+  };
 
   constructor() { }
 
@@ -154,11 +178,13 @@ export class ControlsComponent implements OnInit {
   easterEgg() {
     this.easter_egg = !this.easter_egg;
     sessionStorage.setItem('cat_doom', 'doom_cats');
+    this.updated.emit('doom cats');
   }
 
   easterEggStop() {
       this.easter_egg = false;
       sessionStorage.clear();
+      this.updated.emit('doom ends');
   }
 
   // instagram filters
@@ -166,6 +192,7 @@ export class ControlsComponent implements OnInit {
   chooseFilter(filter) {
     localStorage.removeItem('filter');
     localStorage.setItem('filter', filter);
+    this.updated.emit('changed filter');
   }
 
   // clock
@@ -178,9 +205,10 @@ export class ControlsComponent implements OnInit {
     if (checkbox['checked'] === false) {
       localStorage.setItem('clock', 'false');
     }
+    this.updated.emit('changed clock');
   }
 
-  // clock
+  // weather
 
   toggleWeather() {
     const checkbox = document.getElementById('show-weather');
@@ -190,21 +218,42 @@ export class ControlsComponent implements OnInit {
     if (checkbox['checked'] === false) {
       localStorage.setItem('weather', 'false');
     }
+    this.updated.emit('changed weather');
   }
 
-  // meow sounds
+  changeMetric(scale: string) {
+    if (scale ==='fahrenheit') {
+      localStorage.setItem('temperature', 'fahrenheit');
+      this.isCelsius = false;
+    } else {
+      localStorage.setItem('temperature', 'celsius');
+      this.isCelsius = true;
+    }
+    this.changed_temperature = true;
+  }
 
-  toggleMeows() {
-    const checkbox = document.getElementById('show-meows');
-    if (checkbox['checked'] === true) {
-      localStorage.setItem('meow', 'true');
-    }
-    if (checkbox['checked'] === false) {
-      localStorage.setItem('meow', 'false');
-    }
+  // slideshow speed
+
+  changeSpeed(value: number): void {
+    localStorage.setItem('speed', String(value));
+    this.changed_speed = true;
+  }
+
+  applyChanges() {
+    window.location.reload();
   }
 
   ngOnInit() {
+
+    if (!this.temperature) {
+      localStorage.setItem('temperature', 'celsius'); // Let Celsius be dafault
+    }
+    if (this.temperature === 'celsius') {
+      this.isCelsius = true;
+    } else {
+      this.isCelsius = false;
+    }
+
     if (localStorage.getItem('filter') === null) {
       localStorage.setItem('filter', 'No filter');
     }
@@ -217,10 +266,6 @@ export class ControlsComponent implements OnInit {
       const checked_weather = localStorage.getItem('weather');
       if (checked_weather === 'true') {
         document.getElementById('show-weather')['checked'] = checked_weather;
-      }
-      const checked_meow = localStorage.getItem('meow');
-      if (checked_meow === 'true') {
-        document.getElementById('show-meows')['checked'] = checked_meow;
       }
     })();
 

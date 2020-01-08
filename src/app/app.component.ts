@@ -9,14 +9,15 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 520; // Count of cat walls ♥
+  images = 550; // Count of cat walls ♥
+  timer: any = localStorage.getItem('speed'); // Slideshow speed
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
   preload: string = '/assets/walls/' + this.cat;
   clock: string = localStorage.getItem('clock');
   weather: string = localStorage.getItem('weather');
-  meows: string = localStorage.getItem('meow');
+  temperature: string = localStorage.getItem('temperature');
   time: number = Date.now();
   filter: string;
   easter_egg: string;
@@ -410,21 +411,8 @@ export class AppComponent implements OnInit {
 
   constructor(private http: Http ) {
     setInterval(() => {
-      const random_new = Math.floor(Math.random() * this.images);
-      this.preload = '/assets/walls/wall-' + random_new + '.jpg';
-      setTimeout(() => {
-        this.cat = 'wall-' + random_new + '.jpg';
-      }, 3000);
-    }, 8000);
-
-    setInterval(() => {
       this.time = Date.now();
-      this.weather = localStorage.getItem('weather');
-      this.clock = localStorage.getItem('clock');
-      this.meows = localStorage.getItem('meow');
-      this.filter = localStorage.getItem('filter');
-      this.easter_egg = sessionStorage.getItem('cat_doom');
-    }, 100);
+    }, 1000);
 
     this.getGeoLocation();
   }
@@ -458,7 +446,11 @@ export class AppComponent implements OnInit {
         }
         icon = prefix + icon;
         this.weather_icon = icon;
-        this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
+        if (this.temperature === 'celsius') {
+          this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
+        } else {
+          this.weather_temp = Math.round((((this.weatherJSON.main.temp - 273.15)*9)/5)+32);
+        }
       });
     } else {
       console.log('Something meow wrong! Please, provide access to tracking location and refresh the page :3');
@@ -476,20 +468,44 @@ export class AppComponent implements OnInit {
     }
   }
 
-  refreshPage() {
-    window.location.reload();
+  changeSettings(event: string) {
+
+    switch (event) {
+      case 'changed weather':
+        this.weather = localStorage.getItem('weather');
+      break;
+      case 'changed clock':
+        this.clock = localStorage.getItem('clock');
+      break;
+      case 'changed filter':
+        this.filter = localStorage.getItem('filter');
+      break;
+      case 'doom cats':
+        this.easter_egg = sessionStorage.getItem('cat_doom');
+      break;
+      case 'doom ends':
+        sessionStorage.clear();
+        this.easter_egg = sessionStorage.getItem('cat_doom');
+      break;
+      default:
+        console.log('We doesn\'t meow what do you want with: ', event);
+    }
+    console.log('changed: ', event);
   }
 
-  ngOnInit( ) {
+  ngOnInit() {
     sessionStorage.clear();
 
-    document.body.addEventListener('click', function() {
-      if (localStorage.getItem('meow') === 'true') {
-        const meow_random: number = Math.floor(Math.random() * 8);
-        const meow_audio: any = new Audio('/assets/meows/' + meow_random + '.mp3');
-        meow_audio.play();
-      }
-    });
+    if (!this.timer) {
+      this.timer = 8000; // Default speed
+    }
+    setInterval(() => {
+      const random_new = Math.floor(Math.random() * this.images);
+      this.preload = '/assets/walls/wall-' + random_new + '.jpg';
+      setTimeout(() => {
+        this.cat = 'wall-' + random_new + '.jpg';
+      }, 3000);
+    }, +this.timer*1000);
 
   console.log(`%c
       |\\__/,|   (\`\\
