@@ -449,7 +449,7 @@ export class AppComponent implements OnInit {
         if (this.temperature === 'celsius') {
           this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
         } else {
-          this.weather_temp = Math.round((((this.weatherJSON.main.temp - 273.15)*9)/5)+32);
+          this.weather_temp = Math.round((((this.weatherJSON.main.temp - 273.15) * 9) / 5) + 32);
         }
       });
     } else {
@@ -505,7 +505,7 @@ export class AppComponent implements OnInit {
       setTimeout(() => {
         this.cat = 'wall-' + random_new + '.jpg';
       }, 3000);
-    }, +this.timer*1000);
+    }, +this.timer * 1000);
 
   console.log(`%c
       |\\__/,|   (\`\\

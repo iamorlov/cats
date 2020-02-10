@@ -17,7 +17,7 @@
 #time-clock, #weather {
   text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
   opacity: 0.8;
-  background: rgba(0, 0, 0, 0.2);
+  /* background: rgba(0, 0, 0, 0.2); */
   border-radius: 10px;
   overflow: hidden;
   margin-right: 10px;

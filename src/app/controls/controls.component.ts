@@ -42,7 +42,7 @@ export class ControlsComponent implements OnInit {
 
   current_speed: string = localStorage.getItem('speed');
   temperature: string = localStorage.getItem('temperature');
-  
+
   value: number = +this.current_speed || 8;
   options: Options = {
     stepsArray: [
@@ -64,7 +64,7 @@ export class ControlsComponent implements OnInit {
   constructor() { }
 
   @HostListener('document:keypress', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) { 
+  handleKeyboardEvent(event: KeyboardEvent) {
     if (event.keyCode === 32) {
       if (this.music || this.info || this.settings) {
         this.music = false;
@@ -222,7 +222,7 @@ export class ControlsComponent implements OnInit {
   }
 
   changeMetric(scale: string) {
-    if (scale ==='fahrenheit') {
+    if (scale === 'fahrenheit') {
       localStorage.setItem('temperature', 'fahrenheit');
       this.isCelsius = false;
     } else {
