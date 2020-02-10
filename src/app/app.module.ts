@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ControlsComponent } from './controls/controls.component';
@@ -16,7 +16,7 @@ import { Ng5SliderModule } from 'ng5-slider';
   ],
   imports: [
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
     Ng5SliderModule
   ],
   providers: [],

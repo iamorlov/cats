@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import {HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -409,7 +409,7 @@ export class AppComponent implements OnInit {
     }
   };
 
-  constructor(private http: Http ) {
+  constructor(private http: HttpClient ) {
     setInterval(() => {
       this.time = Date.now();
     }, 1000);
@@ -434,7 +434,6 @@ export class AppComponent implements OnInit {
     if (this.lat !== null || this.lan !== null) {
       // tslint:disable-next-line:max-line-length
       return this.http.get('https://api.openweathermap.org/data/2.5/weather?lat=' + this.lat + '&lon=' + this.lan + '&appid=' + this.api_key)
-      .map((res: Response) => res.json())
       .subscribe(data => {
         this.weatherJSON = data;
 
