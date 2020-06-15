@@ -9,8 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 550; // Count of cat walls ♥
-  timer: any = localStorage.getItem('speed'); // Slideshow speed
+  images = 630; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
@@ -21,6 +20,8 @@ export class AppComponent implements OnInit {
   time: number = Date.now();
   filter: string;
   easter_egg: string;
+  temp_c: boolean;
+  temp_f: boolean;
   vm = this;
 
   // Weather api
@@ -40,7 +41,8 @@ export class AppComponent implements OnInit {
     }
   };
   weather_icon: string;
-  weather_temp: number;
+  weather_temp_c: number;
+  weather_temp_f: number;
   weather_icons = {
     '200': {
       'label': 'thunderstorm with light rain',
@@ -445,11 +447,8 @@ export class AppComponent implements OnInit {
         }
         icon = prefix + icon;
         this.weather_icon = icon;
-        if (this.temperature === 'celsius') {
-          this.weather_temp = Math.round(this.weatherJSON.main.temp - 273.15);
-        } else {
-          this.weather_temp = Math.round((((this.weatherJSON.main.temp - 273.15) * 9) / 5) + 32);
-        }
+        this.weather_temp_c = Math.round(this.weatherJSON.main.temp - 273.15);
+        this.weather_temp_f = Math.round((((this.weatherJSON.main.temp - 273.15) * 9) / 5) + 32);
       });
     } else {
       console.log('Something meow wrong! Please, provide access to tracking location and refresh the page :3');
@@ -473,6 +472,17 @@ export class AppComponent implements OnInit {
       case 'changed weather':
         this.weather = localStorage.getItem('weather');
       break;
+      case 'changed temperature':
+        this.temperature = localStorage.getItem('temperature');
+        if (this.temperature === 'celsius') {
+          this.temp_c = true;
+          this.temp_f = false;
+        }
+        if (this.temperature === 'fahrenheit') {
+          this.temp_c = false;
+          this.temp_f = true;
+        }
+      break;
       case 'changed clock':
         this.clock = localStorage.getItem('clock');
       break;
@@ -495,16 +505,23 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     sessionStorage.clear();
 
-    if (!this.timer) {
-      this.timer = 8000; // Default speed
-    }
     setInterval(() => {
       const random_new = Math.floor(Math.random() * this.images);
       this.preload = '/assets/walls/wall-' + random_new + '.jpg';
       setTimeout(() => {
         this.cat = 'wall-' + random_new + '.jpg';
       }, 3000);
-    }, +this.timer * 1000);
+    }, 9000);
+
+    this.temperature = localStorage.getItem('temperature');
+    if (this.temperature === 'celsius') {
+      this.temp_c = true;
+      this.temp_f = false;
+    }
+    if (this.temperature === 'fahrenheit') {
+      this.temp_c = false;
+      this.temp_f = true;
+    }
 
   console.log(`%c
       |\\__/,|   (\`\\

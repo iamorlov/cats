@@ -97,9 +97,9 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  -webkit-animation: zoomin 30s ease-in infinite;
-  animation: zoomin 30s ease-in infinite;
-  transition: all 1.2s ease-in-out;
+  -webkit-animation: zoomin 25s ease-in infinite;
+  animation: zoomin 25s ease-in infinite;
+  transition: all 1.5s ease-in-out;
 }
 
 .borders {

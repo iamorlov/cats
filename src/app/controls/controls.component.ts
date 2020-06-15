@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener, EventEmitter, Output } from '@angular/core';
-import { Options } from 'ng5-slider';
 
 @Component({
   selector: 'app-controls',
@@ -9,6 +8,8 @@ import { Options } from 'ng5-slider';
 export class ControlsComponent implements OnInit {
 
   @Output() updated = new EventEmitter<string>();
+
+  images = 630; // Count of cat walls ♥
 
   music = false;
   info = false;
@@ -29,7 +30,6 @@ export class ControlsComponent implements OnInit {
   fireSound = false;
 
   easter_egg = false;
-  changed_speed = false;
   changed_temperature = false;
 
   isCelsius = true;
@@ -40,26 +40,7 @@ export class ControlsComponent implements OnInit {
   ocean_audio: any = new Audio('/assets/sounds/waves.mp3');
   fire_audio: any = new Audio('/assets/sounds/fire.mp3');
 
-  current_speed: string = localStorage.getItem('speed');
   temperature: string = localStorage.getItem('temperature');
-
-  value: number = +this.current_speed || 8;
-  options: Options = {
-    stepsArray: [
-      { value: 5 },
-      { value: 6 },
-      { value: 7 },
-      { value: 8 },
-      { value: 10 },
-      { value: 12 },
-      { value: 15 },
-      { value: 20 },
-      { value: 30 },
-      { value: 60 },
-      { value: 120 },
-      { value: 300 },
-    ]
-  };
 
   constructor() { }
 
@@ -229,14 +210,8 @@ export class ControlsComponent implements OnInit {
       localStorage.setItem('temperature', 'celsius');
       this.isCelsius = true;
     }
+    this.updated.emit('changed temperature');
     this.changed_temperature = true;
-  }
-
-  // slideshow speed
-
-  changeSpeed(value: number): void {
-    localStorage.setItem('speed', String(value));
-    this.changed_speed = true;
   }
 
   applyChanges() {

@@ -135,7 +135,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   overflow-y: scroll;
-  max-height: 57vh;
+  max-height: 68vh;
   position: relative;
   border-bottom: 2px solid #34558b;
 }

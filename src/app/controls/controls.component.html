@@ -69,11 +69,6 @@
       <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === false}" (click)="changeMetric('fahrenheit')">°F</div>
     </div>
   <div class="settings-item">
-    <div id="slideshow-speed"><i class='pe-7s-refresh-2'></i>Slideshow speed <i>(in seconds)</i></div>
-    <ng5-slider [(value)]="value" [options]="options" (valueChange)="changeSpeed($event)"></ng5-slider>
-    <div *ngIf="changed_speed || changed_temperature" (click)="applyChanges()" class="animation" id="save-settings">Apply</div>
-  </div>
-  <div class="settings-item">
     <label class="settings-label">Additional image filter:</label>
 
     <div class="filters-preview">
@@ -88,10 +83,11 @@
 
 <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">
   <p><strong>Love cats?</strong> We too!</p>
-  <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos <i class="pe-7s-like"></i></p>
-  <p>Also you can play music on the background for the best relaxing <i class="pe-7s-smile"></i></p>
-  <p>For the best experience use Google Chrome <i class="pe-7s-global"></i></p>
-  <p>Use <strong>space</strong> key to hide menu items <i class="pe-7s-info"></i></p>
+  <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos</p>
+  <p>Also you can play music on the background for the best relaxing</p>
+  <p>For the best experience use Google Chrome</p>
+  <p>Use <strong>space</strong> key to hide menu items</p>
+  <p>Total cats photos: <strong>{{images}}</strong></p>
   <p><strong>Made with love...</strong></p>
   <p id="cred">by Vadim Orlov
     <a href="https://www.linkedin.com/in/iamorlov/" target="_blank"><img src="/assets/icons/linkedin.svg" title=""></a>

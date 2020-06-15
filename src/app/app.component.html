@@ -28,7 +28,8 @@
         </span>
       </div>
       <div class='weather-temp'>
-        {{weather_temp}}&#xb0;
+        <span *ngIf="temp_c">{{weather_temp_c}}&#xb0;</span>
+        <span *ngIf="temp_f">{{weather_temp_f}}&#xb0;</span>
       </div>
       <div class='weather-location'>
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
