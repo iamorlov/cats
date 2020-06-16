@@ -86,8 +86,8 @@ export class ControlsComponent implements OnInit {
   // Sounds
 
   playSound(id: string) {
-    let playButton = document.getElementById(id);
-    playButton.classList.toggle("is--playing");
+    const playButton = document.getElementById(id);
+    playButton.classList.toggle('is--playing');
 
     switch (id) {
       case 'catSound':
