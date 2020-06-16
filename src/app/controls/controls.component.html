@@ -69,6 +69,8 @@
       <input type="checkbox" id="show-clock" (click)="toggleClock();">
       <span>Show clock</span>
     </label>
+      <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === true}" (click)="changeTime('24H')">24H</div>
+      <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === false}" (click)="changeTime('12H')">12H</div>
   </div>
   <div class="settings-item">
       <label class="pure-material-checkbox">

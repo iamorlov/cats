@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 650; // Count of cat walls ♥
+  images = 670; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
@@ -17,11 +17,14 @@ export class AppComponent implements OnInit {
   clock: string = localStorage.getItem('clock');
   weather: string = localStorage.getItem('weather');
   temperature: string = localStorage.getItem('temperature');
+  timeformat: string = localStorage.getItem('format');
   time: number = Date.now();
   filter: string;
   easter_egg: string;
   temp_c: boolean;
   temp_f: boolean;
+  time_eur: boolean;
+  time_usa: boolean;
   vm = this;
 
   // Weather api
@@ -486,6 +489,17 @@ export class AppComponent implements OnInit {
       case 'changed clock':
         this.clock = localStorage.getItem('clock');
       break;
+      case 'changed time format':
+        this.timeformat = localStorage.getItem('format');
+        if (this.timeformat === '24H') {
+          this.time_eur = true;
+          this.time_usa = false;
+        }
+        if (this.timeformat === '12H') {
+          this.time_usa = true;
+          this.time_eur = false;
+        }
+      break;
       case 'changed filter':
         this.filter = localStorage.getItem('filter');
       break;
@@ -521,6 +535,16 @@ export class AppComponent implements OnInit {
     if (this.temperature === 'fahrenheit') {
       this.temp_c = false;
       this.temp_f = true;
+    }
+
+    this.timeformat = localStorage.getItem('format');
+    if (this.timeformat === '24H') {
+      this.time_eur = true;
+      this.time_usa = false;
+    }
+    if (this.timeformat === '12H') {
+      this.time_usa = true;
+      this.time_eur = false;
     }
 
   console.log(`%c

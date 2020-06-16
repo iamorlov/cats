@@ -15,16 +15,19 @@
   right: 0;
   font-size: 0.9em;
   color: #fff;
-  background: rgba(0, 0, 0, 0.8);
   text-shadow: none;
   font-weight: 400;
   max-width: 75%;
   width: 300px;
   padding: 70px 15px 30px 15px;
+  opacity: 0.975;
+  background: linear-gradient(-45deg, #3b3b3b, #111111, #3b3b3b);
+	background-size: 400% 400%;
+	animation: gradient 10s ease infinite;
 }
 
 .modal:hover {
-  background: rgba(0, 0, 0, 0.9);
+  opacity: 1;
 }
 
 .modal p {
@@ -496,6 +499,18 @@ audio {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
   }
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 
 @media screen and (max-width: 960px) {

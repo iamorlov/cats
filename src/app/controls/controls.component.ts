@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, HostListener, EventEmitter, Output, Input } from '@angular/core';
 
 @Component({
   selector: 'app-controls',
@@ -9,7 +9,7 @@ export class ControlsComponent implements OnInit {
 
   @Output() updated = new EventEmitter<string>();
 
-  images = 650; // Count of cat walls ♥
+  @Input() images;
 
   music = false;
   info = false;
@@ -33,9 +33,9 @@ export class ControlsComponent implements OnInit {
   birds = false;
 
   easter_egg = false;
-  changed_temperature = false;
 
   isCelsius = true;
+  isNormalTime = true;
 
   cat_audio: any = new Audio('/assets/sounds/purring.mp3');
   rain_audio: any = new Audio('/assets/sounds/rain.mp3');
@@ -47,6 +47,7 @@ export class ControlsComponent implements OnInit {
   birds_audio: any = new Audio('/assets/sounds/birds.mp3');
 
   temperature: string = localStorage.getItem('temperature');
+  timeformat: string = localStorage.getItem('format');
 
   constructor() { }
 
@@ -240,6 +241,17 @@ export class ControlsComponent implements OnInit {
     this.updated.emit('changed clock');
   }
 
+  changeTime(scale: string) {
+    if (scale === '12H') {
+      localStorage.setItem('format', '12H');
+      this.isNormalTime = false;
+    } else {
+      localStorage.setItem('format', '24H');
+      this.isNormalTime = true;
+    }
+    this.updated.emit('changed time format');
+  }
+
   // weather
 
   toggleWeather() {
@@ -262,7 +274,6 @@ export class ControlsComponent implements OnInit {
       this.isCelsius = true;
     }
     this.updated.emit('changed temperature');
-    this.changed_temperature = true;
   }
 
   ngOnInit() {
@@ -274,6 +285,15 @@ export class ControlsComponent implements OnInit {
       this.isCelsius = true;
     } else {
       this.isCelsius = false;
+    }
+
+    if (!this.timeformat) {
+      localStorage.setItem('temperature', '24H'); // Let 24H be dafault
+    }
+    if (this.timeformat === '24H') {
+      this.isNormalTime = true;
+    } else {
+      this.isNormalTime = false;
     }
 
     if (localStorage.getItem('filter') === null) {

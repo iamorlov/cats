@@ -18,7 +18,8 @@
 
   <div id='widgets'>
     <div class="animation" id="time-clock" [ngClass]="clock == 'true' ? 'show_clock' : 'hide_clock'">
-      {{time | date:'HH:mm'}}
+      <span *ngIf="time_eur">{{time | date:'HH:mm'}}</span>
+      <span *ngIf="time_usa">{{time | date:'h:mm a'}}</span>
     </div>
 
     <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'" title='{{weatherJSON.weather[0].description}}'>
@@ -37,8 +38,7 @@
     </div>
   </div>
 
-  <div class="animation">
-    <app-controls (updated)="changeSettings($event)"></app-controls>
-  </div>
+    <app-controls [images]="images" (updated)="changeSettings($event)"></app-controls>
+
   <img [src]="preload" id="preload">
 </div>
