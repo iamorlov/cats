@@ -12,7 +12,7 @@
 
 body {
   background: #333333;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Quicksand', sans-serif;
 }
 
 /* Loader */
@@ -32,7 +32,7 @@ body {
 
 #app-loading h1 {
   color: #fff;
-  font-weight: 100;
+  font-weight: 300;
   font-size: 2em;
   line-height: 100vh;
   text-align: center;
@@ -114,7 +114,7 @@ body {
 #title {
   font-family: 'Lobster', cursive;
   color: #fff;
-  font-weight: 100;
+  font-weight: 300;
   padding: 12px;
   line-height: 48px;
 }
@@ -124,7 +124,7 @@ body {
   right: 15px;
   z-index: 20;
   position: absolute;
-  font-weight: 100;
+  font-weight: 300;
   color: #fff;
   font-size: 1.2em;
   text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
@@ -132,7 +132,7 @@ body {
 
 #fullscreen, #player-icon, #settings-icon, #info-icon {
   opacity: 0.9;
-  padding: 10px 12px;
+  padding: 11.5px 12px;
   cursor: pointer;
 }
 
@@ -152,10 +152,10 @@ body {
 }
 
 #player-icon:hover, #settings-icon:hover, #info-icon:hover {
-  color: #34558b;
+  color: #ff6f61;
   text-shadow: none;
   background: rgba(255, 255, 255, 0.9);
-  border-bottom: 2px solid #34558b;
+  border-bottom: 2px solid #ff6f61;
 }
 
 /* easter Egg */
@@ -242,7 +242,7 @@ body {
   bottom: 15px;
   right: 15px;
   width: 269px;
-  font-weight: 100;
+  font-weight: 300;
   color: #fff;
   font-size: 1.2em;
   text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
@@ -344,7 +344,7 @@ body {
   z-index: 10;
   padding: 15px;
   text-align: center;
-  border-bottom: 2px solid #34558b;
+  border-bottom: 2px solid #ff6f61;
 }
 
 #rotate-icon {

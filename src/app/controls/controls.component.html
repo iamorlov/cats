@@ -1,53 +1,63 @@
 <div id="player" [ngClass]="music ? 'show_modal' : 'hide_modal'" class="animation modal">
 
-  <p><strong>Sounds and Music</strong></p>
+  <p><strong>Sounds ambient</strong></p>
 
   <div class="sounds-wrapper">
     <div class="sound-item">
-      <i class="pe-7s-play animation" (click)="catSoundPlay()" *ngIf="!catSound"></i>
-      <i class="pe-7s-mute animation" (click)="catSoundStop()" *ngIf="catSound"></i>
-      <span>Cat purring</span>
+      <div id="catSound" (click)="playSound('catSound')">
+        <div class="border"></div>
+        <div class="play"></div>
+      </div>
+      <span class="sound-title">Cat purring</span>
     </div>
     <div class="sound-item">
-      <i class="pe-7s-play animation" (click)="rainSoundPlay()" *ngIf="!rainSound"></i>
-      <i class="pe-7s-mute animation" (click)="rainSoundStop()" *ngIf="rainSound"></i>
-      <span>Rain</span>
+      <div id="rainSound" (click)="playSound('rainSound')">
+        <div class="border"></div>
+        <div class="play"></div>
+      </div>
+      <span class="sound-title">Rain</span>
     </div>
     <div class="sound-item">
-      <i class="pe-7s-play animation" (click)="fireSoundPlay()" *ngIf="!fireSound"></i>
-      <i class="pe-7s-mute animation" (click)="fireSoundStop()" *ngIf="fireSound"></i>
-      <span>Campfire</span>
+      <div id="fireSound" (click)="playSound('fireSound')">
+        <div class="border"></div>
+        <div class="play"></div>
+      </div>
+      <span class="sound-title">Campfire</span>
     </div>
     <div class="sound-item">
-      <i class="pe-7s-play animation" (click)="nightSoundPlay()" *ngIf="!nightSound"></i>
-      <i class="pe-7s-mute animation" (click)="nightSoundStop()" *ngIf="nightSound"></i>
-      <span>Wild night</span>
+      <div id="birds" (click)="playSound('birds')">
+        <div class="border"></div>
+        <div class="play"></div>
+      </div>
+      <span class="sound-title">Birds</span>
     </div>
     <div class="sound-item">
-      <i class="pe-7s-play animation" (click)="oceanSoundPlay()" *ngIf="!oceanSound"></i>
-      <i class="pe-7s-mute animation" (click)="oceanSoundStop()" *ngIf="oceanSound"></i>
-      <span>Ocean waves</span>
+      <div id="nightSound" (click)="playSound('nightSound')">
+        <div class="border"></div>
+        <div class="play"></div>
+      </div>
+      <span class="sound-title">Wild night</span>
     </div>
-
-    <div class="music-by"><strong>Music by <a href="https://www.bensound.com/" target="_blank">bensound.com</a></strong></div>
-
-    <div class="sounds-wrapper">
-      <div class="sound-item">
-        <span>Memories</span>
-        <audio src="/assets/music/bensound-memories.mp3" controls loop></audio>
+    <div class="sound-item">
+      <div id="oceanSound" (click)="playSound('oceanSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <span>Acoustic Breeze</span>
-        <audio src="/assets/music/bensound-acousticbreeze.mp3" controls loop></audio>
+      <span class="sound-title">Ocean waves</span>
+    </div>
+    <div class="sound-item">
+      <div id="cafe" (click)="playSound('cafe')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <span>Tenderness</span>
-        <audio src="/assets/music/bensound-tenderness.mp3" controls loop></audio>
+      <span class="sound-title">Cafe</span>
+    </div>
+    <div class="sound-item">
+      <div id="cityStreet" (click)="playSound('cityStreet')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <span>Adventure</span>
-        <audio src="/assets/music/bensound-adventure.mp3" controls loop></audio>
-      </div>
+      <span class="sound-title">City Street</span>
     </div>
   </div>
 </div>
@@ -83,21 +93,21 @@
 
 <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">
   <p><strong>Love cats?</strong> We too!</p>
+  <img class="cats-logo" src="/assets/img/logo.png" title="Cats Non-Stop!"/>
   <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos</p>
   <p>Also you can play music on the background for the best relaxing</p>
   <p>For the best experience use Google Chrome</p>
   <p>Use <strong>space</strong> key to hide menu items</p>
   <p>Total cats photos: <strong>{{images}}</strong></p>
   <p><strong>Made with love...</strong></p>
-  <p id="cred">by Vadim Orlov
-    <a href="https://www.linkedin.com/in/iamorlov/" target="_blank"><img src="/assets/icons/linkedin.svg" title=""></a>
-    <a href="https://www.facebook.com/iamorlov" target="_blank"><img src="/assets/icons/facebook.svg" title=""></a>
+  <p id="cred">
+    <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadim Orlov</a>
   </p>
   <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">¯\_(ツ)_/¯</span>
   <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Enough</span>
 
   <div id="easter_egg" *ngIf="easter_egg" class="animation">
-    <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/296145584&color=%23f20d0d&auto_play=true&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=true&visual=true"></iframe>
+    <iframe width="100%" height="220" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/296145584&color=%23f20d0d&auto_play=true&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=true&visual=true"></iframe>
   </div>
 </div>
 

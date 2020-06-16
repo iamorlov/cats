@@ -11,7 +11,7 @@
 
 #time-clock {
   color: #fff;
-  font-weight: 100;
+  font-weight: 300;
 }
 
 #time-clock, #weather {
@@ -27,7 +27,7 @@
 #weather {
   text-align: center;
   color: #fff;
-  font-weight: 100;
+  font-weight: 300;
 }
 
 #weather div {

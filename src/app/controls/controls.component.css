@@ -33,7 +33,7 @@
 
 .modal p:first-child {
   font-family: 'Lobster', cursive;
-  color: #34558b;
+  color: #ff6f61;
   margin-bottom: 7px;
   border-bottom: 1px solid rgba(51, 51, 51, 0.2);
   font-size: 1.4em;
@@ -41,23 +41,14 @@
 
 .modal p#cred {
   text-align: right;
-  color: #34558b;
   padding-top: 10px;
   font-weight: 700;
   border-top: 1px solid rgba(51, 51, 51, 0.2);
 }
 
-#cred img {
-  height: 16px;
-  margin-left: 5px;
-  opacity: 0.7;
-  margin-bottom: -2px;
-  transition: all ease 0.3s;
-}
-
-#cred img:hover {
-  opacity: 1;
-  transition: all ease 0.3s;
+.modal p#cred a {
+  color: #ff6f61;
+  text-decoration: none;
 }
 
 #slideshow-speed {
@@ -68,7 +59,7 @@
 #slideshow-speed i {
   margin-right: 13px;
   margin-left: 5px;
-  color: #34558b;
+  color: #ff6f61;
 }
 
 #save-settings {
@@ -79,11 +70,11 @@
   text-align: center;
   margin: 10px 0;
   cursor: pointer;
-  border: 1px solid #34558b;
+  border: 1px solid #ff6f61;
 }
 
 #save-settings:hover {
-  background: #34558b;
+  background: #ff6f61;
   color: #fff;
 }
 
@@ -93,7 +84,7 @@
 
 .player-tabs {
   font-family: 'Lobster', cursive;
-  color: #34558b;
+  color: #ff6f61;
 }
 
 .player-tabs:hover {
@@ -108,12 +99,12 @@
 }
 
 .player-tabs span:hover {
-  background: #34558b;
+  background: #ff6f61;
   color: #fff;
 }
 
 .player-tabs span.active {
-  background: #34558b;
+  background: #ff6f61;
   color: #fff;
 }
 
@@ -137,7 +128,7 @@
   overflow-y: scroll;
   max-height: 68vh;
   position: relative;
-  border-bottom: 2px solid #34558b;
+  border-bottom: 2px solid #ff6f61;
 }
 
 .filters-preview::-webkit-scrollbar {
@@ -151,8 +142,8 @@
 }
 
 .filters-preview::-webkit-scrollbar-thumb {
-	background-color: #34558b;
-	border: 1px solid #34558b;
+	background-color: #ff6f61;
+	border: 1px solid #ff6f61;
 }
 
 .filter-item {
@@ -182,12 +173,12 @@
   font-size: 2em;
   background: #ffffff;
   border-radius: 10%;
-  color: #34558b;
+  color: #ff6f61;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .filter-item:hover span {
-  color: #34558b;
+  color: #ff6f61;
   padding-left: 3px;
 }
 
@@ -205,23 +196,22 @@
 .temp-format {
   float: right;
   cursor: pointer;
-  border: 1px solid #fff;
   padding: 2px 5px;
   font-weight: 600;
   margin-left: 5px;
   margin-top: -1px;
   border-radius: 5px;
+  min-width: 2em;
 }
 
 .temp-format:hover {
   background: #fff;
-  color: #34558b;
+  color: #ff6f61;
 }
 
 .temp-selected {
   color: #fff;
-  background: #34558b;
-  border: 1px solid #34558b;
+  background: #ff6f61;
 }
 
 .sounds-wrapper {
@@ -231,6 +221,8 @@
 .sound-item {
   font-weight: 700;
   padding: 6px 0;
+  display: flex;
+  align-items: center;
 }
 
 .music-by {
@@ -239,7 +231,7 @@
 
 .music-by a {
   text-decoration: none;
-  color: #34558b;
+  color: #ff6f61;
 }
 
 audio { 
@@ -248,7 +240,7 @@ audio {
 }
 
 .sound-item i {
-  color: #34558b;
+  color: #ff6f61;
   font-size: 1.5em;
   border-radius: 50%;
   padding: 3px 1px 3px 4px;
@@ -258,20 +250,11 @@ audio {
   min-width: 29px;
 }
 
-.sound-item i.pe-7s-mute {
-  color: #fff;
-}
-
-.sound-item i:hover {
-  background: #fff;
-}
-
-.sound-item i.pe-7s-mute:hover {
-  color: #444;
-}
-
-.sound-item span {
-  display: inline-block;
+.cats-logo {
+  width: 55%;
+  margin: auto;
+  display: block;
+  padding: 2em 0;
 }
 
 /* Easter egg */
@@ -287,7 +270,7 @@ audio {
 }
 
 #easter_egg_button:hover {
-  background: #34558b;
+  background: #ff6f61;
   color: #fff;
   opacity: 0.9;
 }
@@ -372,13 +355,13 @@ audio {
 /* Checked, Indeterminate */
 .pure-material-checkbox>input:checked,
 .pure-material-checkbox>input:indeterminate {
-  background-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
+  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
 .pure-material-checkbox>input:checked+span::before,
 .pure-material-checkbox>input:indeterminate+span::before {
-  border-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
-  background-color: rgb(var(--pure-material-primary-rgb, 51, 85, 139));
+  border-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
+  background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
 .pure-material-checkbox>input:checked+span::after,
@@ -440,30 +423,84 @@ audio {
   background-color: currentColor;
 }
 
-/* Slider styling */
+/* Play/pause botton */
 
-::ng-deep .ng5-slider-pointer {
-  width: 26px !important;
-  height: 26px !important;
-  top: -12px !important;
-  background-color: #34558b !important;
+.sound-item>div {
+  width: 1.7em;
+  height: 1.7em;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
 }
 
-::ng-deep .ng5-slider-pointer:after {
-  background: #34558b !important;
+.sound-item>div .border {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ff6f61;
+  border-radius: 50%;
 }
 
-::ng-deep .ng5-slider-floor, ::ng-deep .ng5-slider-ceil, ::ng-deep .ng5-slider-model-value {
-  font-weight: 600 !important;
+.sound-item>div.is--playing .border {
+  border-top: none;
+  border-bottom: none;
+  -webkit-animation: spin 1.5s ease-in-out infinite;
+          animation: spin 1.5s ease-in-out infinite;
 }
 
-::ng-deep .ng5-slider-model-value {
-  color: #fff !important;
+.sound-item>div .play {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  box-sizing: border-box;
+  height: 9px;
+  width: 7px;
+  border-color: transparent transparent transparent #ff6f61;
+  -webkit-transition: 100ms all ease;
+  transition: 100ms all ease;
+  will-change: border-width;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 6px 0 6px 10px;
+}
+
+.sound-item>div.is--playing .play {
+  border-style: double;
+  left: 10px;
+  border-width: 0px 0 0px 6px;
+  -webkit-transform: translate(-1px, 1px);
+          transform: translate(-1px, 1px);
+}
+
+.sound-title {
+  width: auto !important;
+  padding-left: 0.7em;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
 }
 
 @media screen and (max-width: 960px) {
   .modal {
     overflow-y: scroll;
-    padding: 25px 15px 30px 15px;
+    padding: 25px 15px 70px 15px;
   }
 }

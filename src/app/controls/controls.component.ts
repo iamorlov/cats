@@ -9,7 +9,7 @@ export class ControlsComponent implements OnInit {
 
   @Output() updated = new EventEmitter<string>();
 
-  images = 630; // Count of cat walls ♥
+  images = 650; // Count of cat walls ♥
 
   music = false;
   info = false;
@@ -28,6 +28,9 @@ export class ControlsComponent implements OnInit {
   nightSound = false;
   oceanSound = false;
   fireSound = false;
+  cafe = false;
+  cityStreet = false;
+  birds = false;
 
   easter_egg = false;
   changed_temperature = false;
@@ -39,6 +42,9 @@ export class ControlsComponent implements OnInit {
   night_audio: any = new Audio('/assets/sounds/night.mp3');
   ocean_audio: any = new Audio('/assets/sounds/waves.mp3');
   fire_audio: any = new Audio('/assets/sounds/fire.mp3');
+  cafe_audio: any = new Audio('/assets/sounds/cafe.mp3');
+  city_audio: any = new Audio('/assets/sounds/city_street.mp3');
+  birds_audio: any = new Audio('/assets/sounds/birds.mp3');
 
   temperature: string = localStorage.getItem('temperature');
 
@@ -79,79 +85,124 @@ export class ControlsComponent implements OnInit {
 
   // Sounds
 
-  catSoundPlay() {
-    this.cat_audio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    this.cat_audio.play();
-    this.catSound = !this.catSound;
-  }
+  playSound(id: string) {
+    let playButton = document.getElementById(id);
+    playButton.classList.toggle("is--playing");
 
-  catSoundStop() {
-    this.cat_audio.currentTime = 0;
-    this.cat_audio.pause();
-    this.catSound = !this.catSound;
-  }
-
-  rainSoundPlay() {
-    this.rain_audio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    this.rain_audio.play();
-    this.rainSound = !this.rainSound;
-  }
-
-  rainSoundStop() {
-    this.rain_audio.currentTime = 0;
-    this.rain_audio.pause();
-    this.rainSound = !this.rainSound;
-  }
-
-  nightSoundPlay() {
-    this.night_audio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    this.night_audio.play();
-    this.nightSound = !this.nightSound;
-  }
-
-  nightSoundStop() {
-    this.night_audio.currentTime = 0;
-    this.night_audio.pause();
-    this.nightSound = !this.nightSound;
-  }
-
-  oceanSoundPlay() {
-    this.ocean_audio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    this.ocean_audio.play();
-    this.oceanSound = !this.oceanSound;
-  }
-
-  oceanSoundStop() {
-    this.ocean_audio.currentTime = 0;
-    this.ocean_audio.pause();
-    this.oceanSound = !this.oceanSound;
-  }
-
-  fireSoundPlay() {
-    this.fire_audio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-    }, false);
-    this.fire_audio.play();
-    this.fireSound = !this.fireSound;
-  }
-
-  fireSoundStop() {
-    this.fire_audio.currentTime = 0;
-    this.fire_audio.pause();
-    this.fireSound = !this.fireSound;
+    switch (id) {
+      case 'catSound':
+        if (!this.catSound) {
+          this.cat_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.cat_audio.play();
+          this.catSound = !this.catSound;
+        } else {
+          this.cat_audio.currentTime = 0;
+          this.cat_audio.pause();
+          this.catSound = !this.catSound;
+        }
+      break;
+      case 'rainSound':
+        if (!this.rainSound) {
+          this.rain_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.rain_audio.play();
+          this.rainSound = !this.rainSound;
+        } else {
+          this.rain_audio.currentTime = 0;
+          this.rain_audio.pause();
+          this.rainSound = !this.rainSound;
+        }
+      break;
+      case 'nightSound':
+        if (!this.nightSound) {
+          this.night_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.night_audio.play();
+          this.nightSound = !this.nightSound;
+        } else {
+          this.night_audio.currentTime = 0;
+          this.night_audio.pause();
+          this.nightSound = !this.nightSound;
+        }
+      break;
+      case 'oceanSound':
+        if (!this.oceanSound) {
+          this.ocean_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.ocean_audio.play();
+          this.oceanSound = !this.oceanSound;
+        } else {
+          this.ocean_audio.currentTime = 0;
+          this.ocean_audio.pause();
+          this.oceanSound = !this.oceanSound;
+        }
+      break;
+      case 'fireSound':
+        if (!this.fireSound) {
+          this.fire_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.fire_audio.play();
+          this.fireSound = !this.fireSound;
+        } else {
+          this.fire_audio.currentTime = 0;
+          this.fire_audio.pause();
+          this.fireSound = !this.fireSound;
+        }
+      break;
+      case 'cafe':
+        if (!this.cafe) {
+          this.cafe_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.cafe_audio.play();
+          this.cafe = !this.cafe;
+        } else {
+          this.cafe_audio.currentTime = 0;
+          this.cafe_audio.pause();
+          this.cafe = !this.cafe;
+        }
+      break;
+      case 'cityStreet':
+        if (!this.cityStreet) {
+          this.city_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.city_audio.play();
+          this.cityStreet = !this.cityStreet;
+        } else {
+          this.city_audio.currentTime = 0;
+          this.city_audio.pause();
+          this.cityStreet = !this.cityStreet;
+        }
+      break;
+      case 'birds':
+        if (!this.birds) {
+          this.birds_audio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+          }, false);
+          this.birds_audio.play();
+          this.birds = !this.birds;
+        } else {
+          this.birds_audio.currentTime = 0;
+          this.birds_audio.pause();
+          this.birds = !this.birds;
+        }
+      break;
+    }
   }
 
   // easter easterEgg
@@ -212,10 +263,6 @@ export class ControlsComponent implements OnInit {
     }
     this.updated.emit('changed temperature');
     this.changed_temperature = true;
-  }
-
-  applyChanges() {
-    window.location.reload();
   }
 
   ngOnInit() {
