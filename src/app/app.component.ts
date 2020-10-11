@@ -417,9 +417,9 @@ export class AppComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.code === 'Enter') {
-      console.log(232323);
       const donwload = document.getElementById('download');
       donwload.click();
+      console.log('Image meowloaded!');
     }
   }
 
