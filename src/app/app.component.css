@@ -14,7 +14,7 @@
   font-weight: 300;
 }
 
-#time-clock, #weather {
+#time-clock, #weather, #download-btn {
   text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
   opacity: 0.8;
   /* background: rgba(0, 0, 0, 0.2); */
@@ -35,13 +35,17 @@
   margin: 0 5px;
 }
 
-#time-clock, .weather-icon, .weather-temp {
+#time-clock, .weather-icon, .weather-temp, #download-btn {
   font-size: 2em;
 }
 
 .weather-location {
   font-size: 1em;
   line-height: 2.7em;
+}
+
+#download-btn a {
+  color: #fff;
 }
 
 .show_clock, .show_weather {

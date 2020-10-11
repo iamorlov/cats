@@ -51,9 +51,9 @@ export class ControlsComponent implements OnInit {
 
   constructor() { }
 
-  @HostListener('document:keypress', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.keyCode === 32) {
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.code === 'Space') {
       if (this.music || this.info || this.settings) {
         this.music = false;
         this.info = false;

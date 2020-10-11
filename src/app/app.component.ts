@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 730; // Count of cat walls ♥
+  images = 750; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
@@ -414,6 +414,15 @@ export class AppComponent implements OnInit {
     }
   };
 
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.code === 'Enter') {
+      console.log(232323);
+      const donwload = document.getElementById('download');
+      donwload.click();
+    }
+  }
+
   constructor(private http: HttpClient ) {
     setInterval(() => {
       this.time = Date.now();
@@ -470,7 +479,6 @@ export class AppComponent implements OnInit {
   }
 
   changeSettings(event: string) {
-
     switch (event) {
       case 'changed weather':
         this.weather = localStorage.getItem('weather');
