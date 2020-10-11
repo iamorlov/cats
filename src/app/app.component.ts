@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 })
 
 export class AppComponent implements OnInit {
-  images = 670; // Count of cat walls ♥
+  images = 730; // Count of cat walls ♥
   random: number = Math.floor(Math.random() * this.images);
   random_new: number;
   cat: string = 'wall-' + this.random + '.jpg';
