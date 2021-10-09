@@ -431,7 +431,6 @@ export class AppComponent implements OnInit {
       return this.weatherService.getWeather(lat, lan)
       .subscribe(data => {
         this.weatherJSON = data;
-        console.log('> ', this.weatherJSON);
         const prefix = 'wi wi-';
         const code = this.weatherJSON.weather[0].id;
         let icon = this.weather_icons[code].icon;
