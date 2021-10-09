@@ -1,52 +1,39 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import 'rxjs/add/operator/map';
+import { Component, OnInit } from '@angular/core';
+import { WeatherService } from './weather.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 
 export class AppComponent implements OnInit {
-  images = 750; // Count of cat walls ♥
-  random: number = Math.floor(Math.random() * this.images);
-  random_new: number;
-  cat: string = 'wall-' + this.random + '.jpg';
-  preload: string = '/assets/walls/' + this.cat;
-  clock: string = localStorage.getItem('clock');
-  weather: string = localStorage.getItem('weather');
-  temperature: string = localStorage.getItem('temperature');
-  timeformat: string = localStorage.getItem('format');
-  time: number = Date.now();
-  filter: string;
-  easter_egg: string;
-  temp_c: boolean;
-  temp_f: boolean;
-  time_eur: boolean;
-  time_usa: boolean;
-  vm = this;
+  public images = 750; // Count of cat walls ♥
+  public random: number = Math.floor(Math.random() * this.images);
+  public random_new: number = 0;
+  public cat: string = 'wall-' + this.random + '.jpg';
+  public preload: string = '/assets/walls/' + this.cat;
+  public time: number = Date.now();
+  public filter: string | null = '';
+  public easter_egg: string | null = '';
+  public temp_c: boolean = true;
+  public temp_f: boolean = false;
+  public time_eur: boolean = true;
+  public time_usa: boolean = false;
+  public vm = this;
 
-  // Weather api
-  private api_key = '0ff4143b2f608054241845b65cee0dea';
+  public clock: string | null = localStorage.getItem('clock');
+  public weather: string | null = localStorage.getItem('weather');
+  public temperature: string | null = localStorage.getItem('temperature');
+  public timeformat: string | null = localStorage.getItem('format');
   public lat: any = localStorage.getItem('geo_lat');
   public lan: any = localStorage.getItem('geo_lan');
 
-  weatherJSON: any = {
-    name: 'Refrest the page',
-    main: {
-      temp: 'loading...'
-    },
-    weather: {
-      0: {
-        description: 'loading...'
-      }
-    }
-  };
-  weather_icon: string;
-  weather_temp_c: number;
-  weather_temp_f: number;
-  weather_icons = {
+  public weatherJSON: any = null;
+  public weather_temp_c: number = 0;
+  public weather_temp_f: number = 0;
+  public weather_icon: string = '';
+  public weather_icons: any = {
     '200': {
       'label': 'thunderstorm with light rain',
       'icon': 'storm-showers'
@@ -414,16 +401,7 @@ export class AppComponent implements OnInit {
     }
   };
 
-  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent): void {
-    if (event.code === 'Enter') {
-      const donwload = document.getElementById('download');
-      donwload.click();
-      console.log('Image meowloaded!');
-    }
-  }
-
-  constructor(private http: HttpClient ) {
+  constructor(public weatherService: WeatherService) {
     setInterval(() => {
       this.time = Date.now();
     }, 1000);
@@ -431,7 +409,7 @@ export class AppComponent implements OnInit {
     this.getGeoLocation();
   }
 
-  getGeoLocation() {
+  public getGeoLocation() {
     navigator.geolocation.getCurrentPosition(
       function success(position) {
         const latitude = position.coords.latitude;
@@ -441,16 +419,19 @@ export class AppComponent implements OnInit {
         localStorage.setItem('geo_lan', String(longitude));
       }
     );
-    this.getWeatherJSON();
+    (setTimeout(() => {
+      this.lat = localStorage.getItem('geo_lat');
+      this.lan = localStorage.getItem('geo_lan');
+      this.getWeatherJSON(this.lat, this.lan);
+    }), 500);
   }
 
-  getWeatherJSON() {
-    if (this.lat !== null || this.lan !== null) {
-      // tslint:disable-next-line:max-line-length
-      return this.http.get('https://api.openweathermap.org/data/2.5/weather?lat=' + this.lat + '&lon=' + this.lan + '&appid=' + this.api_key)
+  public getWeatherJSON(lat: number, lan: number) {
+    if (lat !== null || lan !== null) {
+      return this.weatherService.getWeather(lat, lan)
       .subscribe(data => {
         this.weatherJSON = data;
-
+        console.log('> ', this.weatherJSON);
         const prefix = 'wi wi-';
         const code = this.weatherJSON.weather[0].id;
         let icon = this.weather_icons[code].icon;
@@ -464,21 +445,16 @@ export class AppComponent implements OnInit {
       });
     } else {
       console.log('Something meow wrong! Please, provide access to tracking location and refresh the page :3');
+      return 0;
     }
   }
 
-  getFullScreen() {
+  public getFullScreen() {
     const screen = document.body;
-    if (screen['requestFullScreen']) {
-      screen['requestFullScreen']();
-    } else if (screen['mozRequestFullScreen']) {
-      screen['mozRequestFullScreen']();
-    } else if (screen['webkitRequestFullScreen']) {
-      screen['webkitRequestFullScreen']();
-    }
+    screen['requestFullscreen']();
   }
 
-  changeSettings(event: string) {
+  public changeSettings(event: string) {
     switch (event) {
       case 'changed weather':
         this.weather = localStorage.getItem('weather');
@@ -536,7 +512,7 @@ export class AppComponent implements OnInit {
     }, 9000);
 
     this.temperature = localStorage.getItem('temperature');
-    if (this.temperature === 'celsius') {
+    if (this.temperature === 'celsius' || null) {
       this.temp_c = true;
       this.temp_f = false;
     }
@@ -546,7 +522,7 @@ export class AppComponent implements OnInit {
     }
 
     this.timeformat = localStorage.getItem('format');
-    if (this.timeformat === '24H') {
+    if (this.timeformat === '24H' || null) {
       this.time_eur = true;
       this.time_usa = false;
     }

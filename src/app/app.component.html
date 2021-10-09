@@ -22,29 +22,23 @@
       <span *ngIf="time_usa">{{time | date:'h:mm a'}}</span>
     </div>
 
-    <div class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'" title='{{weatherJSON.weather[0].description}}'>
+    <div *ngIf="weatherJSON !== null" class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'" title='{{weatherJSON.weather[0].description}}'>
       <div class='weather-icon'>
         <span class='tooltop'>
           <i class="{{weather_icon}}"></i>
         </span>
       </div>
       <div class='weather-temp'>
-        <span *ngIf="temp_c">{{weather_temp_c}}&#xb0;</span>
-        <span *ngIf="temp_f">{{weather_temp_f}}&#xb0;</span>
+        <span *ngIf="temp_c">{{weather_temp_c}}&#xb0;C</span>
+        <span *ngIf="temp_f">{{weather_temp_f}}&#xb0;F</span>
       </div>
       <div class='weather-location'>
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
       </div>
     </div>
-
-    <div class="animation" id="download-btn">
-      <a id="download" [href]="'/assets/walls/' + cat" title="Download this image :3" download>
-        <i class="pe-7s-bottom-arrow"></i>
-      </a>
-    </div>
   </div>
 
-    <app-controls [images]="images" (updated)="changeSettings($event)"></app-controls>
+  <app-controls [images]="images" (settingsEmitter)="changeSettings($event)"></app-controls>
 
   <img [src]="preload" id="preload">
 </div>

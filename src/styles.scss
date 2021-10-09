@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  }
+  
+  *:focus {
+      outline: none;
+  }
+  
+  body {
+    background: #333333;
+    font-family: 'Quicksand', sans-serif;
+  }
+  
+  /* Loader */
+  #app-loading {
+    height: 100vh;
+    width: 100%;
+    background-image: url('assets/img/loading.jpg');
+    background-position: center, center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  
+  #app-loading h1 {
+    color: #fff;
+    font-weight: 300;
+    font-size: 2em;
+    line-height: 100vh;
+    text-align: center;
+  }
+  
+  .dot {
+    opacity: 0;
+    -webkit-animation: showHideDot 1.5s ease-in-out infinite;
+    animation: showHideDot 1.5s ease-in-out infinite;
+  }
+  
+  .dot_one {
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+  }
+  
+  .dot_two {
+    -webkit-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+  }
+  
+  .dot_three {
+    -webkit-animation-delay: 0.6s;
+    animation-delay: 0.6s;
+  }
+  
+  .animation {
+    -webkit-transition: all ease 0.3s;
+    -moz-transition: all ease 0.3s;
+    -o-transition: all ease 0.3s;
+    transition: all ease 0.3s;
+  }
+  
+  .cats-wall, #options-icons, #player, #fullscreen, #player-icon, #settings-icon, .show_player, .hide_player, .modal {
+    will-change: auto;
+  }
+  
+  .cf {
+    width: 100%;
+    clear: both;
+  }
+  
+  #preload {
+    height: 0;
+  }
+  
+  .cats-wrapper {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 175px 25px #000 inset;
+  }
+  
+  .cats-wall {
+    height: 100vh;
+    background-position: center, center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    -webkit-animation: zoomin 25s ease-in infinite;
+    animation: zoomin 25s ease-in infinite;
+    transition: all 1.5s ease-in-out;
+  }
+  
+  .borders {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 175px #000 inset;
+    top: 0;
+    right: 0;
+    position: absolute;
+  }
+  
+  #title {
+    font-family: 'Lobster', cursive;
+    color: #fff;
+    font-weight: 300;
+    padding: 12px;
+    line-height: 48px;
+  }
+  
+  #fullscreen {
+    top: 15px;
+    right: 15px;
+    z-index: 20;
+    position: absolute;
+    font-weight: 300;
+    color: #fff;
+    font-size: 1.2em;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  #fullscreen, #player-icon, #settings-icon, #info-icon {
+    opacity: 0.9;
+    padding: 11.5px 12px;
+    cursor: pointer;
+  }
+  
+  #fullscreen:hover, #player-icon:hover, #settings-icon:hover, #info-icon:hover {
+    opacity: 1;
+  }
+  
+  #fullscreen:hover {
+    background: rgba(0, 0, 0, 0.2);
+    text-shadow: none;
+    border-radius: 5px;
+  }
+  
+  #player-icon, #settings-icon, #info-icon {
+    float: right;
+    border-bottom: 2px solid transparent;
+  }
+  
+  #player-icon:hover, #settings-icon:hover, #info-icon:hover {
+    color: #ff6f61;
+    text-shadow: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 2px solid #ff6f61;
+  }
+  
+  /* easter Egg */
+  .easter_egg_pentagram {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+  }
+  
+  .easter_egg_pentagram img {
+    opacity: 0.7;
+    -webkit-animation: doom_spin 10s linear infinite;
+    -moz-animation: doom_spin 10s linear infinite;
+    animation: doom_spin 10s linear infinite;
+  }
+  
+  .doom_cats {
+    -webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
+    filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
+    -webkit-animation: zoomin 5s ease-in infinite;
+    animation: zoomin 5s ease-in infinite;
+    transition: all 1.2s ease-in-out;
+  }
+  
+  @-moz-keyframes doom_spin {
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  
+  @-webkit-keyframes doom_spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes doom_spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* For fullscreen */
+  :fullscreen #fullscreen {
+    display: none;
+  }
+  
+  :-webkit-full-screen #fullscreen {
+    display: none;
+  }
+  
+  :-moz-full-screen #fullscreen {
+    display: none;
+  }
+  
+  :fullscreen #options-icons {
+    background: none;
+  }
+  
+  :-webkit-full-screen #options-icons {
+    background: none;
+  }
+  
+  :-moz-full-screen #options-icons {
+    background: none;
+  }
+  
+  :fullscreen #options-icons:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  :-webkit-full-screen #options-icons:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  :-moz-full-screen #options-icons:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  #options-icons {
+    z-index: 10;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 269px;
+    font-weight: 300;
+    color: #fff;
+    font-size: 1.2em;
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    opacity: 0.7;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  #options-icons:hover {
+    opacity: 1;
+  }
+  
+  /* Zoom in Keyframes */
+  @-webkit-keyframes zoomin {
+    0% {
+      transform: scale(1);
+    }
+  
+    50% {
+      transform: scale(1.25);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes zoomin {
+    0% {
+      transform: scale(1);
+    }
+  
+    50% {
+      transform: scale(1.25);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /*End of Zoom in Keyframes */
+  @-webkit-keyframes showHideDot {
+    0% {
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    60% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes showHideDot {
+    0% {
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    60% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  #rotate-phone {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 2px solid #ff6f61;
+  }
+  
+  #rotate-icon {
+    font-size: 5em;
+    margin-bottom: 15px;
+    -webkit-animation: spin 2s linear infinite;
+    -moz-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+  
+    50% {
+      -webkit-transform: rotate(-90deg);
+    }
+  
+    100% {
+      -webkit-transform: rotate(0deg);
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    50% {
+      transform: rotate(-90deg);
+    }
+  
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+  @media screen and (max-width: 720px) {
+  
+    #options-icons {
+      width: calc(100% - 30px);
+    }
+  
+    .easter_egg_pentagram img {
+      width: 128px;
+      height: auto;
+    }
+  }
+  
+  @media screen and (max-width: 720px) and (orientation: portrait) {
+    #rotate-phone {
+      display: block;
+    }
+  }
+  

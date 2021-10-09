@@ -1,0 +1,88 @@
+#widgets {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    z-index: 2;
+  }
+  
+  #widgets>div {
+    float: left;
+  }
+  
+  #time-clock {
+    color: #fff;
+    font-weight: 300;
+  }
+  
+  #time-clock, #weather {
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+    opacity: 0.8;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-right: 10px;
+    padding: 3px 10px;
+    min-height: 50px;
+  }
+  
+  #weather {
+    text-align: center;
+    color: #fff;
+    font-weight: 300;
+  }
+  
+  #weather div {
+    float: left;
+    margin: 0 5px;
+  }
+  
+  #time-clock, .weather-icon, .weather-temp {
+    font-size: 2em;
+  }
+  
+  .weather-location {
+    font-size: 1em;
+    line-height: 2.7em;
+  }
+  
+  .show_clock, .show_weather {
+    height: auto;
+    animation: clockAnimate 2s ease-in;
+  }
+  
+  .hide_clock, .hide_weather {
+    height: 0;
+    display: none;
+    overflow: hidden;
+    animation: clockAnimate 2s ease-out;
+  }
+  
+  @media screen and (max-width: 720px) {
+    #widgets {
+      bottom: 75px;
+    }
+  }
+  
+  @-webkit-keyframes clockAnimate {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes clockAnimate {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
