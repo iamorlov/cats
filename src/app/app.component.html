@@ -36,6 +36,11 @@
         <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
       </div>
     </div>
+
+    <div class="animation" id="download-btn">
+      <a id="download" [href]="'/assets/walls/' + cat" title="Download this image :3" download>
+      </a>
+    </div>
   </div>
 
   <app-controls [images]="images" (settingsEmitter)="changeSettings($event)"></app-controls>

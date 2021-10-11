@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { WeatherService } from './weather.service';
 
 @Component({
@@ -497,6 +497,14 @@ export class AppComponent implements OnInit {
         console.log('We doesn\'t meow what do you want with: ', event);
     }
     console.log('changed: ', event);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.code === 'Enter') {
+      const donwload = document.getElementById('download') as HTMLBaseElement;
+      donwload.click();
+    }
   }
 
   ngOnInit() {
