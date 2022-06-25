@@ -8,7 +8,7 @@ import { WeatherService } from './weather.service';
 })
 
 export class AppComponent implements OnInit {
-  public images = 850; // Count of cat walls ♥
+  public images = 900; // Count of cat walls ♥
   public random: number = Math.floor(Math.random() * this.images);
   public random_new: number = 0;
   public cat: string = 'wall-' + this.random + '.jpg';
@@ -545,5 +545,8 @@ export class AppComponent implements OnInit {
 ----- MEOW ----------
 ------------ iamorlov
             `, 'font-family:monospace');
+
+  console.log('Слава Україні!');
+
   }
 }
