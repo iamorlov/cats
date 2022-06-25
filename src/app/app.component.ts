@@ -8,7 +8,7 @@ import { WeatherService } from './weather.service';
 })
 
 export class AppComponent implements OnInit {
-  public images = 950; // Count of cat walls ♥
+  public images = 970; // Count of cat walls ♥
   public random: number = Math.floor(Math.random() * this.images);
   public random_new: number = 0;
   public cat: string = 'wall-' + this.random + '.jpg';
@@ -516,7 +516,7 @@ export class AppComponent implements OnInit {
       setTimeout(() => {
         this.cat = 'wall-' + random_new + '.jpg';
       }, 3000);
-    }, 9000);
+    }, 10000);
 
     this.temperature = localStorage.getItem('temperature');
     if (this.temperature === 'celsius' || null) {
