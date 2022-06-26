@@ -109,10 +109,10 @@
       <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadym Orlov</a>
     </p>
     <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">Meow</span>
-    <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Enough</span>
+    <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Disable</span>
   
     <div id="easter_egg" *ngIf="easter_egg" class="animation">
-      <iframe width="100%" height="180" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/296145584&color=%23f20d0d&auto_play=true&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=true&visual=true"></iframe>
+      <iframe width="100%" height="180" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/134635486&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
     </div>
   </div>
   
@@ -122,7 +122,7 @@
       Cats non-stop!
     </span>
     <span id="title" *ngIf="easter_egg">
-      DOOM cats!!!
+      Nyan cats 
     </span>
   
     <span id="player-icon" class="animation" (click)="showPlayer()" title="Play background sounds" appTippy>

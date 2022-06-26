@@ -259,14 +259,14 @@ export class ControlsComponent implements OnInit {
   // Easter Egg :D
   easterEgg() {
     this.easter_egg = !this.easter_egg;
-    sessionStorage.setItem('cat_doom', 'doom_cats');
-    this.settingsEmitter.emit('doom cats');
+    sessionStorage.setItem('cat_nyan', 'nyan_cats');
+    this.settingsEmitter.emit('nyan cats');
   }
 
   easterEggStop() {
     this.easter_egg = false;
     sessionStorage.clear();
-    this.settingsEmitter.emit('doom ends');
+    this.settingsEmitter.emit('nyan ends');
   }
 
   ngOnInit() {

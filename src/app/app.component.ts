@@ -486,12 +486,12 @@ export class AppComponent implements OnInit {
       case 'changed filter':
         this.filter = localStorage.getItem('filter');
       break;
-      case 'doom cats':
-        this.easter_egg = sessionStorage.getItem('cat_doom');
+      case 'nyan cats':
+        this.easter_egg = sessionStorage.getItem('cat_nyan');
       break;
-      case 'doom ends':
+      case 'nyan ends':
         sessionStorage.clear();
-        this.easter_egg = sessionStorage.getItem('cat_doom');
+        this.easter_egg = sessionStorage.getItem('cat_nyan');
       break;
       default:
         console.log('We doesn\'t meow what do you want with: ', event);

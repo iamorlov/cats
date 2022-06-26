@@ -153,44 +153,18 @@
   }
   
   /* easter Egg */
-  .easter_egg_pentagram {
+  .easter_egg_nyan {
     position: absolute;
     top: 5%;
-    left: 5%;
+    left: -2%;
   }
   
-  .easter_egg_pentagram img {
-    opacity: 0.7;
-    -webkit-animation: doom_spin 10s linear infinite;
-    -moz-animation: doom_spin 10s linear infinite;
-    animation: doom_spin 10s linear infinite;
-  }
-  
-  .doom_cats {
-    -webkit-filter: invert(40%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(400%) contrast(2);
-    filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);
-    -webkit-animation: zoomin 5s ease-in infinite;
-    animation: zoomin 5s ease-in infinite;
-    transition: all 1.2s ease-in-out;
-  }
-  
-  @-moz-keyframes doom_spin {
-    100% {
-      -moz-transform: rotate(360deg);
-    }
-  }
-  
-  @-webkit-keyframes doom_spin {
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
-  }
-  
-  @keyframes doom_spin {
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
+  .easter_egg_nyan img {
+    opacity: 0.75;
+    height: 7rem;
+    -webkit-animation: nyanCat 500ms infinite;
+    -moz-animation: nyanCat 500ms infinite;
+    animation: nyanCat 500ms infinite;
   }
   
   /* For fullscreen */
@@ -315,6 +289,24 @@
       opacity: 0;
     }
   }
+
+  @keyframes nyanCat {
+    0% {
+      margin: 0 0;
+    }
+    25% {
+      margin: 0 0.75rem;
+    }
+    50% {
+      margin: 0.75rem 0.75rem;
+    }
+    75% {
+      margin: 0.75rem 0;
+    }
+    100%{
+      margin: 0 0;
+    }     
+  }
   
   #rotate-phone {
     display: none;
@@ -373,7 +365,7 @@
       width: calc(100% - 30px);
     }
   
-    .easter_egg_pentagram img {
+    .easter_egg_nyan img {
       width: 128px;
       height: auto;
     }

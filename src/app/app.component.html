@@ -1,7 +1,7 @@
 <div class="cats-wrapper" id="cats-fullscreen">
   <div
       [style.background-image]="'url(/assets/walls/' + cat + ')'"
-      class="cats-wall filter-{{filter}} {{easter_egg}}">
+      class="cats-wall filter-{{filter}}">
   </div>
   <div class="borders"></div>
   <div id="rotate-phone" class="animation">
@@ -12,8 +12,8 @@
     <i-feather name="maximize" class="fe-icons"></i-feather>
   </div>
 
-  <div class="easter_egg_pentagram" *ngIf="easter_egg">
-    <img src="/assets/img/pentagram.png">
+  <div class="easter_egg_nyan" *ngIf="easter_egg">
+    <img src="/assets/img/nyan.png">
   </div>
 
   <div id='widgets'>
