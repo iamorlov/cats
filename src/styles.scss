@@ -135,10 +135,9 @@
     opacity: 1;
   }
   
-  #fullscreen:hover {
-    background: rgba(0, 0, 0, 0.2);
-    text-shadow: none;
-    border-radius: 5px;
+  #fullscreen:hover .fe-icons svg {
+    color: #ff6f61;
+    transition: all ease 0.3s;
   }
   
   #player-icon, #settings-icon, #info-icon {

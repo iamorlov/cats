@@ -108,7 +108,7 @@
     <p id="cred">
       <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadym Orlov</a>
     </p>
-    <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">¯\_(ツ)_/¯</span>
+    <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">Meow</span>
     <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Enough</span>
   
     <div id="easter_egg" *ngIf="easter_egg" class="animation">
@@ -125,15 +125,15 @@
       DOOM cats!!!
     </span>
   
-    <span id="player-icon" class="animation" (click)="showPlayer()">
+    <span id="player-icon" class="animation" (click)="showPlayer()" title="Play background sounds" appTippy>
       <i-feather name="music" class="fe-icons"></i-feather>
     </span>
   
-    <span id="settings-icon" class="animation" (click)="showSettings()">
+    <span id="settings-icon" class="animation" (click)="showSettings()" title="Settings" appTippy>
       <i-feather name="settings" class="fe-icons"></i-feather>
     </span>
   
-    <span id="info-icon" class="animation" (click)="showInfo()">
+    <span id="info-icon" class="animation" (click)="showInfo()" title="About :3" appTippy>
       <i-feather name="help-circle" class="fe-icons"></i-feather>
     </span>
   

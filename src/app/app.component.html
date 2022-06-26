@@ -8,8 +8,8 @@
     <i-feather name="smartphone" id="rotate-icon" class="fe-icons"></i-feather>
     <p>For the best experience, rotate your device</p>
   </div>
-  <div id="fullscreen" class="animation" (click)="getFullScreen()">
-    <i-feather name="minimize" class="fe-icons"></i-feather>
+  <div id="fullscreen" (click)="getFullScreen()" title="Fullscreen" appTippy>
+    <i-feather name="maximize" class="fe-icons"></i-feather>
   </div>
 
   <div class="easter_egg_pentagram" *ngIf="easter_egg">
@@ -22,7 +22,8 @@
       <span *ngIf="time_usa">{{time | date:'h:mm a'}}</span>
     </div>
 
-    <div *ngIf="weatherJSON !== null" class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'" title='{{weatherJSON.weather[0].description}}'>
+    <div *ngIf="weatherJSON !== null" class="animation" id="weather" [ngClass]="weather == 'true' ? 'show_weather' : 'hide_weather'"
+          title='{{weatherJSON.weather[0].description | titlecase}}' appTippy>
       <div class='weather-icon'>
         <span class='tooltop'>
           <i class="{{weather_icon}}"></i>

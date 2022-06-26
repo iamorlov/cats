@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { ControlsComponent } from './controls/controls.component';
 
 import { IconsModule } from './icons.module';
+import { TippyModule } from 'ng-tippy';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { IconsModule } from './icons.module';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    IconsModule
+    IconsModule,
+    TippyModule
   ],
   providers: [],
   bootstrap: [AppComponent]
