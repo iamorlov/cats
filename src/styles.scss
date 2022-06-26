@@ -13,6 +13,7 @@
   body {
     background: #333333;
     font-family: 'Quicksand', sans-serif;
+    cursor: url('assets/cursor/cursor-default.png') , default !important;
   }
   
   /* Loader */
@@ -91,9 +92,9 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    -webkit-animation: zoomin 30s ease-in infinite;
-    animation: zoomin 30s ease-in infinite;
-    transition: all 1.5s ease-in-out;
+    -webkit-animation: zoomin 25s ease-in infinite;
+    animation: zoomin 25s ease-in infinite;
+    transition: all 1.75s ease-in-out;
   }
   
   .borders {
@@ -127,7 +128,7 @@
   #fullscreen, #player-icon, #settings-icon, #info-icon {
     opacity: 0.9;
     padding: 11.5px 12px;
-    cursor: pointer;
+    cursor: url('assets/cursor/cursor-pointer.png') , pointer !important;
   }
   
   #fullscreen:hover, #player-icon:hover, #settings-icon:hover, #info-icon:hover {
@@ -257,7 +258,7 @@
     }
   
     50% {
-      transform: scale(1.25);
+      transform: scale(1.2);
     }
   
     100% {
@@ -271,7 +272,7 @@
     }
   
     50% {
-      transform: scale(1.25);
+      transform: scale(1.2);
     }
   
     100% {
