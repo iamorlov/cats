@@ -86,7 +86,7 @@
       <div class="filters-preview">
         <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
           <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
-          <span class="animation"><i class="pe-7s-check" *ngIf="filter_storage == filter"></i>{{filter}}</span>
+          <span class="animation"><i-feather name="check-circle" class="fe-icons" *ngIf="filter_storage == filter"></i-feather>{{filter}}</span>
         </div>
         <div class="filters-preview-bottom"></div>
       </div>
@@ -126,15 +126,15 @@
     </span>
   
     <span id="player-icon" class="animation" (click)="showPlayer()">
-      <i class="pe-7s-music"></i>
+      <i-feather name="music" class="fe-icons"></i-feather>
     </span>
   
     <span id="settings-icon" class="animation" (click)="showSettings()">
-      <i class="pe-7s-config"></i>
+      <i-feather name="settings" class="fe-icons"></i-feather>
     </span>
   
     <span id="info-icon" class="animation" (click)="showInfo()">
-      <i class="pe-7s-help1"></i>
+      <i-feather name="help-circle" class="fe-icons"></i-feather>
     </span>
   
     <div class="cf"></div>

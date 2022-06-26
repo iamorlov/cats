@@ -2,6 +2,13 @@
     width: 1rem;
 }
 
+.fe-icons {
+    height: 1.25rem;
+    width: 1.25rem;
+    line-height: 1.25rem;
+    display: block;
+}
+
 .show_modal {
     right: 0;
 }
@@ -171,12 +178,13 @@
     font-weight: 600;
 }
 
-.filter-item i {
+.filter-item i-feather {
     position: absolute;
     top: 0;
     padding: 6px;
     left: 0;
-    font-size: 2em;
+    height: 2.7em;
+    width: 2rem;
     background: #ffffff;
     border-radius: 10%;
     color: #ff6f61;

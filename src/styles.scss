@@ -127,7 +127,7 @@
   
   #fullscreen, #player-icon, #settings-icon, #info-icon {
     opacity: 0.9;
-    padding: 11.5px 12px;
+    padding: 12.75px 12px;
     cursor: url('assets/cursor/cursor-pointer.png') , pointer !important;
   }
   
@@ -332,11 +332,12 @@
   }
   
   #rotate-icon {
-    font-size: 5em;
-    margin-bottom: 15px;
-    -webkit-animation: spin 2s linear infinite;
-    -moz-animation: spin 2s linear infinite;
-    animation: spin 2s linear infinite;
+    height: 5rem;
+    width: 5rem;
+    margin: auto;
+    -webkit-animation: spin 3s linear infinite;
+    -moz-animation: spin 3s linear infinite;
+    animation: spin 3s linear infinite;
   }
   
   @-webkit-keyframes spin {

@@ -5,11 +5,11 @@
   </div>
   <div class="borders"></div>
   <div id="rotate-phone" class="animation">
-    <i class="pe-7s-phone" id="rotate-icon"></i>
+    <i-feather name="smartphone" id="rotate-icon" class="fe-icons"></i-feather>
     <p>For the best experience, rotate your device</p>
   </div>
   <div id="fullscreen" class="animation" (click)="getFullScreen()">
-    <i class="pe-7s-expand1"></i>
+    <i-feather name="minimize" class="fe-icons"></i-feather>
   </div>
 
   <div class="easter_egg_pentagram" *ngIf="easter_egg">
@@ -33,7 +33,7 @@
         <span *ngIf="temp_f">{{weather_temp_f}}&#xb0;F</span>
       </div>
       <div class='weather-location'>
-        <i class='pe-7s-map-marker'></i> {{weatherJSON.name}}
+        <i-feather name="map-pin" class="fe-icons fe-small"></i-feather> {{weatherJSON.name}}
       </div>
     </div>
 
