@@ -9,7 +9,7 @@ import { weatherIcons } from './weather-icons';
 })
 
 export class AppComponent implements OnInit {
-  public images = 1000; // Count of cat walls ♥
+  public images = 1010; // Count of cat walls ♥
   public random: number = Math.floor(Math.random() * this.images);
   public random_new: number = 0;
   public cat: string = 'wall-' + this.random + '.jpg';
