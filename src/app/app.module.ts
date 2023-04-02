@@ -2,12 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ControlsComponent } from './controls/controls.component';
 
 import { IconsModule } from './icons.module';
-import { TippyModule } from 'ng-tippy';
 
 @NgModule({
   declarations: [
@@ -16,10 +14,8 @@ import { TippyModule } from 'ng-tippy';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
     IconsModule,
-    TippyModule
   ],
   providers: [],
   bootstrap: [AppComponent]

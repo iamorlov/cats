@@ -305,7 +305,7 @@ audio {
 }
 
 /* Input */
-.pure-material-checkbox > input {
+.pure-material-checkbox>input {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -328,7 +328,7 @@ audio {
 }
 
 /* Span */
-.pure-material-checkbox > span {
+.pure-material-checkbox>span {
   display: inline-block;
   width: 100%;
   cursor: pointer;
@@ -336,7 +336,7 @@ audio {
 }
 
 /* Box */
-.pure-material-checkbox > span::before {
+.pure-material-checkbox>span::before {
   content: "";
   display: inline-block;
   box-sizing: border-box;
@@ -352,7 +352,7 @@ audio {
 }
 
 /* Checkmark */
-.pure-material-checkbox > span::after {
+.pure-material-checkbox>span::after {
   content: "";
   display: block;
   position: absolute;
@@ -367,79 +367,79 @@ audio {
 }
 
 /* Checked, Indeterminate */
-.pure-material-checkbox > input:checked,
-.pure-material-checkbox > input:indeterminate {
+.pure-material-checkbox>input:checked,
+.pure-material-checkbox>input:indeterminate {
   background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
-.pure-material-checkbox > input:checked + span::before,
-.pure-material-checkbox > input:indeterminate + span::before {
+.pure-material-checkbox>input:checked+span::before,
+.pure-material-checkbox>input:indeterminate+span::before {
   border-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
   background-color: rgb(var(--pure-material-primary-rgb, 255, 111, 97));
 }
 
-.pure-material-checkbox > input:checked + span::after,
-.pure-material-checkbox > input:indeterminate + span::after {
+.pure-material-checkbox>input:checked+span::after,
+.pure-material-checkbox>input:indeterminate+span::after {
   border-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
 }
 
-.pure-material-checkbox > input:indeterminate + span::after {
+.pure-material-checkbox>input:indeterminate+span::after {
   border-left: none;
   transform: translate(4px, 3px);
 }
 
 /* Hover, Focus */
-.pure-material-checkbox:hover > input {
+.pure-material-checkbox:hover>input {
   opacity: 0.04;
 }
 
-.pure-material-checkbox > input:focus {
+.pure-material-checkbox>input:focus {
   opacity: 0.12;
 }
 
-.pure-material-checkbox:hover > input:focus {
+.pure-material-checkbox:hover>input:focus {
   opacity: 0.16;
 }
 
 /* Active */
-.pure-material-checkbox > input:active {
+.pure-material-checkbox>input:active {
   opacity: 1;
   transform: scale(0);
   transition: transform 0s, opacity 0s;
 }
 
-.pure-material-checkbox > input:active + span::before {
+.pure-material-checkbox>input:active+span::before {
   border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
 }
 
-.pure-material-checkbox > input:checked:active + span::before {
+.pure-material-checkbox>input:checked:active+span::before {
   border-color: transparent;
   background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
 }
 
 /* Disabled */
-.pure-material-checkbox > input:disabled {
+.pure-material-checkbox>input:disabled {
   opacity: 0;
 }
 
-.pure-material-checkbox > input:disabled + span {
+.pure-material-checkbox>input:disabled+span {
   color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
   cursor: initial;
 }
 
-.pure-material-checkbox > input:disabled + span::before {
+.pure-material-checkbox>input:disabled+span::before {
   border-color: currentColor;
 }
 
-.pure-material-checkbox > input:checked:disabled + span::before,
-.pure-material-checkbox > input:indeterminate:disabled + span::before {
+.pure-material-checkbox>input:checked:disabled+span::before,
+.pure-material-checkbox>input:indeterminate:disabled+span::before {
   border-color: transparent;
   background-color: currentColor;
 }
 
 /* Play/pause botton */
 
-.sound-item > div {
+.sound-item>div {
   width: 1.7em;
   height: 1.7em;
   cursor: pointer;
@@ -447,21 +447,21 @@ audio {
   display: inline-block;
 }
 
-.sound-item > div .border {
+.sound-item>div .border {
   width: 100%;
   height: 100%;
   border: 1px solid #ff6f61;
   border-radius: 50%;
 }
 
-.sound-item > div.is--playing .border {
+.sound-item>div.is--playing .border {
   border-top: none;
   border-bottom: none;
   -webkit-animation: spin 1.5s ease-in-out infinite;
   animation: spin 1.5s ease-in-out infinite;
 }
 
-.sound-item > div .play {
+.sound-item>div .play {
   position: absolute;
   top: 6px;
   left: 8px;
@@ -477,7 +477,7 @@ audio {
   border-width: 6px 0 6px 10px;
 }
 
-.sound-item > div.is--playing .play {
+.sound-item>div.is--playing .play {
   border-style: double;
   left: 10px;
   border-width: 0px 0 0px 6px;
@@ -492,41 +492,45 @@ audio {
 
 @-webkit-keyframes spin {
   0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes spin {
   0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
   }
+
   100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
 @keyframes gradient {
   0% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
+
   50% {
-      background-position: 100% 50%;
+    background-position: 100% 50%;
   }
+
   100% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
 }
 
 @media screen and (max-width: 960px) {
   .modal {
-      overflow-y: scroll;
-      padding: 25px 15px 70px 15px;
+    overflow-y: scroll;
+    padding: 25px 15px 70px 15px;
   }
 }

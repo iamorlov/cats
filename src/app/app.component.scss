@@ -14,7 +14,8 @@
   font-weight: 300;
 }
 
-#time-clock, #weather {
+#time-clock,
+#weather {
   text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
   opacity: 0.8;
   border-radius: 10px;
@@ -35,7 +36,9 @@
   margin: 0 5px;
 }
 
-#time-clock, .weather-icon, .weather-temp {
+#time-clock,
+.weather-icon,
+.weather-temp {
   font-size: 2em;
 }
 
@@ -55,12 +58,14 @@
   width: 1rem;
 }
 
-.show_clock, .show_weather {
+.show_clock,
+.show_weather {
   height: auto;
   animation: clockAnimate 2s ease-in;
 }
 
-.hide_clock, .hide_weather {
+.hide_clock,
+.hide_weather {
   height: 0;
   display: none;
   overflow: hidden;
@@ -77,9 +82,11 @@
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 0.5;
   }
+
   100% {
     opacity: 1;
   }
@@ -89,9 +96,11 @@
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 0.5;
   }
+
   100% {
     opacity: 1;
   }

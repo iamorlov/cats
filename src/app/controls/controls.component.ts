@@ -1,12 +1,18 @@
-import { Component, OnInit, Input, HostListener, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  HostListener,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 
 @Component({
   selector: 'app-controls',
   templateUrl: './controls.component.html',
-  styleUrls: ['./controls.component.scss']
+  styleUrls: ['./controls.component.scss'],
 })
 export class ControlsComponent implements OnInit {
-
   @Input() images: number = 0;
   @Output() settingsEmitter = new EventEmitter<string>();
 
@@ -37,18 +43,56 @@ export class ControlsComponent implements OnInit {
   public city_audio: any = new Audio('/assets/sounds/city_street.mp3');
   public birds_audio: any = new Audio('/assets/sounds/birds.mp3');
 
-  public filters: any = ['No filter', '1977', 'aden', 'amaro', 'ashby', 'brannan',
-  'brooklyn', 'charmes', 'clarendon', 'crema', 'dogpatch', 'earlybird',
-  'gingham', 'ginza', 'hefe', 'helena', 'hudson', 'inkwell', 'juno', 'kelvin',
-  'lark', 'lofi', 'ludwig', 'maven', 'mayfair', 'moon', 'nashville', 'perpetua',
-  'poprocket', 'reyes', 'rise', 'sierra', 'skyline', 'slumber', 'stinson',
-  'sutro', 'toaster', 'valencia', 'vesper', 'walden', 'willow', 'xpro-II'];
+  public filters: any = [
+    'No filter',
+    '1977',
+    'aden',
+    'amaro',
+    'ashby',
+    'brannan',
+    'brooklyn',
+    'charmes',
+    'clarendon',
+    'crema',
+    'dogpatch',
+    'earlybird',
+    'gingham',
+    'ginza',
+    'hefe',
+    'helena',
+    'hudson',
+    'inkwell',
+    'juno',
+    'kelvin',
+    'lark',
+    'lofi',
+    'ludwig',
+    'maven',
+    'mayfair',
+    'moon',
+    'nashville',
+    'perpetua',
+    'poprocket',
+    'reyes',
+    'rise',
+    'sierra',
+    'skyline',
+    'slumber',
+    'stinson',
+    'sutro',
+    'toaster',
+    'valencia',
+    'vesper',
+    'walden',
+    'willow',
+    'xpro-II',
+  ];
 
   public filter_storage: string | null = localStorage.getItem('filter');
   public temperature: string | null = localStorage.getItem('temperature');
   public timeformat: string | null = localStorage.getItem('format');
 
-  constructor() { }
+  constructor() {}
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
@@ -84,7 +128,9 @@ export class ControlsComponent implements OnInit {
 
   // Weather Settings
   toggleWeather() {
-    const checkbox = document.getElementById('show-weather') as HTMLInputElement;
+    const checkbox = document.getElementById(
+      'show-weather'
+    ) as HTMLInputElement;
     if (checkbox['checked'] === true) {
       localStorage.setItem('weather', 'true');
     }
@@ -136,10 +182,14 @@ export class ControlsComponent implements OnInit {
     switch (id) {
       case 'catSound':
         if (!this.catSound) {
-          this.cat_audio.addEventListener('ended', () => {
-            this.cat_audio.currentTime = 0;
-            this.cat_audio.play();
-          }, false);
+          this.cat_audio.addEventListener(
+            'ended',
+            () => {
+              this.cat_audio.currentTime = 0;
+              this.cat_audio.play();
+            },
+            false
+          );
           this.cat_audio.play();
           this.catSound = !this.catSound;
         } else {
@@ -147,13 +197,17 @@ export class ControlsComponent implements OnInit {
           this.cat_audio.pause();
           this.catSound = !this.catSound;
         }
-      break;
+        break;
       case 'rainSound':
         if (!this.rainSound) {
-          this.rain_audio.addEventListener('ended', () => {
-            this.rain_audio.currentTime = 0;
-            this.rain_audio.play();
-          }, false);
+          this.rain_audio.addEventListener(
+            'ended',
+            () => {
+              this.rain_audio.currentTime = 0;
+              this.rain_audio.play();
+            },
+            false
+          );
           this.rain_audio.play();
           this.rainSound = !this.rainSound;
         } else {
@@ -161,13 +215,17 @@ export class ControlsComponent implements OnInit {
           this.rain_audio.pause();
           this.rainSound = !this.rainSound;
         }
-      break;
+        break;
       case 'nightSound':
         if (!this.nightSound) {
-          this.night_audio.addEventListener('ended', () => {
-            this.night_audio.currentTime = 0;
-            this.night_audio.play();
-          }, false);
+          this.night_audio.addEventListener(
+            'ended',
+            () => {
+              this.night_audio.currentTime = 0;
+              this.night_audio.play();
+            },
+            false
+          );
           this.night_audio.play();
           this.nightSound = !this.nightSound;
         } else {
@@ -175,13 +233,17 @@ export class ControlsComponent implements OnInit {
           this.night_audio.pause();
           this.nightSound = !this.nightSound;
         }
-      break;
+        break;
       case 'oceanSound':
         if (!this.oceanSound) {
-          this.ocean_audio.addEventListener('ended', () => {
-            this.ocean_audio.currentTime = 0;
-            this.ocean_audio.play();
-          }, false);
+          this.ocean_audio.addEventListener(
+            'ended',
+            () => {
+              this.ocean_audio.currentTime = 0;
+              this.ocean_audio.play();
+            },
+            false
+          );
           this.ocean_audio.play();
           this.oceanSound = !this.oceanSound;
         } else {
@@ -189,13 +251,17 @@ export class ControlsComponent implements OnInit {
           this.ocean_audio.pause();
           this.oceanSound = !this.oceanSound;
         }
-      break;
+        break;
       case 'fireSound':
         if (!this.fireSound) {
-          this.fire_audio.addEventListener('ended', () => {
-            this.fire_audio.currentTime = 0;
-            this.fire_audio.play();
-          }, false);
+          this.fire_audio.addEventListener(
+            'ended',
+            () => {
+              this.fire_audio.currentTime = 0;
+              this.fire_audio.play();
+            },
+            false
+          );
           this.fire_audio.play();
           this.fireSound = !this.fireSound;
         } else {
@@ -203,13 +269,17 @@ export class ControlsComponent implements OnInit {
           this.fire_audio.pause();
           this.fireSound = !this.fireSound;
         }
-      break;
+        break;
       case 'cafe':
         if (!this.cafe) {
-          this.cafe_audio.addEventListener('ended', () => {
-            this.cafe_audio.currentTime = 0;
-            this.cafe_audio.play();
-          }, false);
+          this.cafe_audio.addEventListener(
+            'ended',
+            () => {
+              this.cafe_audio.currentTime = 0;
+              this.cafe_audio.play();
+            },
+            false
+          );
           this.cafe_audio.play();
           this.cafe = !this.cafe;
         } else {
@@ -217,13 +287,17 @@ export class ControlsComponent implements OnInit {
           this.cafe_audio.pause();
           this.cafe = !this.cafe;
         }
-      break;
+        break;
       case 'cityStreet':
         if (!this.cityStreet) {
-          this.city_audio.addEventListener('ended', () => {
-            this.city_audio.currentTime = 0;
-            this.city_audio.play();
-          }, false);
+          this.city_audio.addEventListener(
+            'ended',
+            () => {
+              this.city_audio.currentTime = 0;
+              this.city_audio.play();
+            },
+            false
+          );
           this.city_audio.play();
           this.cityStreet = !this.cityStreet;
         } else {
@@ -231,13 +305,17 @@ export class ControlsComponent implements OnInit {
           this.city_audio.pause();
           this.cityStreet = !this.cityStreet;
         }
-      break;
+        break;
       case 'birds':
         if (!this.birds) {
-          this.birds_audio.addEventListener('ended', () => {
-            this.birds_audio.currentTime = 0;
-            this.birds_audio.play();
-          }, false);
+          this.birds_audio.addEventListener(
+            'ended',
+            () => {
+              this.birds_audio.currentTime = 0;
+              this.birds_audio.play();
+            },
+            false
+          );
           this.birds_audio.play();
           this.birds = !this.birds;
         } else {
@@ -245,7 +323,7 @@ export class ControlsComponent implements OnInit {
           this.birds_audio.pause();
           this.birds = !this.birds;
         }
-      break;
+        break;
     }
   }
 
@@ -270,7 +348,6 @@ export class ControlsComponent implements OnInit {
   }
 
   ngOnInit() {
-
     if (!this.temperature) {
       localStorage.setItem('temperature', 'celsius'); // Let Celsius be dafault
     }
@@ -293,16 +370,18 @@ export class ControlsComponent implements OnInit {
       localStorage.setItem('filter', 'No filter');
     }
 
-    (function() {
+    (function () {
       const checked_clock = localStorage.getItem('clock');
       if (checked_clock === 'true') {
         const clock = document.getElementById('show-clock') as HTMLInputElement;
-        clock['checked'] = (checked_clock === 'true');
+        clock['checked'] = checked_clock === 'true';
       }
       const checked_weather = localStorage.getItem('weather');
       if (checked_weather === 'true') {
-        const weather = document.getElementById('show-weather') as HTMLInputElement;
-        weather['checked'] = (checked_weather === 'true');
+        const weather = document.getElementById(
+          'show-weather'
+        ) as HTMLInputElement;
+        weather['checked'] = checked_weather === 'true';
       }
     })();
 
@@ -310,5 +389,4 @@ export class ControlsComponent implements OnInit {
       this.filter_storage = localStorage.getItem('filter');
     }, 100);
   }
-
 }

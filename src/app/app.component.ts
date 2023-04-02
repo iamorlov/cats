@@ -1,15 +1,14 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { WeatherService } from './weather.service';
-import { weatherIcons } from './weather-icons';
+import { WeatherService } from './weather/weather.service';
+import { weatherIcons } from './weather/weather-icons';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-
 export class AppComponent implements OnInit {
-  public images = 1010; // Count of cat walls ♥
+  public images = 1020; // Count of cat walls ♥
   public random: number = Math.floor(Math.random() * this.images);
   public random_new: number = 0;
   public cat: string = 'wall-' + this.random + '.jpg';
@@ -46,26 +45,24 @@ export class AppComponent implements OnInit {
   }
 
   public getGeoLocation() {
-    navigator.geolocation.getCurrentPosition(
-      function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(function success(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
 
-        localStorage.setItem('geo_lat', String(latitude));
-        localStorage.setItem('geo_lan', String(longitude));
-      }
-    );
-    (setTimeout(() => {
+      localStorage.setItem('geo_lat', String(latitude));
+      localStorage.setItem('geo_lan', String(longitude));
+    });
+    setTimeout(() => {
       this.lat = localStorage.getItem('geo_lat');
       this.lan = localStorage.getItem('geo_lan');
       this.getWeatherJSON(this.lat, this.lan);
-    }), 500);
+    }),
+      500;
   }
 
   public getWeatherJSON(lat: number, lan: number) {
     if (lat !== null || lan !== null) {
-      return this.weatherService.getWeather(lat, lan)
-      .subscribe(data => {
+      return this.weatherService.getWeather(lat, lan).subscribe((data) => {
         this.weatherJSON = data;
         const prefix = 'wi wi-';
         const code = this.weatherJSON.weather[0].id;
@@ -76,10 +73,14 @@ export class AppComponent implements OnInit {
         icon = prefix + icon;
         this.weather_icon = icon;
         this.weather_temp_c = Math.round(this.weatherJSON.main.temp - 273.15);
-        this.weather_temp_f = Math.round((((this.weatherJSON.main.temp - 273.15) * 9) / 5) + 32);
+        this.weather_temp_f = Math.round(
+          ((this.weatherJSON.main.temp - 273.15) * 9) / 5 + 32
+        );
       });
     } else {
-      console.log('Something meow wrong! Please, provide access to tracking location and refresh the page :3');
+      console.log(
+        'Something meow wrong! Please, provide access to tracking location and refresh the page :3'
+      );
       return 0;
     }
   }
@@ -93,7 +94,7 @@ export class AppComponent implements OnInit {
     switch (event) {
       case 'changed weather':
         this.weather = localStorage.getItem('weather');
-      break;
+        break;
       case 'changed temperature':
         this.temperature = localStorage.getItem('temperature');
         if (this.temperature === 'celsius') {
@@ -104,10 +105,10 @@ export class AppComponent implements OnInit {
           this.temp_c = false;
           this.temp_f = true;
         }
-      break;
+        break;
       case 'changed clock':
         this.clock = localStorage.getItem('clock');
-      break;
+        break;
       case 'changed time format':
         this.timeformat = localStorage.getItem('format');
         if (this.timeformat === '24H') {
@@ -118,19 +119,19 @@ export class AppComponent implements OnInit {
           this.time_usa = true;
           this.time_eur = false;
         }
-      break;
+        break;
       case 'changed filter':
         this.filter = localStorage.getItem('filter');
-      break;
+        break;
       case 'nyan cats':
         this.easter_egg = sessionStorage.getItem('cat_nyan');
-      break;
+        break;
       case 'nyan ends':
         sessionStorage.clear();
         this.easter_egg = sessionStorage.getItem('cat_nyan');
-      break;
+        break;
       default:
-        console.log('We doesn\'t meow what do you want with: ', event);
+        console.log("We doesn't meow what do you want with: ", event);
     }
   }
 
@@ -173,15 +174,17 @@ export class AppComponent implements OnInit {
       this.time_eur = false;
     }
 
-  console.log(`%c
+    console.log(
+      `%c
       |\\__/,|   (\`\\
     _.|o o  |_   ) )
 ---(((---(((---------
 ----- MEOW ----------
 ------------ iamorlov
-            `, 'font-family:monospace');
+            `,
+      'font-family:monospace'
+    );
 
-  console.log('Слава Україні!');
-
+    console.log('Слава Україні!');
   }
 }

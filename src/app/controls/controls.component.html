@@ -1,142 +1,148 @@
 <div id="player" [ngClass]="music ? 'show_modal' : 'hide_modal'" class="animation modal">
 
-    <p><strong>Sounds ambient</strong></p>
-  
-    <div class="sounds-wrapper">
-      <div class="sound-item">
-        <div id="catSound" (click)="playSound('catSound')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Cat purring</span>
+  <p><strong>Sounds ambient</strong></p>
+
+  <div class="sounds-wrapper">
+    <div class="sound-item">
+      <div id="catSound" (click)="playSound('catSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="rainSound" (click)="playSound('rainSound')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Rain</span>
+      <span class="sound-title">Cat purring</span>
+    </div>
+    <div class="sound-item">
+      <div id="rainSound" (click)="playSound('rainSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="fireSound" (click)="playSound('fireSound')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Campfire</span>
+      <span class="sound-title">Rain</span>
+    </div>
+    <div class="sound-item">
+      <div id="fireSound" (click)="playSound('fireSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="birds" (click)="playSound('birds')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Birds</span>
+      <span class="sound-title">Campfire</span>
+    </div>
+    <div class="sound-item">
+      <div id="birds" (click)="playSound('birds')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="nightSound" (click)="playSound('nightSound')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Wild night</span>
+      <span class="sound-title">Birds</span>
+    </div>
+    <div class="sound-item">
+      <div id="nightSound" (click)="playSound('nightSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="oceanSound" (click)="playSound('oceanSound')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Ocean waves</span>
+      <span class="sound-title">Wild night</span>
+    </div>
+    <div class="sound-item">
+      <div id="oceanSound" (click)="playSound('oceanSound')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="cafe" (click)="playSound('cafe')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">Cafe</span>
+      <span class="sound-title">Ocean waves</span>
+    </div>
+    <div class="sound-item">
+      <div id="cafe" (click)="playSound('cafe')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
-      <div class="sound-item">
-        <div id="cityStreet" (click)="playSound('cityStreet')">
-          <div class="border"></div>
-          <div class="play"></div>
-        </div>
-        <span class="sound-title">City Street</span>
+      <span class="sound-title">Cafe</span>
+    </div>
+    <div class="sound-item">
+      <div id="cityStreet" (click)="playSound('cityStreet')">
+        <div class="border"></div>
+        <div class="play"></div>
       </div>
+      <span class="sound-title">City Street</span>
     </div>
   </div>
-  
-  <div id="settings" [ngClass]="settings ? 'show_modal' : 'hide_modal'" class="animation modal">
-    <p><strong>Settings</strong></p>
-    <div class="settings-item">
-      <label class="pure-material-checkbox">
-        <input type="checkbox" id="show-clock" (click)="toggleClock();">
-        <span>Show clock</span>
-      </label>
-        <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === true}" (click)="changeTime('24H')">24H</div>
-        <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === false}" (click)="changeTime('12H')">12H</div>
-    </div>
-    <div class="settings-item">
-        <label class="pure-material-checkbox">
-          <input type="checkbox" id="show-weather" (click)="toggleWeather();">
-          <span>Show weather</span>
-        </label>
-        <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === true}" (click)="changeMetric('celsius')">°C</div>
-        <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === false}" (click)="changeMetric('fahrenheit')">°F</div>
+</div>
+
+<div id="settings" [ngClass]="settings ? 'show_modal' : 'hide_modal'" class="animation modal">
+  <p><strong>Settings</strong></p>
+  <div class="settings-item">
+    <label class="pure-material-checkbox">
+      <input type="checkbox" id="show-clock" (click)="toggleClock();">
+      <span>Show clock</span>
+    </label>
+    <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === true}" (click)="changeTime('24H')">
+      24H</div>
+    <div class="animation temp-format" [ngClass]="{'temp-selected': isNormalTime === false}"
+      (click)="changeTime('12H')">12H</div>
+  </div>
+  <div class="settings-item">
+    <label class="pure-material-checkbox">
+      <input type="checkbox" id="show-weather" (click)="toggleWeather();">
+      <span>Show weather</span>
+    </label>
+    <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === true}"
+      (click)="changeMetric('celsius')">°C</div>
+    <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === false}"
+      (click)="changeMetric('fahrenheit')">°F</div>
+  </div>
+  <div class="settings-item">
+    <label class="settings-label">Additional image filter:</label>
+
+    <div class="filters-preview">
+      <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
+        <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
+        <span class="animation"><i-feather name="check-circle" class="fe-icons"
+            *ngIf="filter_storage == filter"></i-feather>{{filter}}</span>
       </div>
-    <div class="settings-item">
-      <label class="settings-label">Additional image filter:</label>
-  
-      <div class="filters-preview">
-        <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
-          <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
-          <span class="animation"><i-feather name="check-circle" class="fe-icons" *ngIf="filter_storage == filter"></i-feather>{{filter}}</span>
-        </div>
-        <div class="filters-preview-bottom"></div>
-      </div>
+      <div class="filters-preview-bottom"></div>
     </div>
   </div>
-  
-  <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">
-    <p><strong>Love cats?</strong> We too!</p>
-    <img class="cats-logo" src="/assets/img/logo.png" title="Cats Non-Stop!"/>
-    <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos</p>
-    <p>Also you can play music on the background for the best relaxing</p>
-    <p>For the best experience use Google Chrome</p>
-    <p>Use <strong>space</strong> key to hide menu items</p>
-    <p>And you can download current image by pressing <strong>Enter</strong></p>
-    <p>Total cats photos: <strong>{{images}}</strong></p>
-    <p><strong>Made with love...</strong></p>
-    <br/><br/>
-    <p><img class="ukraine" src="/assets/img/ua.svg" title="Flag Of Ukraine Icon by Sergei Kokota on IconScout"/> Made in <strong>Ukraine</strong></p>
-    <p id="cred">
-      <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadym Orlov</a>
-    </p>
-    <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">Meow</span>
-    <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Disable</span>
-  
-    <div id="easter_egg" *ngIf="easter_egg" class="animation">
-      <iframe width="100%" height="180" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/134635486&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-    </div>
+</div>
+
+<div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">
+  <p><strong>Love cats?</strong> We too!</p>
+  <img class="cats-logo" src="/assets/img/logo.png" title="Cats Non-Stop!" />
+  <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos</p>
+  <p>Also you can play music on the background for the best relaxing</p>
+  <p>For the best experience use Google Chrome</p>
+  <p>Use <strong>space</strong> key to hide menu items</p>
+  <p>And you can download current image by pressing <strong>Enter</strong></p>
+  <p>Total cats photos: <strong>{{images}}</strong></p>
+  <p><strong>Made with love...</strong></p>
+  <br /><br />
+  <p><img class="ukraine" src="/assets/img/ua.svg" title="Flag Of Ukraine Icon by Sergei Kokota on IconScout" /> Made
+    in <strong>Ukraine</strong></p>
+  <p id="cred">
+    <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadym Orlov</a>
+  </p>
+  <span id="easter_egg_button" (click)="easterEgg()" *ngIf="!easter_egg" class="animation">Meow</span>
+  <span id="easter_egg_button" (click)="easterEggStop()" *ngIf="easter_egg" class="animation">Disable</span>
+
+  <div id="easter_egg" *ngIf="easter_egg" class="animation">
+    <iframe width="100%" height="180" scrolling="no" frameborder="no" allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/134635486&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
   </div>
-  
-  <div id="options-icons" class="animation">
-  
-    <span id="title" *ngIf="!easter_egg">
-      Cats non-stop!
-    </span>
-    <span id="title" *ngIf="easter_egg">
-      Nyan cats 
-    </span>
-  
-    <span id="player-icon" class="animation" (click)="showPlayer()" title="Play background sounds" appTippy>
-      <i-feather name="music" class="fe-icons"></i-feather>
-    </span>
-  
-    <span id="settings-icon" class="animation" (click)="showSettings()" title="Settings" appTippy>
-      <i-feather name="settings" class="fe-icons"></i-feather>
-    </span>
-  
-    <span id="info-icon" class="animation" (click)="showInfo()" title="About :3" appTippy>
-      <i-feather name="help-circle" class="fe-icons"></i-feather>
-    </span>
-  
-    <div class="cf"></div>
-  </div>
-  
+</div>
+
+<div id="options-icons" class="animation">
+
+  <span id="title" *ngIf="!easter_egg">
+    Cats non-stop!
+  </span>
+  <span id="title" *ngIf="easter_egg">
+    Nyan cats
+  </span>
+
+  <span id="player-icon" class="animation" (click)="showPlayer()" title="Play background sounds" appTippy>
+    <i-feather name="music" class="fe-icons"></i-feather>
+  </span>
+
+  <span id="settings-icon" class="animation" (click)="showSettings()" title="Settings" appTippy>
+    <i-feather name="settings" class="fe-icons"></i-feather>
+  </span>
+
+  <span id="info-icon" class="animation" (click)="showInfo()" title="About :3" appTippy>
+    <i-feather name="help-circle" class="fe-icons"></i-feather>
+  </span>
+
+  <div class="cf"></div>
+</div>
