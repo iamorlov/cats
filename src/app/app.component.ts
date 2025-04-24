@@ -1,124 +1,164 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { WeatherService } from './weather/weather.service';
 import { weatherIcons } from './weather/weather-icons';
+import { interval, Subscription } from 'rxjs';
 
+interface WeatherIcon {
+  icon: string;
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  public images = 1020; // Count of cat walls ♥
+export class AppComponent implements OnInit, OnDestroy {
+  private readonly IMAGES_COUNT = 1050; // Total number of cat wallpapers
+  private readonly KELVIN_TO_CELSIUS = 273.15;
+  private subscriptions = new Subscription();
+
+  public images = this.IMAGES_COUNT;
   public random: number = Math.floor(Math.random() * this.images);
   public random_new: number = 0;
-  public cat: string = 'wall-' + this.random + '.jpg';
-  public preload: string = '/assets/walls/' + this.cat;
+  public cat: string = `wall-${this.random}.jpg`;
+  public preload: string = `/assets/walls/${this.cat}`;
   public time: number = Date.now();
-  public filter: string | null = '';
-  public easter_egg: string | null = '';
+  public filter: string | null = null;
+  public easter_egg: string | null = null;
   public temp_c: boolean = true;
   public temp_f: boolean = false;
   public time_eur: boolean = true;
   public time_usa: boolean = false;
-  public vm = this;
 
   public clock: string | null = localStorage.getItem('clock');
   public weather: string | null = localStorage.getItem('weather');
   public temperature: string | null = localStorage.getItem('temperature');
   public timeformat: string | null = localStorage.getItem('format');
-  public lat: any = localStorage.getItem('geo_lat');
-  public lan: any = localStorage.getItem('geo_lan');
+  public lat: string | null = localStorage.getItem('geo_lat');
+  public lan: string | null = localStorage.getItem('geo_lan');
 
   public weatherJSON: any = null;
   public weather_temp_c: number = 0;
   public weather_temp_f: number = 0;
   public weather_icon: string = '';
-  public weather_icons: any = null;
+  public weather_icons: { [key: number]: WeatherIcon } = weatherIcons;
 
-  constructor(public weatherService: WeatherService) {
-    setInterval(() => {
-      this.time = Date.now();
-    }, 1000);
+  constructor(private weatherService: WeatherService) {}
 
-    this.weather_icons = weatherIcons;
+  ngOnInit(): void {
+    this.initializeSettings();
+    this.startClock();
+    this.startBackgroundCycle();
     this.getGeoLocation();
+    this.logAppInfo();
   }
 
-  public getGeoLocation() {
-    navigator.geolocation.getCurrentPosition(function success(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      localStorage.setItem('geo_lat', String(latitude));
-      localStorage.setItem('geo_lan', String(longitude));
-    });
-    setTimeout(() => {
-      this.lat = localStorage.getItem('geo_lat');
-      this.lan = localStorage.getItem('geo_lan');
-      this.getWeatherJSON(this.lat, this.lan);
-    }),
-      500;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
-  public getWeatherJSON(lat: number, lan: number) {
-    if (lat !== null || lan !== null) {
-      return this.weatherService.getWeather(lat, lan).subscribe((data) => {
-        this.weatherJSON = data;
-        const prefix = 'wi wi-';
-        const code = this.weatherJSON.weather[0].id;
-        let icon = this.weather_icons[code].icon;
-        if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
-          icon = 'day-' + icon;
-        }
-        icon = prefix + icon;
-        this.weather_icon = icon;
-        this.weather_temp_c = Math.round(this.weatherJSON.main.temp - 273.15);
-        this.weather_temp_f = Math.round(
-          ((this.weatherJSON.main.temp - 273.15) * 9) / 5 + 32
+  private initializeSettings(): void {
+    sessionStorage.clear();
+
+    this.temperature = localStorage.getItem('temperature') || 'celsius';
+    this.temp_c = this.temperature === 'celsius';
+    this.temp_f = this.temperature === 'fahrenheit';
+
+    this.timeformat = localStorage.getItem('format') || '24H';
+    this.time_eur = this.timeformat === '24H';
+    this.time_usa = this.timeformat === '12H';
+  }
+
+  private startClock(): void {
+    this.subscriptions.add(
+      interval(1000).subscribe(() => {
+        this.time = Date.now();
+      })
+    );
+  }
+
+  private startBackgroundCycle(): void {
+    this.subscriptions.add(
+      interval(9000).subscribe(() => {
+        this.random_new = Math.floor(Math.random() * this.images);
+        this.preload = `/assets/walls/wall-${this.random_new}.jpg`;
+        // Preload image
+        const img = new Image();
+        img.src = this.preload;
+        setTimeout(() => {
+          this.cat = `wall-${this.random_new}.jpg`;
+        }, 3000);
+      })
+    );
+  }
+
+  public getGeoLocation(): void {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.lat = String(position.coords.latitude);
+        this.lan = String(position.coords.longitude);
+        localStorage.setItem('geo_lat', this.lat);
+        localStorage.setItem('geo_lan', this.lan);
+        this.getWeatherJSON(this.lat, this.lan);
+      },
+      () => {
+        console.error(
+          'Something meow wrong! Please provide access to location and refresh the page :3'
         );
-      });
-    } else {
-      console.log(
-        'Something meow wrong! Please, provide access to tracking location and refresh the page :3'
+      }
+    );
+  }
+
+  public getWeatherJSON(lat: string | null, lan: string | null): void {
+    if (lat && lan) {
+      this.subscriptions.add(
+        this.weatherService.getWeather(Number(lat), Number(lan)).subscribe({
+          next: (data) => this.processWeatherData(data),
+          error: () =>
+            console.error('Failed to fetch weather data. Please try again.'),
+        })
       );
-      return 0;
+    } else {
+      console.error(
+        'Something meow wrong! Please provide access to location and refresh the page :3'
+      );
     }
   }
 
-  public getFullScreen() {
-    const screen = document.body;
-    screen['requestFullscreen']();
+  private processWeatherData(data: any): void {
+    this.weatherJSON = data;
+    const code = data.weather[0].id;
+    let icon = this.weather_icons[code]?.icon || 'unknown';
+    if (!(code > 699 && code < 800) && !(code > 899 && code < 1000)) {
+      icon = `day-${icon}`;
+    }
+    this.weather_icon = `wi wi-${icon}`;
+    this.weather_temp_c = Math.round(data.main.temp - this.KELVIN_TO_CELSIUS);
+    this.weather_temp_f = Math.round((this.weather_temp_c * 9) / 5 + 32);
   }
 
-  public changeSettings(event: string) {
+  public getFullScreen(): void {
+    document.body.requestFullscreen().catch(() => {
+      console.error('Failed to enter fullscreen mode.');
+    });
+  }
+
+  public changeSettings(event: string): void {
     switch (event) {
       case 'changed weather':
         this.weather = localStorage.getItem('weather');
         break;
       case 'changed temperature':
-        this.temperature = localStorage.getItem('temperature');
-        if (this.temperature === 'celsius') {
-          this.temp_c = true;
-          this.temp_f = false;
-        }
-        if (this.temperature === 'fahrenheit') {
-          this.temp_c = false;
-          this.temp_f = true;
-        }
+        this.temperature = localStorage.getItem('temperature') || 'celsius';
+        this.temp_c = this.temperature === 'celsius';
+        this.temp_f = this.temperature === 'fahrenheit';
         break;
       case 'changed clock':
         this.clock = localStorage.getItem('clock');
         break;
       case 'changed time format':
-        this.timeformat = localStorage.getItem('format');
-        if (this.timeformat === '24H') {
-          this.time_eur = true;
-          this.time_usa = false;
-        }
-        if (this.timeformat === '12H') {
-          this.time_usa = true;
-          this.time_eur = false;
-        }
+        this.timeformat = localStorage.getItem('format') || '24H';
+        this.time_eur = this.timeformat === '24H';
+        this.time_usa = this.timeformat === '12H';
         break;
       case 'changed filter':
         this.filter = localStorage.getItem('filter');
@@ -128,63 +168,32 @@ export class AppComponent implements OnInit {
         break;
       case 'nyan ends':
         sessionStorage.clear();
-        this.easter_egg = sessionStorage.getItem('cat_nyan');
+        this.easter_egg = null;
         break;
       default:
-        console.log("We doesn't meow what do you want with: ", event);
+        console.warn(`Unknown setting event: ${event}`);
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.code === 'Enter') {
-      const donwload = document.getElementById('download') as HTMLBaseElement;
-      donwload.click();
+      const download = document.getElementById('download') as HTMLButtonElement;
+      download?.click();
     }
   }
 
-  ngOnInit() {
-    sessionStorage.clear();
-
-    setInterval(() => {
-      const random_new = Math.floor(Math.random() * this.images);
-      this.preload = '/assets/walls/wall-' + random_new + '.jpg';
-      setTimeout(() => {
-        this.cat = 'wall-' + random_new + '.jpg';
-      }, 3000);
-    }, 9000);
-
-    this.temperature = localStorage.getItem('temperature');
-    if (this.temperature === 'celsius' || null) {
-      this.temp_c = true;
-      this.temp_f = false;
-    }
-    if (this.temperature === 'fahrenheit') {
-      this.temp_c = false;
-      this.temp_f = true;
-    }
-
-    this.timeformat = localStorage.getItem('format');
-    if (this.timeformat === '24H' || null) {
-      this.time_eur = true;
-      this.time_usa = false;
-    }
-    if (this.timeformat === '12H') {
-      this.time_usa = true;
-      this.time_eur = false;
-    }
-
+  private logAppInfo(): void {
     console.log(
       `%c
       |\\__/,|   (\`\\
     _.|o o  |_   ) )
----(((---(((---------
------ MEOW ----------
------------- iamorlov
-            `,
+  ---(((---(((---------
+  ----- MEOW ----------
+  ------------ iamorlov
+      `,
       'font-family:monospace'
     );
-
     console.log('Слава Україні!');
   }
 }
