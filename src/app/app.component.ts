@@ -12,7 +12,7 @@ interface WeatherIcon {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly IMAGES_COUNT = 1050; // Total number of cat wallpapers
+  private readonly IMAGES_COUNT = 1060; // Total number of cat wallpapers
   private readonly KELVIN_TO_CELSIUS = 273.15;
   private subscriptions = new Subscription();
 
