@@ -12,7 +12,7 @@ interface WeatherIcon {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly IMAGES_COUNT = 1090; // Total number of cat wallpapers
+  private readonly IMAGES_COUNT = 1110; // Total number of cat wallpapers
   private readonly KELVIN_TO_CELSIUS = 273.15;
   private subscriptions = new Subscription();
 
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private startBackgroundCycle(): void {
     this.subscriptions.add(
-      interval(9000).subscribe(() => {
+      interval(10000).subscribe(() => {
         this.random_new = Math.floor(Math.random() * this.images);
         this.preload = `/assets/walls/wall-${this.random_new}.jpg`;
         // Preload image
