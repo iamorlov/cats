@@ -33,7 +33,8 @@
         <span *ngIf="temp_f">{{weather_temp_f}}&#xb0;F</span>
       </div>
       <div class='weather-location'>
-        <i-feather name="map-pin" class="fe-icons fe-small"></i-feather> {{weatherJSON.name}}
+        <p><strong>{{weatherJSON.name}}</strong></p>
+        <p>{{weatherJSON.weather[0].description | titlecase}}</p>
       </div>
     </div>
 
