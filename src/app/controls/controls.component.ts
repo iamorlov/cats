@@ -37,52 +37,52 @@ export class ControlsComponent implements OnInit, OnDestroy {
   public city_audio: HTMLAudioElement = new Audio('/assets/sounds/city_street.mp3');
   public birds_audio: HTMLAudioElement = new Audio('/assets/sounds/birds.mp3');
 
-  public filters: string[] = [
-    'No filter',
-    '1977',
-    'aden',
-    'amaro',
-    'ashby',
-    'brannan',
-    'brooklyn',
-    'charmes',
-    'clarendon',
-    'crema',
-    'dogpatch',
-    'earlybird',
-    'gingham',
-    'ginza',
-    'hefe',
-    'helena',
-    'hudson',
-    'inkwell',
-    'juno',
-    'kelvin',
-    'lark',
-    'lofi',
-    'ludwig',
-    'maven',
-    'mayfair',
-    'moon',
-    'nashville',
-    'perpetua',
-    'poprocket',
-    'reyes',
-    'rise',
-    'sierra',
-    'skyline',
-    'slumber',
-    'stinson',
-    'sutro',
-    'toaster',
-    'valencia',
-    'vesper',
-    'walden',
-    'willow',
-    'xpro-II',
-  ];
+  // public filters: string[] = [
+  //   'No filter',
+  //   '1977',
+  //   'aden',
+  //   'amaro',
+  //   'ashby',
+  //   'brannan',
+  //   'brooklyn',
+  //   'charmes',
+  //   'clarendon',
+  //   'crema',
+  //   'dogpatch',
+  //   'earlybird',
+  //   'gingham',
+  //   'ginza',
+  //   'hefe',
+  //   'helena',
+  //   'hudson',
+  //   'inkwell',
+  //   'juno',
+  //   'kelvin',
+  //   'lark',
+  //   'lofi',
+  //   'ludwig',
+  //   'maven',
+  //   'mayfair',
+  //   'moon',
+  //   'nashville',
+  //   'perpetua',
+  //   'poprocket',
+  //   'reyes',
+  //   'rise',
+  //   'sierra',
+  //   'skyline',
+  //   'slumber',
+  //   'stinson',
+  //   'sutro',
+  //   'toaster',
+  //   'valencia',
+  //   'vesper',
+  //   'walden',
+  //   'willow',
+  //   'xpro-II',
+  // ];
 
-  public filter_storage: string | null = localStorage.getItem('filter');
+  // public filter_storage: string | null = localStorage.getItem('filter');
   public temperature: string | null = localStorage.getItem('temperature');
   public timeformat: string | null = localStorage.getItem('format');
 
@@ -102,7 +102,7 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeSettings();
-    this.startFilterPolling();
+    // this.startFilterPolling();
     this.setupAudioLoops();
   }
 
@@ -123,8 +123,8 @@ export class ControlsComponent implements OnInit, OnDestroy {
     this.isNormalTime = this.timeformat === '24H';
 
     // Set default filter to 'No filter'
-    this.filter_storage = this.filter_storage || 'No filter';
-    localStorage.setItem('filter', this.filter_storage);
+    // this.filter_storage = this.filter_storage || 'No filter';
+    // localStorage.setItem('filter', this.filter_storage);
 
     // Initialize checkbox states
     this.updateCheckbox('clock', 'show-clock');
@@ -141,13 +141,13 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private startFilterPolling(): void {
-    this.subscriptions.add(
-      interval(100).subscribe(() => {
-        this.filter_storage = localStorage.getItem('filter');
-      })
-    );
-  }
+  // private startFilterPolling(): void {
+  //   this.subscriptions.add(
+  //     interval(100).subscribe(() => {
+  //       this.filter_storage = localStorage.getItem('filter');
+  //     })
+  //   );
+  // }
 
   private setupAudioLoops(): void {
     Object.values(this.audioElements).forEach(({ audio }) => {
@@ -253,11 +253,11 @@ export class ControlsComponent implements OnInit, OnDestroy {
   }
 
   // Instagram filters
-  chooseFilter(filter: string): void {
-    localStorage.setItem('filter', filter);
-    this.filter_storage = filter;
-    this.settingsEmitter.emit('changed filter');
-  }
+  // chooseFilter(filter: string): void {
+  //   localStorage.setItem('filter', filter);
+  //   this.filter_storage = filter;
+  //   this.settingsEmitter.emit('changed filter');
+  // }
 
   // Easter Egg
   easterEgg(): void {
