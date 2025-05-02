@@ -84,18 +84,6 @@
     <div class="animation temp-format" [ngClass]="{'temp-selected': isCelsius === false}"
       (click)="changeMetric('fahrenheit')">°F</div>
   </div>
-  <!-- <div class="settings-item">
-    <label class="settings-label">Additional image filter:</label>
-
-    <div class="filters-preview">
-      <div *ngFor="let filter of filters" class="animation filter-item" (click)="chooseFilter(filter)">
-        <img src="/assets/img/cat-filters.jpg" class="{{'filter-' + filter}}" [title]="filter">
-        <span class="animation"><i-feather name="check-circle" class="fe-icons"
-            *ngIf="filter_storage == filter"></i-feather>{{filter}}</span>
-      </div>
-      <div class="filters-preview-bottom"></div>
-    </div>
-  </div> -->
 </div>
 
 <div id="info" [ngClass]="info ? 'show_modal' : 'hide_modal'" class="animation modal">

@@ -37,7 +37,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
   public city_audio: HTMLAudioElement = new Audio('/assets/sounds/city_street.mp3');
   public birds_audio: HTMLAudioElement = new Audio('/assets/sounds/birds.mp3');
 
-  // public filters: string[] = [
   //   'No filter',
   //   '1977',
   //   'aden',
@@ -102,7 +101,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initializeSettings();
-    // this.startFilterPolling();
     this.setupAudioLoops();
   }
 
@@ -122,10 +120,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
     localStorage.setItem('format', this.timeformat);
     this.isNormalTime = this.timeformat === '24H';
 
-    // Set default filter to 'No filter'
-    // this.filter_storage = this.filter_storage || 'No filter';
-    // localStorage.setItem('filter', this.filter_storage);
-
     // Initialize checkbox states
     this.updateCheckbox('clock', 'show-clock');
     this.updateCheckbox('weather', 'show-weather');
@@ -141,13 +135,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private startFilterPolling(): void {
-  //   this.subscriptions.add(
-  //     interval(100).subscribe(() => {
-  //       this.filter_storage = localStorage.getItem('filter');
-  //     })
-  //   );
-  // }
 
   private setupAudioLoops(): void {
     Object.values(this.audioElements).forEach(({ audio }) => {
@@ -251,13 +238,6 @@ export class ControlsComponent implements OnInit, OnDestroy {
     // Update component state
     this[id as keyof this] = audioConfig.state as any;
   }
-
-  // Instagram filters
-  // chooseFilter(filter: string): void {
-  //   localStorage.setItem('filter', filter);
-  //   this.filter_storage = filter;
-  //   this.settingsEmitter.emit('changed filter');
-  // }
 
   // Easter Egg
   easterEgg(): void {

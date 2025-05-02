@@ -12,7 +12,7 @@ interface WeatherIcon {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly IMAGES_COUNT = 1120; // Total number of cat wallpapers
+  private readonly IMAGES_COUNT = 1130; // Total number of cat wallpapers
   private readonly KELVIN_TO_CELSIUS = 273.15;
   private subscriptions = new Subscription();
 
@@ -22,7 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public cat: string = `wall-${this.random}.jpg`;
   public preload: string = `/assets/walls/${this.cat}`;
   public time: number = Date.now();
-  // public filter: string | null = null;
   public easter_egg: string | null = null;
   public temp_c: boolean = true;
   public temp_f: boolean = false;
@@ -160,9 +159,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.time_eur = this.timeformat === '24H';
         this.time_usa = this.timeformat === '12H';
         break;
-      // case 'changed filter':
-      //   this.filter = localStorage.getItem('filter');
-      //   break;
       case 'nyan cats':
         this.easter_egg = sessionStorage.getItem('cat_nyan');
         break;
