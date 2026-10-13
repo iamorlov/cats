@@ -1,0 +1,52 @@
+<main class="stage" [class.paused]="slideshow.paused()">
+  @for (slide of slides(); track slide.id) {
+    <div class="wall" [class.fast]="slide.fast" animate.enter="wall-in" animate.leave="wall-out">
+      <img
+        class="kenburns"
+        [class.zoom-out]="slide.zoomOut"
+        [src]="slide.url"
+        alt=""
+        [style.transform-origin]="slide.origin"
+        [style.animation-duration.s]="slide.duration"
+      />
+    </div>
+  }
+  <div class="vignette"></div>
+</main>
+
+<div class="rotate-hint">
+  <svg class="icon" viewBox="0 0 24 24">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+    <line x1="12" y1="18" x2="12.01" y2="18" />
+  </svg>
+  <p>For the best experience, rotate your device</p>
+</div>
+
+@if (canFullscreen) {
+  <button class="icon-btn fs-btn tip tip-below" aria-label="Fullscreen" (click)="fullscreen()">
+    <svg class="icon" viewBox="0 0 24 24">
+      <path
+        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+      />
+    </svg>
+  </button>
+}
+
+@if (nyan()) {
+  <div class="nyan" animate.enter="nyan-in" animate.leave="nyan-out">
+    <img src="assets/img/nyan.png" alt="" width="1600" height="450" />
+  </div>
+}
+
+<div class="widgets">
+  @if (settings.clock()) {
+    <div class="widget clock" animate.enter="widget-in" animate.leave="widget-out">
+      {{ now() | date: (settings.timeFormat() === '24H' ? 'HH:mm' : 'h:mm a') }}
+    </div>
+  }
+  @if (settings.weather()) {
+    <app-weather class="widget" animate.enter="widget-in" animate.leave="widget-out" />
+  }
+</div>
+
+<app-controls [(panel)]="panel" [(nyan)]="nyan" />

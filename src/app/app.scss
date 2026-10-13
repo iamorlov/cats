@@ -1,0 +1,227 @@
+// The loading picture stays under the first cat until it has faded in.
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #333 url('/assets/img/loading.jpg') center / cover;
+}
+
+.wall {
+  --fade: 1.75s;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  &.fast {
+    --fade: 0.5s;
+  }
+}
+
+.wall-in {
+  animation: fade-in var(--fade) ease-in-out;
+}
+
+// The old cat stays fully visible underneath until the new one has faded in (the slow fade is the longest).
+.wall-out {
+  z-index: 0;
+  animation: hold 1.75s;
+}
+
+// Ken Burns: each cat slowly zooms in or out from its own random anchor while it is on screen.
+.kenburns {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: kenburns 12s ease-in-out both;
+
+  &.zoom-out {
+    animation-direction: reverse;
+  }
+}
+
+.paused .kenburns {
+  animation-play-state: paused;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  box-shadow: 0 0 175px #000 inset;
+}
+
+.widgets {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 3px 10px;
+  font-weight: 300;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
+}
+
+.clock {
+  font-size: 2em;
+}
+
+.widget-in {
+  animation: rise 0.6s ease-out;
+}
+
+.widget-out {
+  animation: rise 0.4s ease-in reverse;
+}
+
+.fs-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 20;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    color: #ff6f61;
+  }
+}
+
+:host-context(:fullscreen) .fs-btn {
+  display: none;
+}
+
+.nyan {
+  position: fixed;
+  top: 5%;
+  left: 0;
+  z-index: 4;
+  pointer-events: none;
+
+  img {
+    width: auto;
+    height: 7rem;
+    opacity: 0.75;
+    animation: bob 0.5s infinite;
+  }
+}
+
+.nyan-in {
+  animation: fly-in 1.2s ease-out;
+}
+
+.nyan-out {
+  animation: fly-out 1.2s ease-in forwards;
+}
+
+.rotate-hint {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 15px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.9);
+  border-bottom: 2px solid #ff6f61;
+
+  .icon {
+    width: 5rem;
+    height: 5rem;
+    margin: auto;
+    animation: tilt 3s linear infinite;
+  }
+}
+
+@media (max-width: 720px) {
+  .widgets {
+    bottom: 75px;
+  }
+
+  .nyan img {
+    height: auto;
+    width: 128px;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .rotate-hint {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns,
+  .nyan img,
+  .rotate-hint .icon {
+    animation: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hold {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes bob {
+  25% {
+    transform: translate(0.75rem, 0);
+  }
+  50% {
+    transform: translate(0.75rem, 0.75rem);
+  }
+  75% {
+    transform: translate(0, 0.75rem);
+  }
+}
+
+@keyframes fly-in {
+  from {
+    transform: translateX(-110%);
+  }
+}
+
+@keyframes fly-out {
+  to {
+    transform: translateX(110vw);
+  }
+}
+
+@keyframes tilt {
+  50% {
+    transform: rotate(-90deg);
+  }
+}

@@ -1,0 +1,204 @@
+<section class="panel" [class.open]="panel() === 'sounds'" [inert]="panel() !== 'sounds'">
+  <div class="panel-body">
+    <h2>Sounds ambient</h2>
+    @for (sound of sounds; track sound.id) {
+      <div class="sound">
+        <button
+          class="sound-btn"
+          [class.playing]="playing().has(sound.id)"
+          [attr.aria-pressed]="playing().has(sound.id)"
+          [attr.aria-label]="sound.title"
+          (click)="toggleSound(sound.id)"
+        >
+          <span class="ring"></span>
+          <span class="play"></span>
+        </button>
+        <span class="sound-title">{{ sound.title }}</span>
+        <input
+          #level
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          [value]="volume(sound.id)"
+          [attr.aria-label]="sound.title + ' volume'"
+          (input)="setVolume(sound.id, level.valueAsNumber)"
+        />
+      </div>
+    }
+  </div>
+</section>
+
+<section class="panel" [class.open]="panel() === 'settings'" [inert]="panel() !== 'settings'">
+  <div class="panel-body">
+    <h2>Settings</h2>
+    <div class="row">
+      <label class="check">
+        <input
+          #clock
+          type="checkbox"
+          [checked]="settings.clock()"
+          (change)="settings.clock.set(clock.checked)"
+        />
+        Show clock
+      </label>
+      <span class="chips">
+        <button
+          class="chip"
+          [class.on]="settings.timeFormat() === '24H'"
+          (click)="settings.timeFormat.set('24H')"
+        >
+          24H
+        </button>
+        <button
+          class="chip"
+          [class.on]="settings.timeFormat() === '12H'"
+          (click)="settings.timeFormat.set('12H')"
+        >
+          12H
+        </button>
+      </span>
+    </div>
+    <div class="row">
+      <label class="check">
+        <input
+          #weather
+          type="checkbox"
+          [checked]="settings.weather()"
+          (change)="settings.weather.set(weather.checked)"
+        />
+        Show weather
+      </label>
+      <span class="chips">
+        <button
+          class="chip"
+          [class.on]="settings.units() === 'celsius'"
+          (click)="settings.units.set('celsius')"
+        >
+          °C
+        </button>
+        <button
+          class="chip"
+          [class.on]="settings.units() === 'fahrenheit'"
+          (click)="settings.units.set('fahrenheit')"
+        >
+          °F
+        </button>
+      </span>
+    </div>
+    <div class="row">
+      <span class="check">Slideshow</span>
+      <span class="chips">
+        @for (seconds of intervals; track seconds) {
+          <button
+            class="chip"
+            [class.on]="settings.interval() === seconds"
+            (click)="settings.interval.set(seconds)"
+          >
+            {{ seconds }}s
+          </button>
+        }
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="panel" [class.open]="panel() === 'info'" [inert]="panel() !== 'info'">
+  <div class="panel-body">
+    <h2><strong>Love cats?</strong> We too!</h2>
+    <img class="logo" src="assets/img/logo.png" alt="Cats non-stop!" width="259" height="240" />
+    <p><strong>Cats non-stop!</strong> - it's random slideshow of unreal cute cats photos</p>
+    <p>Also you can play music on the background for the best relaxing</p>
+    <p>For the best experience use Google Chrome</p>
+    <p>Use <strong>space</strong> key to hide menu items</p>
+    <p>And you can download current image by pressing <strong>Enter</strong></p>
+    <p>
+      Flip through cats with <strong>←</strong> <strong>→</strong> and pause them with
+      <strong>P</strong>
+    </p>
+    <p>
+      Total cats photos: <strong>{{ walls }}</strong>
+    </p>
+    <p class="love"><strong>Made with love...</strong></p>
+    <p>
+      <img
+        class="flag"
+        src="assets/img/ua.svg"
+        alt=""
+        title="Flag Of Ukraine Icon by Sergei Kokota on IconScout"
+      />
+      Made in <strong>Ukraine</strong>
+    </p>
+    <p class="credit">
+      <a href="https://www.linkedin.com/in/iamorlov/" target="_blank">by Vadym Orlov</a>
+    </p>
+    <button class="meow" (click)="nyan.set(!nyan())">{{ nyan() ? 'Disable' : 'Meow' }}</button>
+    @if (nyan()) {
+      <iframe
+        class="nyan-player"
+        title="Nyan cat"
+        height="180"
+        allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/134635486&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+      ></iframe>
+    }
+  </div>
+</section>
+
+<nav class="bar">
+  <span class="title">{{ nyan() ? 'Nyan cats' : 'Cats non-stop!' }}</span>
+  <button
+    class="icon-btn tip"
+    [attr.aria-label]="(slideshow.paused() ? 'Resume' : 'Pause') + ' slideshow (P)'"
+    (click)="slideshow.togglePause()"
+  >
+    @if (slideshow.paused()) {
+      <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+    } @else {
+      <svg class="icon" viewBox="0 0 24 24">
+        <rect x="6" y="4" width="4" height="16" />
+        <rect x="14" y="4" width="4" height="16" />
+      </svg>
+    }
+  </button>
+  <button
+    class="icon-btn tip"
+    [class.active]="panel() === 'info'"
+    [attr.aria-expanded]="panel() === 'info'"
+    aria-label="About :3"
+    (click)="toggle('info')"
+  >
+    <svg class="icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  </button>
+  <button
+    class="icon-btn tip"
+    [class.active]="panel() === 'settings'"
+    [attr.aria-expanded]="panel() === 'settings'"
+    aria-label="Settings"
+    (click)="toggle('settings')"
+  >
+    <svg class="icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" />
+      <path
+        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+      />
+    </svg>
+  </button>
+  <button
+    class="icon-btn tip"
+    [class.active]="panel() === 'sounds'"
+    [attr.aria-expanded]="panel() === 'sounds'"
+    aria-label="Play background sounds"
+    (click)="toggle('sounds')"
+  >
+    <svg class="icon" viewBox="0 0 24 24">
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </svg>
+  </button>
+</nav>
