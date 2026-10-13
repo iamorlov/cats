@@ -28,7 +28,6 @@ interface Channel {
 })
 export class Controls {
   readonly panel = model<Panel | null>(null);
-  readonly nyan = model(false);
 
   protected readonly settings = inject(Settings);
   protected readonly slideshow = inject(Slideshow);

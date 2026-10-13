@@ -22,7 +22,6 @@ export class App {
   });
   protected readonly now = signal(Date.now());
   protected readonly panel = signal<Panel | null>(null);
-  protected readonly nyan = signal(false);
   protected readonly canFullscreen = document.fullscreenEnabled;
 
   constructor() {

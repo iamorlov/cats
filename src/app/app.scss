@@ -100,29 +100,6 @@
   display: none;
 }
 
-.nyan {
-  position: fixed;
-  top: 5%;
-  left: 0;
-  z-index: 4;
-  pointer-events: none;
-
-  img {
-    width: auto;
-    height: 7rem;
-    opacity: 0.75;
-    animation: bob 0.5s infinite;
-  }
-}
-
-.nyan-in {
-  animation: fly-in 1.2s ease-out;
-}
-
-.nyan-out {
-  animation: fly-out 1.2s ease-in forwards;
-}
-
 .rotate-hint {
   display: none;
   position: fixed;
@@ -147,11 +124,6 @@
   .widgets {
     bottom: 75px;
   }
-
-  .nyan img {
-    height: auto;
-    width: 128px;
-  }
 }
 
 @media (max-width: 720px) and (orientation: portrait) {
@@ -162,7 +134,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .kenburns,
-  .nyan img,
   .rotate-hint .icon {
     animation: none;
   }
@@ -193,30 +164,6 @@
   from {
     opacity: 0;
     transform: translateY(12px);
-  }
-}
-
-@keyframes bob {
-  25% {
-    transform: translate(0.75rem, 0);
-  }
-  50% {
-    transform: translate(0.75rem, 0.75rem);
-  }
-  75% {
-    transform: translate(0, 0.75rem);
-  }
-}
-
-@keyframes fly-in {
-  from {
-    transform: translateX(-110%);
-  }
-}
-
-@keyframes fly-out {
-  to {
-    transform: translateX(110vw);
   }
 }
 

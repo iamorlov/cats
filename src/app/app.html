@@ -32,12 +32,6 @@
   </button>
 }
 
-@if (nyan()) {
-  <div class="nyan" animate.enter="nyan-in" animate.leave="nyan-out">
-    <img src="assets/img/nyan.png" alt="" width="1600" height="450" />
-  </div>
-}
-
 <div class="widgets">
   @if (settings.clock()) {
     <div class="widget clock" animate.enter="widget-in" animate.leave="widget-out">
@@ -49,4 +43,4 @@
   }
 </div>
 
-<app-controls [(panel)]="panel" [(nyan)]="nyan" />
+<app-controls [(panel)]="panel" />

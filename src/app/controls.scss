@@ -1,11 +1,17 @@
 $coral: #ff6f61;
 
+// Panels are as wide as the bar plus its 15px margin on both sides. One more bar button? Add 44px.
+:host {
+  --bar-width: 313px;
+}
+
 .bar {
   position: fixed;
   right: 15px;
   bottom: 15px;
   z-index: 10;
   display: flex;
+  width: var(--bar-width);
   align-items: center;
   border-radius: 10px;
   font-size: 1.2em;
@@ -56,14 +62,14 @@ $coral: #ff6f61;
   white-space: nowrap;
 }
 
-// Panels slide in on transform (no layout per frame) and stay in the DOM, so the nyan player keeps playing.
+// Panels slide in on transform (no layout per frame) and stay in the DOM: open and close are just a class.
 .panel {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   z-index: 8;
-  width: 300px;
+  width: calc(var(--bar-width) + 30px);
   max-width: 75%;
   overflow: hidden;
   font-size: 0.9em;
@@ -286,31 +292,10 @@ input[type='checkbox'] {
   }
 }
 
-.meow {
-  display: block;
-  width: 100%;
-  margin: 25px 0 10px;
-  padding: 10px 5px;
-  border-radius: 5px;
-  opacity: 0.2;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: $coral;
-    opacity: 0.9;
-  }
-}
-
-.nyan-player {
-  display: block;
-  width: calc(100% + 30px);
-  margin: 0 -15px;
-  border: 0;
-}
-
 @media (max-width: 720px) {
   .bar {
     left: 15px;
+    width: auto;
   }
 }
 
