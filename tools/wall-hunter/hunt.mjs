@@ -1,5 +1,6 @@
-// Wall hunter: finds real (camera-made) cat photos on Wikimedia Commons that are CC0 or public domain,
-// crops them to 16:9 around the cat, and saves them to tools/wall-hunter/preview/ under the names
+// Wall hunter: finds real (camera-made) cat photos on Wikimedia Commons that are CC0, public domain or
+// CC BY / BY-SA (credit travels inside the file, the site shows it), crops them to 16:9 around the cat,
+// and saves them to tools/wall-hunter/preview/ under the names
 // they will have in the project (wall-<next>.jpg). It never touches the project itself: you look the
 // batch over, copy it into public/assets/walls and set WALLS by hand.
 //
@@ -30,8 +31,14 @@ const UA = 'CatsNonStopWallHunter/1.0 (https://catsnons.top; https://github.com/
 
 /** JPEG, at least Full HD, no people tagged. */
 const BASE = '-haswbstatement:P180=Q5 filemime:jpeg filew:>1919 fileh:>1079';
-/** Tagged "depicts: house cat", or a cat word in the file name (plenty of cat photos carry no tags). */
+/**
+ * Where to look, best first; a run stops as soon as it has enough. Cat photos the Commons community
+ * rated "quality" or "featured", then everything tagged "depicts: house cat", then cat words in file
+ * names (plenty of cat photos carry no tags).
+ */
 const FINDERS = [
+  'haswbstatement:P180=Q146 incategory:Quality_images',
+  'haswbstatement:P180=Q146 incategory:Featured_pictures_on_Wikimedia_Commons',
   'haswbstatement:P180=Q146',
   ...[
     'cat',
@@ -50,8 +57,8 @@ const FINDERS = [
     '猫',
   ].map((word) => `intitle:${word}`),
 ];
-/** CC0, or "copyright status: public domain" (narrowed to the author's own release in screen()). */
-const LICENSES = ['haswbstatement:P275=Q6938433', 'haswbstatement:P6216=Q19652'];
+/** Marks the JPEG comment that carries a photo's credit to the site (read by src/app/slideshow.ts). */
+const CREDIT_TAG = 'cats-credit ';
 /** Variety: the rest of a prolific author's photos wait for the next run. */
 const PER_AUTHOR = 2;
 
@@ -143,35 +150,34 @@ async function main() {
   let next = site.length;
   const hashes = await wallHashes(site, sources.hashes);
 
-  console.log('Asking Commons for CC0 / public-domain cat photos…');
-  const pool = (await search()).filter((p) => !known.has(String(p.pageid)));
+  console.log('Searching Wikimedia Commons, best-rated cats first…');
   const stats = {};
   const reject = (page, reason) => {
     stats[reason] = (stats[reason] ?? 0) + 1;
     sources.rejected[page.pageid] = reason;
   };
-  const queue = [];
-  for (const page of pool) {
-    const reason = screen(page);
-    if (reason) reject(page, reason);
-    else queue.push(page);
-  }
-  queue.sort((a, b) => rank(b) - rank(a));
-  console.log(`${pool.length} new on Commons, ${queue.length} pass the metadata checks`);
 
   const saved = [];
   const byAuthor = new Map();
   const seriesTaken = new Set();
   // ponytail: one candidate at a time keeps Commons happy; ~2–4 s each, fine for a manual run.
-  for (const page of queue) {
+  for await (const page of search()) {
     if (saved.length === count) break;
+    if (known.has(String(page.pageid))) continue;
+    known.add(String(page.pageid)); // the finders overlap
+    const reason = screen(page);
+    if (reason) {
+      reject(page, reason);
+      continue;
+    }
     if ((byAuthor.get(author(page)) ?? 0) >= PER_AUTHOR || seriesTaken.has(series(page))) continue;
     const info = page.imageinfo[0];
     let verdict;
     let jpeg;
     try {
       verdict = await analyze(await download(info.thumburl), hashes);
-      if (!verdict.reason) jpeg = await render(await download(info.url), verdict.crop);
+      if (!verdict.reason)
+        jpeg = await render(await download(info.url), verdict.crop, credit(page));
     } catch (error) {
       console.warn(`  skip ${page.title}: ${error.message}`); // network trouble: try again next run
       continue;
@@ -190,7 +196,8 @@ async function main() {
     sources.hashes[name] = verdict.hash.toString(16);
     await save(sources); // a crash mid-run must not lose where the saved photos came from
     next++;
-    console.log(`  ${name}  ← ${page.title}  (${Math.round(jpeg.length / 1024)} KB)`);
+    const license = sources.walls[name].license;
+    console.log(`  ${name}  ← ${page.title}  (${license}, ${Math.round(jpeg.length / 1024)} KB)`);
   }
   await save(sources);
 
@@ -214,32 +221,27 @@ Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${sav
   3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
 }
 
-/** Every CC0 / public-domain match, with the metadata the checks need and a 960 px thumbnail URL. */
-export async function search() {
-  const pages = new Map();
-  for (const license of LICENSES)
-    for (const finder of FINDERS) {
-      let more = {};
-      do {
-        const response = await api({
-          generator: 'search',
-          gsrnamespace: '6',
-          gsrsearch: `${finder} ${license} ${BASE}`,
-          gsrlimit: '50',
-          prop: 'imageinfo',
-          iiprop: 'url|size|commonmetadata|extmetadata',
-          iiurlwidth: '960',
-          iiextmetadatafilter: 'LicenseShortName|AttributionRequired|Artist|Categories',
-          ...more,
-        });
-        for (const page of response.query?.pages ?? [])
-          if (page.imageinfo) pages.set(page.pageid, page);
-        more = response.continue;
-      } while (more);
-      process.stdout.write(`\r  ${pages.size} files found`);
-    }
-  process.stdout.write('\n');
-  return [...pages.values()];
+/** Commons search results, finder by finder and page by page, in relevance order, with metadata. */
+async function* search() {
+  for (const finder of FINDERS) {
+    let more = {};
+    do {
+      const response = await api({
+        generator: 'search',
+        gsrnamespace: '6',
+        gsrsearch: `${finder} ${BASE}`,
+        gsrlimit: '50',
+        prop: 'imageinfo',
+        iiprop: 'url|size|commonmetadata|extmetadata',
+        iiurlwidth: '960',
+        iiextmetadatafilter: 'LicenseShortName|LicenseUrl|Artist|Categories',
+        ...more,
+      });
+      const pages = (response.query?.pages ?? []).filter((page) => page.imageinfo);
+      yield* pages.sort((a, b) => a.index - b.index);
+      more = response.continue;
+    } while (more);
+  }
 }
 
 /** Cheap checks on metadata alone. Returns why a file is out, or null. */
@@ -248,13 +250,16 @@ export function screen(page) {
   const ext = (key) => String(info.extmetadata?.[key]?.value ?? '');
   const categories = ext('Categories');
   const model = String((info.commonmetadata ?? []).find((m) => m.name === 'Model')?.value ?? '');
-  // CC0, or public domain by the author's own release. Not "PD because old" or "PD-USGov":
-  // those are public domain in some countries only.
+  // CC0 or CC BY / BY-SA (any version: the site credits the author), or public domain by the
+  // author's own release. Not NC or ND, not "PD because old" or "PD-USGov": those hold only for
+  // some uses or in some countries.
   const license = ext('LicenseShortName');
   const free =
-    /cc0/i.test(license) ||
+    /^cc0/i.test(license) ||
+    /^CC BY(-SA)?( \d|$)/i.test(license) ||
     (/public domain/i.test(license) && /PD-(self|user|author)/i.test(categories));
-  if (!free || ext('AttributionRequired') === 'true') return 'licence';
+  if (!free) return 'licence';
+  if (/^CC BY/i.test(license) && !author(page)) return 'no author to credit';
   if (info.width / info.height < 1.3) return 'not landscape';
   if (Math.min(info.width, info.height * RATIO) < OUT_W) return 'too small for 16:9';
   // Also proves a camera took it: scans, renders and AI pictures carry no camera model.
@@ -285,13 +290,20 @@ function author(page) {
     .trim();
 }
 
-/** Curated pictures first, then the most pixels (better cameras). */
-function rank(page) {
+/**
+ * What the site must show with a CC BY / BY-SA photo: author, licence, where it came from, and that
+ * it was changed (cropped and resized). Null when nothing is owed: CC0 and public domain.
+ */
+export function credit(page) {
   const info = page.imageinfo[0];
-  const curated = /featured picture|quality image|valued image/i.test(
-    String(info.extmetadata?.Categories?.value ?? ''),
-  );
-  return (curated ? 1e9 : 0) + info.width * info.height;
+  const license = String(info.extmetadata?.LicenseShortName?.value ?? '');
+  if (!/^CC BY/i.test(license)) return null;
+  return {
+    author: author(page),
+    license,
+    licenseUrl: String(info.extmetadata?.LicenseUrl?.value ?? ''),
+    source: info.descriptionurl,
+  };
 }
 
 /**
@@ -501,8 +513,12 @@ async function wallHashes(walls, cache) {
   return hashes;
 }
 
-/** Full-resolution original → the analysed 16:9 window → 1920×1080 JPEG. */
-async function render(original, crop) {
+/**
+ * Full-resolution original → the analysed 16:9 window → 1920×1080 JPEG. A photo that needs credit
+ * carries it inside the file: EXIF Artist/Copyright for anyone who downloads it, and a JPEG comment
+ * the site reads to show the caption. Copying the .jpg is all it takes.
+ */
+export async function render(original, crop, owed) {
   const meta = await sharp(original).metadata();
   const upright = (meta.orientation ?? 1) >= 5; // EXIF-rotated: width and height swap after rotate()
   const w = upright ? meta.height : meta.width;
@@ -513,12 +529,27 @@ async function render(original, crop) {
     width: Math.min(Math.round(crop.w * w), w - Math.round(crop.x * w)),
     height: Math.min(Math.round(crop.h * h), h - Math.round(crop.y * h)),
   };
-  return sharp(original)
-    .rotate()
-    .extract(box)
-    .resize(OUT_W, OUT_H, { fit: 'fill' })
-    .jpeg(JPEG)
-    .toBuffer();
+  let image = sharp(original).rotate().extract(box).resize(OUT_W, OUT_H, { fit: 'fill' });
+  if (!owed) return image.jpeg(JPEG).toBuffer();
+  image = image.withExif({
+    IFD0: {
+      Artist: owed.author,
+      Copyright: `${owed.license} ${owed.licenseUrl}. Source: ${owed.source}. Cropped and resized.`,
+    },
+  });
+  return withComment(await image.jpeg(JPEG).toBuffer(), CREDIT_TAG + JSON.stringify(owed));
+}
+
+/** Adds a JPEG comment (COM) segment right after the APPn headers. */
+export function withComment(jpeg, text) {
+  const payload = Buffer.from(text, 'utf8');
+  if (payload.length > 65533) throw new Error('comment too long for one JPEG segment');
+  let at = 2; // after SOI
+  while (jpeg[at] === 0xff && jpeg[at + 1] >= 0xe0 && jpeg[at + 1] <= 0xef)
+    at += 2 + jpeg.readUInt16BE(at + 2);
+  const header = Buffer.from([0xff, 0xfe, 0, 0]);
+  header.writeUInt16BE(payload.length + 2, 2);
+  return Buffer.concat([jpeg.subarray(0, at), header, payload, jpeg.subarray(at)]);
 }
 
 function provenance(page, crop) {
@@ -532,6 +563,7 @@ function provenance(page, crop) {
     title: page.title,
     url: info.descriptionurl,
     license: text('LicenseShortName'),
+    licenseUrl: text('LicenseUrl'),
     author: text('Artist'),
     original: `${info.width}x${info.height}`,
     crop: Object.fromEntries(Object.entries(crop).map(([k, v]) => [k, +v.toFixed(4)])),

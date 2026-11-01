@@ -14,6 +14,16 @@
   <div class="vignette"></div>
 </main>
 
+<!-- CC BY / BY-SA walls: author, licence and the change we made, for as long as the photo is up. -->
+@for (slide of slides(); track slide.id) {
+  @if (slide.credit; as credit) {
+    <p class="photo-credit" animate.enter="credit-in" animate.leave="credit-out">
+      Photo: <a [href]="credit.source" target="_blank">{{ credit.author }}</a> ·
+      <a [href]="credit.licenseUrl" target="_blank" rel="license">{{ credit.license }}</a> · cropped
+    </p>
+  }
+}
+
 <div class="rotate-hint">
   <svg class="icon" viewBox="0 0 24 24">
     <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />

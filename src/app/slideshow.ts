@@ -4,6 +4,17 @@ import { Settings } from './settings';
 /** public/assets/walls/wall-0.jpg … wall-1130.jpg. Adding cats? Bump this; slideshow.spec.ts checks it. */
 export const WALLS = 1131;
 
+/** Walls from here on come from tools/wall-hunter and may owe a credit; the ones before were picked by hand. */
+const HUNTED_FROM = 1131;
+
+/** What a CC BY / BY-SA wall must be shown with. tools/wall-hunter writes it into the JPEG. */
+export interface Credit {
+  author: string;
+  license: string;
+  licenseUrl: string;
+  source: string;
+}
+
 export interface Slide {
   /** Unique per showing, so the same cat shown again still gets a fresh layer. */
   id: number;
@@ -15,6 +26,7 @@ export interface Slide {
   duration: number;
   /** Flipped by hand: quick crossfade instead of the slow one. */
   fast: boolean;
+  credit?: Credit;
 }
 
 const ORIGINS = [
@@ -82,8 +94,11 @@ export class Slideshow {
     const ticket = ++this.ticket;
     const url = wallUrl(this.order[pos]);
     let ok = true;
+    let credit: Credit | undefined;
     try {
       await decoded(url); // swap only once the picture is ready: no half-loaded frames
+      // A photo whose credit can't be read isn't shown at all: never without its author.
+      if (this.order[pos] >= HUNTED_FROM) credit = await readCredit(url);
     } catch {
       ok = false; // broken file or offline: keep the current cat, move past this one next tick
     }
@@ -97,6 +112,7 @@ export class Slideshow {
         zoomOut: Math.random() < 0.5,
         duration: this.settings.interval() + 2,
         fast,
+        credit,
       });
       new Image().src = wallUrl(this.order[(pos + 1) % WALLS]); // warm the cache for the next cat
     }
@@ -118,4 +134,28 @@ function decoded(url: string): Promise<void> {
   const img = new Image();
   img.src = url;
   return img.decode();
+}
+
+/** Walls are cached for a month, and decoding just loaded this one: this read comes from the cache. */
+async function readCredit(url: string): Promise<Credit | undefined> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`${response.status} ${url}`);
+  return creditFrom(new Uint8Array(await response.arrayBuffer()));
+}
+
+const CREDIT_TAG = 'cats-credit ';
+
+/** The credit in a JPEG comment (COM) segment, if the file has one. */
+export function creditFrom(jpeg: Uint8Array): Credit | undefined {
+  for (let at = 2; at + 4 <= jpeg.length && jpeg[at] === 0xff;) {
+    const marker = jpeg[at + 1];
+    if (marker === 0xda) break; // image data starts: no more headers
+    const length = (jpeg[at + 2] << 8) | jpeg[at + 3];
+    if (marker === 0xfe) {
+      const text = new TextDecoder().decode(jpeg.subarray(at + 4, at + 2 + length));
+      if (text.startsWith(CREDIT_TAG)) return JSON.parse(text.slice(CREDIT_TAG.length)) as Credit;
+    }
+    at += 2 + length;
+  }
+  return undefined;
 }

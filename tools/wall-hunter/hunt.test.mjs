@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { LIMITS, bestWindow, distance, framed, screen, series } from './hunt.mjs';
+import sharp from 'sharp';
+import {
+  LIMITS,
+  bestWindow,
+  credit,
+  distance,
+  framed,
+  screen,
+  series,
+  withComment,
+} from './hunt.mjs';
 
 test('16:9 window follows the in-focus detail and notices a subject it would cut', () => {
   const softTopSharpBottom = [...Array(30).fill(1), ...Array(70).fill(10)];
@@ -11,26 +21,39 @@ test('16:9 window follows the in-focus detail and notices a subject it would cut
   assert.ok(bestWindow(catFillsFrame, 70).cut > LIMITS.cut);
 });
 
-test('metadata screen', () => {
-  const page = ({
-    title = 'File:Tabby cat on a sofa.jpg',
-    size = [6000, 4000],
-    model = 'Canon EOS 5D Mark III',
-    license = 'CC0',
-    categories = 'Tabby cats|Cats on sofas',
-  } = {}) => ({
-    title,
-    imageinfo: [
-      {
-        width: size[0],
-        height: size[1],
-        commonmetadata: [{ name: 'Model', value: model }],
-        extmetadata: { LicenseShortName: { value: license }, Categories: { value: categories } },
+const page = ({
+  title = 'File:Tabby cat on a sofa.jpg',
+  size = [6000, 4000],
+  model = 'Canon EOS 5D Mark III',
+  license = 'CC0',
+  artist = '<a href="//commons.wikimedia.org/wiki/User:Jane">Jane Doe</a>',
+  categories = 'Tabby cats|Cats on sofas',
+} = {}) => ({
+  title,
+  imageinfo: [
+    {
+      width: size[0],
+      height: size[1],
+      descriptionurl: 'https://commons.wikimedia.org/wiki/File:Tabby_cat.jpg',
+      commonmetadata: [{ name: 'Model', value: model }],
+      extmetadata: {
+        LicenseShortName: { value: license },
+        LicenseUrl: { value: 'https://creativecommons.org/licenses/by-sa/4.0' },
+        Artist: { value: artist },
+        Categories: { value: categories },
       },
-    ],
-  });
+    },
+  ],
+});
+
+test('metadata screen', () => {
   assert.equal(screen(page()), null);
-  assert.equal(screen(page({ license: 'CC BY-SA 4.0' })), 'licence');
+  assert.equal(screen(page({ license: 'CC BY-SA 4.0' })), null);
+  assert.equal(screen(page({ license: 'CC BY 2.0' })), null);
+  assert.equal(screen(page({ license: 'CC BY 2.0', artist: '' })), 'no author to credit');
+  assert.equal(screen(page({ license: 'CC BY-NC-SA 2.0' })), 'licence');
+  assert.equal(screen(page({ license: 'CC BY-ND 4.0' })), 'licence');
+  assert.equal(screen(page({ license: 'GFDL' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-USGov' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-self' })), null);
   assert.equal(screen(page({ size: [3000, 4000] })), 'not landscape');
@@ -63,6 +86,28 @@ test('one shoot is one series', () => {
   assert.equal(s('File:Feral cat 5.jpg'), s('File:Feral cat 7.jpg'));
   assert.equal(s('File:My house cat, Ada (1).JPG'), s('File:My house cat, Ada (4).JPG'));
   assert.notEqual(s('File:Feral cat 5.jpg'), s('File:Kitten 5.jpg'));
+});
+
+test('credit is owed for CC BY / BY-SA only, and rides in a JPEG comment', async () => {
+  assert.equal(credit(page()), null);
+  const owed = credit(page({ license: 'CC BY-SA 4.0' }));
+  assert.deepEqual(owed, {
+    author: 'Jane Doe',
+    license: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
+    source: 'https://commons.wikimedia.org/wiki/File:Tabby_cat.jpg',
+  });
+  const jpeg = await sharp({ create: { width: 64, height: 36, channels: 3, background: '#c86' } })
+    .withExif({ IFD0: { Artist: 'Jane Doe' } })
+    .jpeg()
+    .toBuffer();
+  const tagged = withComment(jpeg, 'cats-credit ' + JSON.stringify(owed));
+  // the comment sits after the APP headers, and the JPEG still decodes
+  const at = tagged.indexOf(Buffer.from([0xff, 0xfe]));
+  const length = tagged.readUInt16BE(at + 2);
+  const text = tagged.subarray(at + 4, at + 2 + length).toString('utf8');
+  assert.deepEqual(JSON.parse(text.slice('cats-credit '.length)), owed);
+  assert.equal((await sharp(tagged).metadata()).width, 64);
 });
 
 test('dHash distance counts differing bits', () => {

@@ -24,14 +24,16 @@ npm run hunt -- --drop 1150,1162   # remove the ones you don't like, closing the
 
 The hunter never touches the project. It saves the photos to `tools/wall-hunter/preview` under the names they will have here (`wall-<next>.jpg`) and puts the whole batch on one sheet, `tools/wall-hunter/last-run.jpg`. Look it over, drop what you don't like, copy the rest into `public/assets/walls` and set `WALLS` in `src/app/slideshow.ts` to the number it prints. A new run starts only once the last batch is copied in; photos you never copied are remembered and not offered again.
 
-It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)) and only takes photos that are:
+It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)), photos rated "quality" or "featured" first, and only takes ones that are:
 
-- **free to redistribute with no strings:** CC0, or public domain released by the author. Never "public domain because old" or a US-government work, which hold only in some countries. The Commons page, author and licence of every cat go into `tools/wall-hunter/sources.json`.
+- **free to redistribute:** CC0, public domain released by the author, or CC BY / CC BY-SA (any version). Never NC or ND, "public domain because old" or a US-government work. The Commons page, author and licence of every cat go into `tools/wall-hunter/sources.json`.
 - **real:** a system camera (Canon EOS, Nikon D/Z, Sony α, Fujifilm X…) in the EXIF, no category hinting at AI, renders, artwork, watermarks, borders or a licence dispute.
 - **about the cat:** a cat word in the file name, filed in a cat category, no people tagged, no lynx, skull or Sno-Cat.
 - **good enough for a wall:** a sharp subject on a softer background, sane exposure, in colour, not a duplicate of an existing wall. Every limit sits at about the worst 5 % of the walls picked by hand.
 
 It crops 16:9 around the sharpest part of the frame (dropping the photo if that would cut the cat) and saves 1920×1080 JPEGs with mozjpeg q90.
+
+**Credit.** A CC BY / BY-SA photo carries its credit inside the file: EXIF Artist/Copyright for anyone who downloads it, and a JPEG comment the site reads to show "Photo: author · licence · cropped" in the top left corner while the photo is up. Nothing to copy besides the `.jpg`. A wall whose credit can't be read is skipped rather than shown without it.
 
 Whichever way cats arrive, `public/assets/walls` must stay numbered without gaps and `WALLS` must match the count: `npm test` fails otherwise.
 
