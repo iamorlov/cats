@@ -1,13 +1,15 @@
 // Wall hunter: finds real (camera-made) cat photos on Wikimedia Commons that are CC0 or public domain,
-// crops them to 16:9 around the cat, and saves them as the next public/assets/walls/wall-<n>.jpg.
+// crops them to 16:9 around the cat, and saves them to tools/wall-hunter/preview/ under the names
+// they will have in the project (wall-<next>.jpg). It never touches the project itself: you look the
+// batch over, copy it into public/assets/walls and set WALLS by hand.
 //
-//   npm run hunt                    # 50 new walls
-//   npm run hunt -- --count 60      # 40…60 per run
-//   npm run hunt -- --dry-run       # write to tools/wall-hunter/preview/ instead, touch nothing else
-//   npm run hunt -- --drop 1150,1162  # didn't like some? removes them, closes the gaps, never fetches them again
+//   npm run hunt                       # 50 new walls into preview/
+//   npm run hunt -- --count 60         # 40…60 per run
+//   npm run hunt -- --drop 1150,1162   # don't like some? removes them from preview/, closes the
+//                                      # numbering gaps, and they never come back
 //
-// Every saved wall is recorded in sources.json (Commons page, author, license, crop): that is the
-// proof each photo may be redistributed. Rejected files are remembered there too, so later runs skip them.
+// Every photo is recorded in sources.json (Commons page, author, licence, crop): the proof it may be
+// redistributed. Rejected and never-copied ones are remembered there too, so later runs skip them.
 
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
@@ -17,10 +19,10 @@ import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 
 const here = (path) => fileURLToPath(new URL(path, import.meta.url));
-const WALLS_DIR = here('../../public/assets/walls/');
-const SLIDESHOW = here('../../src/app/slideshow.ts');
+const WALLS_DIR = here('../../public/assets/walls/'); // read only
 const SOURCES = here('./sources.json');
 const PREVIEW = here('./preview/');
+const LAST_RUN = here('./last-run.jpg'); // outside preview/, so it can't be copied in with the walls by accident
 
 const API = 'https://commons.wikimedia.org/w/api.php';
 // Wikimedia asks every client to say who it is and how to reach its owner.
@@ -102,38 +104,44 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 
 async function main() {
   const { values } = parseArgs({
-    options: {
-      count: { type: 'string', default: '50' },
-      'dry-run': { type: 'boolean', default: false },
-      drop: { type: 'string' },
-    },
+    options: { count: { type: 'string', default: '50' }, drop: { type: 'string' } },
   });
   const sources = existsSync(SOURCES)
     ? JSON.parse(await readFile(SOURCES, 'utf8'))
     : { walls: {}, rejected: {}, hashes: {} };
+  await mkdir(PREVIEW, { recursive: true });
   if (values.drop) return drop(values.drop.split(',').map(Number), sources);
 
   const count = Number(values.count);
   if (!Number.isInteger(count) || count < 40 || count > 60)
     throw new Error('--count must be 40…60');
-  const dryRun = values['dry-run'];
+
+  const site = await numbers(WALLS_DIR);
+  if (site.length && site.at(-1) !== site.length - 1)
+    throw new Error(`public/assets/walls is not numbered 0…${site.length - 1} without gaps`);
+
+  // The last batch: copied into the project, it's done; still only in preview, it's not.
+  const waiting = [];
+  for (const n of await numbers(PREVIEW)) {
+    const [mine, theirs] = [join(PREVIEW, `wall-${n}.jpg`), join(WALLS_DIR, `wall-${n}.jpg`)];
+    if (!existsSync(theirs) || !(await readFile(mine)).equals(await readFile(theirs)))
+      waiting.push(n);
+  }
+  if (waiting.length)
+    throw new Error(
+      `tools/wall-hunter/preview still has ${waiting.length} photos that are not in public/assets/walls.\n` +
+        'Drop the ones you do not want (npm run hunt -- --drop <numbers>), copy the rest in, then run again.',
+    );
+  await rm(PREVIEW, { recursive: true, force: true });
+  await mkdir(PREVIEW);
+  forgetUncopied(sources);
 
   const known = new Set([
     ...Object.values(sources.walls).map((w) => String(w.pageid)),
     ...Object.keys(sources.rejected),
   ]);
-
-  const files = (await readdir(WALLS_DIR)).filter((f) => /^wall-\d+\.jpg$/.test(f));
-  let next = Math.max(-1, ...files.map((f) => Number(f.match(/\d+/)[0]))) + 1;
-  if (next !== files.length)
-    throw new Error(`walls are not numbered 0…${files.length - 1} without gaps`);
-  const hashes = await wallHashes(files, sources.hashes);
-
-  const outDir = dryRun ? PREVIEW : WALLS_DIR;
-  if (dryRun) {
-    await rm(PREVIEW, { recursive: true, force: true });
-    await mkdir(PREVIEW, { recursive: true });
-  }
+  let next = site.length;
+  const hashes = await wallHashes(site, sources.hashes);
 
   console.log('Asking Commons for CC0 / public-domain cat photos…');
   const pool = (await search()).filter((p) => !known.has(String(p.pageid)));
@@ -173,32 +181,19 @@ async function main() {
       continue;
     }
     const name = `wall-${next}.jpg`;
-    await writeFile(join(outDir, name), jpeg);
+    await writeFile(join(PREVIEW, name), jpeg);
     hashes.set(name, verdict.hash);
     byAuthor.set(author(page), (byAuthor.get(author(page)) ?? 0) + 1);
     seriesTaken.add(series(page));
     saved.push(name);
-    if (!dryRun) {
-      sources.walls[name] = provenance(page, verdict.crop);
-      sources.hashes[name] = verdict.hash.toString(16);
-    }
+    sources.walls[name] = provenance(page, verdict.crop);
+    sources.hashes[name] = verdict.hash.toString(16);
+    await save(sources); // a crash mid-run must not lose where the saved photos came from
     next++;
     console.log(`  ${name}  ← ${page.title}  (${Math.round(jpeg.length / 1024)} KB)`);
   }
+  await save(sources);
 
-  if (saved.length)
-    await contactSheet(
-      saved.map((name) => join(outDir, name)),
-      join(PREVIEW, '..', 'last-run.jpg'),
-    );
-  if (!dryRun) {
-    await writeFile(SOURCES, JSON.stringify(sources, null, 2) + '\n');
-    if (saved.length) await bumpWalls(next);
-  }
-
-  console.log(
-    `\nSaved ${saved.length}/${count}${dryRun ? ' (dry run, in tools/wall-hunter/preview)' : ''}.`,
-  );
   console.log(
     'Rejected:',
     Object.entries(stats)
@@ -206,8 +201,17 @@ async function main() {
       .map(([r, n]) => `${r} ${n}`)
       .join(', ') || 'none',
   );
-  console.log('Look them over: tools/wall-hunter/last-run.jpg');
   if (saved.length < count) console.log('Commons ran out of fresh candidates for now.');
+  if (!saved.length) return;
+  await contactSheet(
+    saved.map((name) => join(PREVIEW, name)),
+    LAST_RUN,
+  );
+  console.log(`
+Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${saved.at(-1)}.
+  1. Look them over: tools/wall-hunter/last-run.jpg (in numbering order).
+  2. Remove the ones you don't like: npm run hunt -- --drop <numbers>
+  3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
 }
 
 /** Every CC0 / public-domain match, with the metadata the checks need and a 960 px thumbnail URL. */
@@ -487,10 +491,10 @@ export function distance(a, b) {
   return bits;
 }
 
-/** dHash of every wall on disk, cached in sources.json (the first run takes a minute). */
-async function wallHashes(files, cache) {
+/** dHash of every wall in the project, cached in sources.json (the first run takes a minute). */
+async function wallHashes(walls, cache) {
   const hashes = new Map();
-  for (const name of files) {
+  for (const name of walls.map((n) => `wall-${n}.jpg`)) {
     cache[name] ??= (await dhash(sharp(join(WALLS_DIR, name)))).toString(16);
     hashes.set(name, BigInt('0x' + cache[name]));
   }
@@ -535,44 +539,75 @@ function provenance(page, crop) {
   };
 }
 
-/** Deletes walls by number, renumbers the later ones down so there are no gaps, and blocks the sources. */
-async function drop(numbers, sources) {
-  const total = (await readdir(WALLS_DIR)).filter((f) => /^wall-\d+\.jpg$/.test(f)).length;
-  const gone = new Set(numbers);
-  for (const n of gone) {
-    if (!Number.isInteger(n) || n < 0 || n >= total) throw new Error(`no wall-${n}.jpg`);
-    const name = `wall-${n}.jpg`;
-    await rm(join(WALLS_DIR, name));
-    const record = sources.walls[name];
-    if (record) sources.rejected[record.pageid] = 'dropped by hand';
-    delete sources.walls[name];
-    delete sources.hashes[name];
+/**
+ * Removes photos from preview/ and renumbers what's left, so the batch still continues the project
+ * without gaps. Dropped sources never come back. Files already deleted by hand are fine too.
+ */
+async function drop(dropped, sources) {
+  if (!dropped.every(Number.isInteger))
+    throw new Error('--drop takes wall numbers: --drop 1150,1162');
+  for (const n of dropped) {
+    await rm(join(PREVIEW, `wall-${n}.jpg`), { force: true });
+    forget(sources, `wall-${n}.jpg`, 'dropped by hand');
   }
-  let to = Math.min(...gone);
-  for (let n = to; n < total; n++) {
-    if (gone.has(n)) continue;
+  forgetUncopied(sources); // deleted by hand: forget before renumbering hands the name to another photo
+  const left = await numbers(PREVIEW);
+  const first = Math.min((await numbers(WALLS_DIR)).length, ...left);
+  let to = first;
+  for (const n of left) {
     const [from, name] = [`wall-${n}.jpg`, `wall-${to}.jpg`];
-    await rename(join(WALLS_DIR, from), join(WALLS_DIR, name));
-    for (const map of [sources.walls, sources.hashes]) {
-      if (from in map) map[name] = map[from];
-      delete map[from];
+    if (from !== name) {
+      await rename(join(PREVIEW, from), join(PREVIEW, name));
+      for (const map of [sources.walls, sources.hashes]) {
+        if (from in map) map[name] = map[from];
+        delete map[from];
+      }
     }
     to++;
   }
-  await writeFile(SOURCES, JSON.stringify(sources, null, 2) + '\n');
-  await bumpWalls(to);
-  console.log(`Dropped ${gone.size}; ${to} walls now.`);
+  await save(sources);
+  if (!left.length) return console.log('preview is empty now.');
+  const names = Array.from({ length: to - first }, (_, i) => `wall-${first + i}.jpg`);
+  await contactSheet(
+    names.map((name) => join(PREVIEW, name)),
+    LAST_RUN,
+  );
+  console.log(
+    `preview now holds ${names[0]} … ${names.at(-1)} (last-run.jpg redrawn).\n` +
+      `Copy them into public/assets/walls and set WALLS = ${to} in src/app/slideshow.ts.`,
+  );
 }
 
-/** The app only shows walls 0…WALLS-1, so the constant moves with the files. */
-async function bumpWalls(total) {
-  const source = await readFile(SLIDESHOW, 'utf8');
-  const updated = source.replace(/export const WALLS = \d+;/, `export const WALLS = ${total};`);
-  if (updated === source) throw new Error('WALLS constant not found in slideshow.ts');
-  await writeFile(SLIDESHOW, updated);
+/** Wall numbers in a folder, ascending. */
+async function numbers(dir) {
+  if (!existsSync(dir)) return [];
+  return (await readdir(dir))
+    .map((file) => file.match(/^wall-(\d+)\.jpg$/)?.[1])
+    .filter(Boolean)
+    .map(Number)
+    .sort((a, b) => a - b);
 }
 
-/** One picture of the whole run, in numbering order, to eyeball before committing. */
+/** Drops a photo's record and blocks its Commons source for good. */
+function forget(sources, name, reason) {
+  const record = sources.walls[name];
+  if (record) sources.rejected[record.pageid] = reason;
+  delete sources.walls[name];
+  delete sources.hashes[name];
+}
+
+/** A photo that left preview without reaching the project was turned down: don't offer it again. */
+function forgetUncopied(sources) {
+  for (const name of Object.keys(sources.walls))
+    if (!existsSync(join(WALLS_DIR, name)) && !existsSync(join(PREVIEW, name)))
+      forget(sources, name, 'not copied into the project');
+}
+
+function save(sources) {
+  return writeFile(SOURCES, JSON.stringify(sources, null, 2) + '\n');
+}
+
+/** One picture of the whole batch, in numbering order, to eyeball before copying it in. */
 async function contactSheet(paths, out) {
   const cols = 6;
   const [tw, th] = [320, 180];
