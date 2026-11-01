@@ -87,6 +87,10 @@ export const CAT_TITLE =
 export const NOT_A_HOUSE_CAT =
   /wild ?cat|wildkatze|lynx|bobcat|ringtail|civet|leopard|tiger|lion|cheetah|serval|caracal|ocelot|margay|puma|cougar|jaguar|manul|pallas|sno-?cat|catfish|catamaran|caterpillar|cat (ba|island|bay)|skull|skeleton|mummy|statue|sculpture|figurine|plush|toy\b|robot/i;
 
+/** A person named in the title: the people tag is often missing. */
+export const PEOPLE =
+  /\b(boys?|girls?|man|men|woman|women|child|children|kids?|bab(y|ies)|toddlers?|people|person|owners?|lady|family|hands?|arms|lap|holding|held|cuddl\w*|hug\w*|selfie|junge|mädchen|frau|mann|kinder?|niñ[oa]s?|mujer|hombre|garçon|fille|femme|homme|enfant)\b|мальчик|девоч|женщин|мужчин|ребён|ребен|дет(и|ей)|хозя/iu;
+
 /** Some category about cats: the photo is filed as a cat photo, not just named like one. */
 export const CAT_CATEGORY =
   /\bcats\b|\bkittens\b|felis (silvestris )?catus|\bkatzen\b|\bchats\b|\bgat[oi]s?\b|\bkoty\b|\bkediler\b/i;
@@ -102,7 +106,7 @@ export const GOOD_CAMERA =
 export const BLOCKED =
   /watermark|with borders|border removal|remove border|ai-generated|artificial intelligence|midjourney|dall-e|stable diffusion|low quality|blurr|out of focus|deletion|copyright violation|missing permission|without (a )?source|license review needed|unverified|artwork|museum|painting|drawing|illustration|prints? by|engraving|caricature|cartoon|sculpture|statue|figurine|plush|in art\b|logo|poster|postcard|stamp|collage|montage|meme|screenshot|x-ray|dead|injur|wound|sick|disease|surgery|veterinar|necropsy|taxiderm|skeleton|roadkill|personality rights/i;
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   await main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;
@@ -170,7 +174,8 @@ async function main() {
       reject(page, reason);
       continue;
     }
-    if ((byAuthor.get(author(page)) ?? 0) >= PER_AUTHOR || seriesTaken.has(series(page))) continue;
+    if ((byAuthor.get(photographer(page)) ?? 0) >= PER_AUTHOR || seriesTaken.has(series(page)))
+      continue;
     const info = page.imageinfo[0];
     let verdict;
     let jpeg;
@@ -189,7 +194,7 @@ async function main() {
     const name = `wall-${next}.jpg`;
     await writeFile(join(PREVIEW, name), jpeg);
     hashes.set(name, verdict.hash);
-    byAuthor.set(author(page), (byAuthor.get(author(page)) ?? 0) + 1);
+    byAuthor.set(photographer(page), (byAuthor.get(photographer(page)) ?? 0) + 1);
     seriesTaken.add(series(page));
     saved.push(name);
     sources.walls[name] = provenance(page, verdict.crop);
@@ -270,6 +275,8 @@ export function screen(page) {
     !CAT_CATEGORY.test(categories)
   )
     return 'cat not the subject';
+  // Untagged people still show up in titles; a person, often a child, is not ours to publish.
+  if (PEOPLE.test(page.title)) return 'person in the photo';
   if (BLOCKED.test(categories)) return 'category';
   return null;
 }
@@ -288,6 +295,14 @@ function author(page) {
   return String(page.imageinfo[0].extmetadata?.Artist?.value ?? '')
     .replace(/<[^>]+>/g, '')
     .trim();
+}
+
+/** One key per person: "Trougnouf" and "Trougnouf (Benoit Brummer)" are the same photographer. */
+export function photographer(page) {
+  return author(page)
+    .replace(/\s*\(.*?\)/g, '')
+    .trim()
+    .toLowerCase();
 }
 
 /**

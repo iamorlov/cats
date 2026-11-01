@@ -7,6 +7,7 @@ import {
   credit,
   distance,
   framed,
+  photographer,
   screen,
   series,
   withComment,
@@ -61,6 +62,11 @@ test('metadata screen', () => {
   assert.equal(screen(page({ title: 'File:Tucker Sno-Cat pic2.JPG' })), 'cat not the subject');
   assert.equal(screen(page({ title: 'File:Street market 17.jpg' })), 'cat not the subject');
   assert.equal(screen(page({ categories: 'Cats|Images with watermarks' })), 'category');
+  assert.equal(
+    screen(page({ title: 'File:A young boy cuddles a kitten.jpg' })),
+    'person in the photo',
+  );
+  assert.equal(screen(page({ title: 'File:Manx cat in a mansion.jpg' })), null);
 });
 
 test('a white border is a frame, a studio black background is not', () => {
@@ -79,6 +85,18 @@ test('a white border is a frame, a studio black background is not', () => {
   assert.equal(framed(withBorder, w, h), true);
   assert.equal(framed(photo, w, h), false);
   assert.equal(framed(studio, w, h), false);
+});
+
+test('one photographer under two names is one photographer', () => {
+  assert.equal(
+    photographer(page({ artist: 'Trougnouf' })),
+    photographer(
+      page({
+        artist:
+          '<a href="//commons.wikimedia.org/wiki/User:Trougnouf">Trougnouf</a> (Benoit Brummer)',
+      }),
+    ),
+  );
 });
 
 test('one shoot is one series', () => {
