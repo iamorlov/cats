@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "hunt": "npm --prefix tools/wall-hunter install --no-audit --no-fund --silent && npm --prefix tools/wall-hunter run hunt --"
   },
   "private": true,
   "packageManager": "npm@11.11.1",

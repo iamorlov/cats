@@ -39,6 +39,11 @@ testem.log
 /typings
 __screenshots__/
 
+# Wall hunter
+/tools/wall-hunter/node_modules
+/tools/wall-hunter/preview
+/tools/wall-hunter/last-run.jpg
+
 # System files
 .DS_Store
 Thumbs.db
