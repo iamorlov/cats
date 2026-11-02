@@ -18,12 +18,12 @@ Keys: `←` / `→` flip cats, `P` pauses, `Space` opens the menu, `Enter` downl
 ## Adding cats
 
 ```bash
-npm run hunt                 # 50 new cats into tools/wall-hunter/preview (40–60: -- --count 60)
+npm run hunt                 # a batch of 50 cats in tools/wall-hunter/preview (40–60: -- --count 60)
 ```
 
 The hunter never touches the project. It saves the photos to `tools/wall-hunter/preview` under the names they will have here (`wall-<next>.jpg`) and puts the whole batch on one sheet, `tools/wall-hunter/last-run.jpg`. Then:
 
-1. Delete the ones you don't like from `preview` and run `npm run hunt` again. While the batch isn't copied in, a run only renumbers what's left without gaps, redraws the sheet and prints the `WALLS` value; the deleted photos never come back.
+1. Delete the ones you don't like from `preview` and run `npm run hunt` again. While the batch isn't copied in, a run renumbers what's left without gaps and fills the batch up with new photos after it; the deleted ones never come back.
 2. Copy `preview` into `public/assets/walls` and set `WALLS` in `src/app/slideshow.ts`.
 3. The next `npm run hunt` sees the batch in the project, clears `preview` and hunts a new one.
 

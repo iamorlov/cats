@@ -5,11 +5,12 @@
 // never touches the project itself: you look the batch over, copy it into public/assets/walls and
 // set WALLS by hand.
 //
-//   npm run hunt                 # 50 new walls into preview/
-//   npm run hunt -- --count 60   # 40…60 per run
+//   npm run hunt                 # a batch of 50 walls in preview/
+//   npm run hunt -- --count 60   # 40…60 per batch
 //
-// Don't like some? Delete them from preview/ and run again: the rest is renumbered without gaps and
-// the deleted ones never come back. Once the batch is copied into the project, the next run hunts anew.
+// Don't like some? Delete them from preview/ and run again: the rest is renumbered without gaps, the
+// deleted ones never come back, and new photos fill the batch up again. Once the batch is copied
+// into the project, the next run starts a new one.
 //
 // Every photo is recorded in sources.json (source page, author, licence, crop): the proof it may be
 // redistributed. Rejected and never-copied ones are remembered there too, so later runs skip them.
@@ -160,8 +161,9 @@ async function main() {
   if (site.length && site.at(-1) !== site.length - 1)
     throw new Error(`public/assets/walls is not numbered 0…${site.length - 1} without gaps`);
 
-  // Where the last batch stands. All copied into the project: done, hunt anew. None copied: still
-  // under review, so tidy up after deletions and stop. Some copied: names may not move, ask.
+  // Where the last batch stands. All copied into the project: done, start a new one. None copied:
+  // still under review, so close the gaps deletions left and fill it up. Some copied: names may not
+  // move, ask.
   const inPreview = await numbers(PREVIEW);
   const pending = [];
   for (const n of inPreview) {
@@ -174,18 +176,31 @@ async function main() {
       'Part of the batch in tools/wall-hunter/preview is already in public/assets/walls and part is not.\n' +
         'Copy the rest too, then run again.',
     );
-  if (pending.length) return tidy(sources, site.length);
-
-  await rm(PREVIEW, { recursive: true, force: true });
-  await mkdir(PREVIEW);
-  forgetUncopied(sources);
+  let kept = [];
+  let deleted = 0;
+  if (pending.length) ({ kept, deleted } = await renumber(sources, site.length));
+  else {
+    await rm(PREVIEW, { recursive: true, force: true });
+    await mkdir(PREVIEW);
+    forgetUncopied(sources);
+  }
 
   const known = new Set([
     ...Object.values(sources.walls).map(keyOf),
     ...Object.keys(sources.rejected),
   ]);
-  let next = site.length;
+  let next = site.length + kept.length;
   const hashes = await wallHashes(site, sources.hashes);
+  for (const name of kept) {
+    sources.hashes[name] ??= (await dhash(sharp(join(PREVIEW, name)))).toString(16);
+    hashes.set(name, BigInt('0x' + sources.hashes[name])); // no duplicates of the kept ones either
+  }
+  if (kept.length)
+    console.log(
+      `Kept ${kept.length} in preview, renumbered ${kept[0]} … ${kept.at(-1)}` +
+        (deleted ? `; the ${deleted} you deleted won't come back.` : '.'),
+    );
+  const wanted = count - kept.length;
 
   const stats = {};
   const reject = (key, reason) => {
@@ -197,8 +212,8 @@ async function main() {
   const byAuthor = new Map();
   const seriesTaken = new Set();
   // ponytail: one candidate at a time keeps both sites happy; ~2–4 s each, fine for a manual run.
-  for await (const found of everywhere(known)) {
-    if (saved.length === count) break;
+  for await (const found of wanted > 0 ? everywhere(known) : []) {
+    if (saved.length >= wanted) break;
     if (known.has(found.key)) continue;
     known.add(found.key); // the finders overlap
     if (found.reason) {
@@ -246,18 +261,21 @@ async function main() {
       .map(([r, n]) => `${r} ${n}`)
       .join(', ') || 'none',
   );
-  if (saved.length < count)
+  if (saved.length < wanted)
     console.log('Commons and iNaturalist ran out of fresh candidates for now.');
-  if (!saved.length) return;
+  const batch = [...kept, ...saved];
+  if (!batch.length) return;
   await contactSheet(
-    saved.map((name) => join(PREVIEW, name)),
+    batch.map((name) => join(PREVIEW, name)),
     LAST_RUN,
   );
   console.log(`
-Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${saved.at(-1)}.
-  1. Look them over: tools/wall-hunter/last-run.jpg (in numbering order).
-  2. Delete the ones you don't like from preview and run npm run hunt again: it closes the gaps.
-  3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
+preview holds ${batch[0]} … ${batch.at(-1)}: ${saved.length} new${kept.length ? ` after the ${kept.length} kept` : ''}.
+  1. Look them over: tools/wall-hunter/last-run.jpg (the whole batch, in numbering order).
+  2. Delete the ones you don't like from preview and run npm run hunt again: it closes the gaps and
+     fills the batch up with new ones.
+  3. Happy with all of them? Copy preview into public/assets/walls and set WALLS = ${next} in
+     src/app/slideshow.ts.`);
 }
 
 /**
@@ -841,8 +859,9 @@ export function withComment(jpeg, text) {
 /**
  * The batch is under review: photos deleted from preview/ are forgotten for good, and the rest are
  * renumbered from `first` (the project's next free number) so they continue the project without gaps.
+ * Returns the names they now have and how many were deleted.
  */
-async function tidy(sources, first) {
+async function renumber(sources, first) {
   const deleted = forgetUncopied(sources); // before renumbering hands a deleted photo's name to another
   const left = await numbers(PREVIEW);
   const moves = left
@@ -857,16 +876,7 @@ async function tidy(sources, first) {
     for (const [to, value] of moved) map[to] = value;
   }
   await save(sources);
-
-  const names = left.map((_, i) => `wall-${first + i}.jpg`);
-  await contactSheet(
-    names.map((name) => join(PREVIEW, name)),
-    LAST_RUN,
-  );
-  console.log(`
-preview holds ${names[0]} … ${names.at(-1)}${deleted ? `; the ${deleted} you deleted won't come back` : ''}.
-last-run.jpg is redrawn. Delete more and run again, or copy them into public/assets/walls and set
-WALLS = ${first + left.length} in src/app/slideshow.ts: the next run then hunts a new batch.`);
+  return { kept: left.map((_, i) => `wall-${first + i}.jpg`), deleted };
 }
 
 /** Wall numbers in a folder, ascending. */
