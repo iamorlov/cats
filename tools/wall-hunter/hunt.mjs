@@ -4,10 +4,11 @@
 // they will have in the project (wall-<next>.jpg). It never touches the project itself: you look the
 // batch over, copy it into public/assets/walls and set WALLS by hand.
 //
-//   npm run hunt                       # 50 new walls into preview/
-//   npm run hunt -- --count 60         # 40…60 per run
-//   npm run hunt -- --drop 1150,1162   # don't like some? removes them from preview/, closes the
-//                                      # numbering gaps, and they never come back
+//   npm run hunt                 # 50 new walls into preview/
+//   npm run hunt -- --count 60   # 40…60 per run
+//
+// Don't like some? Delete them from preview/ and run again: the rest is renumbered without gaps and
+// the deleted ones never come back. Once the batch is copied into the project, the next run hunts anew.
 //
 // Every photo is recorded in sources.json (Commons page, author, licence, crop): the proof it may be
 // redistributed. Rejected and never-copied ones are remembered there too, so later runs skip them.
@@ -114,14 +115,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 }
 
 async function main() {
-  const { values } = parseArgs({
-    options: { count: { type: 'string', default: '50' }, drop: { type: 'string' } },
-  });
+  const { values } = parseArgs({ options: { count: { type: 'string', default: '50' } } });
   const sources = existsSync(SOURCES)
     ? JSON.parse(await readFile(SOURCES, 'utf8'))
     : { walls: {}, rejected: {}, hashes: {} };
   await mkdir(PREVIEW, { recursive: true });
-  if (values.drop) return drop(values.drop.split(',').map(Number), sources);
 
   const count = Number(values.count);
   if (!Number.isInteger(count) || count < 40 || count > 60)
@@ -131,18 +129,22 @@ async function main() {
   if (site.length && site.at(-1) !== site.length - 1)
     throw new Error(`public/assets/walls is not numbered 0…${site.length - 1} without gaps`);
 
-  // The last batch: copied into the project, it's done; still only in preview, it's not.
-  const waiting = [];
-  for (const n of await numbers(PREVIEW)) {
+  // Where the last batch stands. All copied into the project: done, hunt anew. None copied: still
+  // under review, so tidy up after deletions and stop. Some copied: names may not move, ask.
+  const inPreview = await numbers(PREVIEW);
+  const pending = [];
+  for (const n of inPreview) {
     const [mine, theirs] = [join(PREVIEW, `wall-${n}.jpg`), join(WALLS_DIR, `wall-${n}.jpg`)];
     if (!existsSync(theirs) || !(await readFile(mine)).equals(await readFile(theirs)))
-      waiting.push(n);
+      pending.push(n);
   }
-  if (waiting.length)
+  if (pending.length && pending.length < inPreview.length)
     throw new Error(
-      `tools/wall-hunter/preview still has ${waiting.length} photos that are not in public/assets/walls.\n` +
-        'Drop the ones you do not want (npm run hunt -- --drop <numbers>), copy the rest in, then run again.',
+      'Part of the batch in tools/wall-hunter/preview is already in public/assets/walls and part is not.\n' +
+        'Copy the rest too, then run again.',
     );
+  if (pending.length) return tidy(sources, site.length);
+
   await rm(PREVIEW, { recursive: true, force: true });
   await mkdir(PREVIEW);
   forgetUncopied(sources);
@@ -222,7 +224,7 @@ async function main() {
   console.log(`
 Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${saved.at(-1)}.
   1. Look them over: tools/wall-hunter/last-run.jpg (in numbering order).
-  2. Remove the ones you don't like: npm run hunt -- --drop <numbers>
+  2. Delete the ones you don't like from preview and run npm run hunt again: it closes the gaps.
   3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
 }
 
@@ -587,42 +589,34 @@ function provenance(page, crop) {
 }
 
 /**
- * Removes photos from preview/ and renumbers what's left, so the batch still continues the project
- * without gaps. Dropped sources never come back. Files already deleted by hand are fine too.
+ * The batch is under review: photos deleted from preview/ are forgotten for good, and the rest are
+ * renumbered from `first` (the project's next free number) so they continue the project without gaps.
  */
-async function drop(dropped, sources) {
-  if (!dropped.every(Number.isInteger))
-    throw new Error('--drop takes wall numbers: --drop 1150,1162');
-  for (const n of dropped) {
-    await rm(join(PREVIEW, `wall-${n}.jpg`), { force: true });
-    forget(sources, `wall-${n}.jpg`, 'dropped by hand');
-  }
-  forgetUncopied(sources); // deleted by hand: forget before renumbering hands the name to another photo
+async function tidy(sources, first) {
+  const deleted = forgetUncopied(sources); // before renumbering hands a deleted photo's name to another
   const left = await numbers(PREVIEW);
-  const first = Math.min((await numbers(WALLS_DIR)).length, ...left);
-  let to = first;
-  for (const n of left) {
-    const [from, name] = [`wall-${n}.jpg`, `wall-${to}.jpg`];
-    if (from !== name) {
-      await rename(join(PREVIEW, from), join(PREVIEW, name));
-      for (const map of [sources.walls, sources.hashes]) {
-        if (from in map) map[name] = map[from];
-        delete map[from];
-      }
-    }
-    to++;
+  const moves = left
+    .map((n, i) => [`wall-${n}.jpg`, `wall-${first + i}.jpg`])
+    .filter(([from, to]) => from !== to);
+  // Two passes through temporary names: safe whichever way the numbers shift.
+  for (const [from] of moves) await rename(join(PREVIEW, from), join(PREVIEW, `${from}.tmp`));
+  for (const [from, to] of moves) await rename(join(PREVIEW, `${from}.tmp`), join(PREVIEW, to));
+  for (const map of [sources.walls, sources.hashes]) {
+    const moved = moves.filter(([from]) => from in map).map(([from, to]) => [to, map[from]]);
+    for (const [from] of moves) delete map[from];
+    for (const [to, value] of moved) map[to] = value;
   }
   await save(sources);
-  if (!left.length) return console.log('preview is empty now.');
-  const names = Array.from({ length: to - first }, (_, i) => `wall-${first + i}.jpg`);
+
+  const names = left.map((_, i) => `wall-${first + i}.jpg`);
   await contactSheet(
     names.map((name) => join(PREVIEW, name)),
     LAST_RUN,
   );
-  console.log(
-    `preview now holds ${names[0]} … ${names.at(-1)} (last-run.jpg redrawn).\n` +
-      `Copy them into public/assets/walls and set WALLS = ${to} in src/app/slideshow.ts.`,
-  );
+  console.log(`
+preview holds ${names[0]} … ${names.at(-1)}${deleted ? `; the ${deleted} you deleted won't come back` : ''}.
+last-run.jpg is redrawn. Delete more and run again, or copy them into public/assets/walls and set
+WALLS = ${first + left.length} in src/app/slideshow.ts: the next run then hunts a new batch.`);
 }
 
 /** Wall numbers in a folder, ascending. */
@@ -645,9 +639,13 @@ function forget(sources, name, reason) {
 
 /** A photo that left preview without reaching the project was turned down: don't offer it again. */
 function forgetUncopied(sources) {
+  let deleted = 0;
   for (const name of Object.keys(sources.walls))
-    if (!existsSync(join(WALLS_DIR, name)) && !existsSync(join(PREVIEW, name)))
-      forget(sources, name, 'not copied into the project');
+    if (!existsSync(join(WALLS_DIR, name)) && !existsSync(join(PREVIEW, name))) {
+      forget(sources, name, 'deleted from preview');
+      deleted++;
+    }
+  return deleted;
 }
 
 function save(sources) {

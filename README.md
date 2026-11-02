@@ -18,11 +18,14 @@ Keys: `←` / `→` flip cats, `P` pauses, `Space` opens the menu, `Enter` downl
 ## Adding cats
 
 ```bash
-npm run hunt                       # 50 new cats into tools/wall-hunter/preview (40–60: -- --count 60)
-npm run hunt -- --drop 1150,1162   # remove the ones you don't like, closing the numbering gaps
+npm run hunt                 # 50 new cats into tools/wall-hunter/preview (40–60: -- --count 60)
 ```
 
-The hunter never touches the project. It saves the photos to `tools/wall-hunter/preview` under the names they will have here (`wall-<next>.jpg`) and puts the whole batch on one sheet, `tools/wall-hunter/last-run.jpg`. Look it over, drop what you don't like, copy the rest into `public/assets/walls` and set `WALLS` in `src/app/slideshow.ts` to the number it prints. A new run starts only once the last batch is copied in; photos you never copied are remembered and not offered again.
+The hunter never touches the project. It saves the photos to `tools/wall-hunter/preview` under the names they will have here (`wall-<next>.jpg`) and puts the whole batch on one sheet, `tools/wall-hunter/last-run.jpg`. Then:
+
+1. Delete the ones you don't like from `preview` and run `npm run hunt` again. While the batch isn't copied in, a run only renumbers what's left without gaps, redraws the sheet and prints the `WALLS` value; the deleted photos never come back.
+2. Copy `preview` into `public/assets/walls` and set `WALLS` in `src/app/slideshow.ts`.
+3. The next `npm run hunt` sees the batch in the project, clears `preview` and hunts a new one.
 
 It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)), photos rated "quality" or "featured" first, and only takes ones that are:
 
