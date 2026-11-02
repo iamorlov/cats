@@ -1,8 +1,9 @@
-// Wall hunter: finds real (camera-made) cat photos on Wikimedia Commons that are CC0, public domain or
-// CC BY / BY-SA (credit travels inside the file, the site shows it) and shot 16:9 at Full HD or more
-// (never cropped: crops cut cats), and saves them to tools/wall-hunter/preview/ under the names
-// they will have in the project (wall-<next>.jpg). It never touches the project itself: you look the
-// batch over, copy it into public/assets/walls and set WALLS by hand.
+// Wall hunter: finds real cat photos on Wikimedia Commons, then iNaturalist, that are CC0, public
+// domain or CC BY / BY-SA / BY-NC (credit travels inside the file, the site shows it) and shot 16:9
+// or 3:2 at Full HD or more (3:2 loses 16 % of its height, never the part in focus), and saves them to
+// tools/wall-hunter/preview/ under the names they will have in the project (wall-<next>.jpg). It
+// never touches the project itself: you look the batch over, copy it into public/assets/walls and
+// set WALLS by hand.
 //
 //   npm run hunt                 # 50 new walls into preview/
 //   npm run hunt -- --count 60   # 40…60 per run
@@ -10,7 +11,7 @@
 // Don't like some? Delete them from preview/ and run again: the rest is renumbered without gaps and
 // the deleted ones never come back. Once the batch is copied into the project, the next run hunts anew.
 //
-// Every photo is recorded in sources.json (Commons page, author, licence, crop): the proof it may be
+// Every photo is recorded in sources.json (source page, author, licence, crop): the proof it may be
 // redistributed. Rejected and never-copied ones are remembered there too, so later runs skip them.
 
 import { existsSync } from 'node:fs';
@@ -58,6 +59,32 @@ const FINDERS = [
     '猫',
   ].map((word) => `intitle:${word}`),
 ];
+const INAT = 'https://api.inaturalist.org/v1/observations';
+/**
+ * House cats (Felis catus) on iNaturalist annotated alive: a tenth of the annotated ones are dead,
+ * so unannotated ones can't be trusted. Newest first, 200 per request.
+ */
+const INAT_QUERY = {
+  taxon_id: '118552',
+  term_id: '17',
+  term_value_id: '18',
+  photo_license: 'cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa',
+  order_by: 'id',
+  order: 'desc',
+  per_page: '200',
+};
+/**
+ * iNaturalist licence codes and what the credit says (iNaturalist uses the 4.0 licences). The site is
+ * personal and non-commercial, so NC fits; ND doesn't, a resize is a change.
+ */
+const INAT_LICENSES = {
+  cc0: ['CC0 1.0', 'https://creativecommons.org/publicdomain/zero/1.0/'],
+  'cc-by': ['CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/'],
+  'cc-by-sa': ['CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/'],
+  'cc-by-nc': ['CC BY-NC 4.0', 'https://creativecommons.org/licenses/by-nc/4.0/'],
+  'cc-by-nc-sa': ['CC BY-NC-SA 4.0', 'https://creativecommons.org/licenses/by-nc-sa/4.0/'],
+};
+
 /** Marks the JPEG comment that carries a photo's credit to the site (read by src/app/slideshow.ts). */
 const CREDIT_TAG = 'cats-credit ';
 /** Variety: the rest of a prolific author's photos wait for the next run. */
@@ -76,7 +103,9 @@ export const LIMITS = {
   lumaMax: 205,
   blown: 0.04, // share of pure-white pixels (pure black is fine: studio shots on black are some of the best walls)
   colorfulness: 10, // black-and-white and sepia scans score ~0
+  focus: 0.31, // share of the frame in focus: above it, a cat somewhere in a sharp field (measured 2026-11-02)
   duplicate: 8, // dHash Hamming distance at or under which two pictures are the same photo
+  subject: 0.2, // a tile with this share of the sharpest tile's detail is in focus: part of the cat
 };
 
 /** A cat word in the file name, in the languages Commons uploads mostly come in: the cat is the subject. */
@@ -152,61 +181,61 @@ async function main() {
   forgetUncopied(sources);
 
   const known = new Set([
-    ...Object.values(sources.walls).map((w) => String(w.pageid)),
+    ...Object.values(sources.walls).map(keyOf),
     ...Object.keys(sources.rejected),
   ]);
   let next = site.length;
   const hashes = await wallHashes(site, sources.hashes);
 
-  console.log('Searching Wikimedia Commons, best-rated cats first…');
   const stats = {};
-  const reject = (page, reason) => {
+  const reject = (key, reason) => {
     stats[reason] = (stats[reason] ?? 0) + 1;
-    sources.rejected[page.pageid] = reason;
+    sources.rejected[key] = reason;
   };
 
   const saved = [];
   const byAuthor = new Map();
   const seriesTaken = new Set();
-  // ponytail: one candidate at a time keeps Commons happy; ~2–4 s each, fine for a manual run.
-  for await (const page of search(known)) {
+  // ponytail: one candidate at a time keeps both sites happy; ~2–4 s each, fine for a manual run.
+  for await (const found of everywhere(known)) {
     if (saved.length === count) break;
-    if (known.has(String(page.pageid))) continue;
-    known.add(String(page.pageid)); // the finders overlap
-    const reason = screen(page);
-    if (reason) {
-      reject(page, reason);
+    if (known.has(found.key)) continue;
+    known.add(found.key); // the finders overlap
+    if (found.reason) {
+      reject(found.key, found.reason);
       continue;
     }
-    if ((byAuthor.get(photographer(page)) ?? 0) >= PER_AUTHOR || seriesTaken.has(series(page)))
-      continue;
-    const info = page.imageinfo[0];
+    if ((byAuthor.get(found.owner) ?? 0) >= PER_AUTHOR || seriesTaken.has(found.series)) continue;
     let verdict;
     let jpeg;
     try {
-      verdict = await analyze(await download(info.thumburl), hashes);
+      verdict = await analyze(await download(found.thumb), hashes);
       if (!verdict.reason)
-        jpeg = await render(await download(info.url), verdict.crop, credit(page));
+        jpeg = await render(await download(found.url), verdict.crop, found.credit);
     } catch (error) {
-      console.warn(`  skip ${page.title}: ${error.message}`); // network trouble: try again next run
+      console.warn(`  skip ${found.title}: ${error.message}`); // network trouble: try again next run
       continue;
     }
     if (verdict.reason) {
-      reject(page, verdict.reason);
+      reject(found.key, verdict.reason);
       continue;
     }
     const name = `wall-${next}.jpg`;
     await writeFile(join(PREVIEW, name), jpeg);
     hashes.set(name, verdict.hash);
-    byAuthor.set(photographer(page), (byAuthor.get(photographer(page)) ?? 0) + 1);
-    seriesTaken.add(series(page));
+    byAuthor.set(found.owner, (byAuthor.get(found.owner) ?? 0) + 1);
+    seriesTaken.add(found.series);
     saved.push(name);
-    sources.walls[name] = provenance(page, verdict.crop);
+    sources.walls[name] = {
+      ...found.record,
+      crop: Object.fromEntries(Object.entries(verdict.crop).map(([k, v]) => [k, +v.toFixed(4)])),
+      added: new Date().toISOString().slice(0, 10),
+    };
     sources.hashes[name] = verdict.hash.toString(16);
     await save(sources); // a crash mid-run must not lose where the saved photos came from
     next++;
-    const license = sources.walls[name].license;
-    console.log(`  ${name}  ← ${page.title}  (${license}, ${Math.round(jpeg.length / 1024)} KB)`);
+    const license = found.record.license;
+    console.log(`  ${name}  ← ${found.title}  (${license}, ${Math.round(jpeg.length / 1024)} KB)`);
   }
   await save(sources);
 
@@ -217,7 +246,8 @@ async function main() {
       .map(([r, n]) => `${r} ${n}`)
       .join(', ') || 'none',
   );
-  if (saved.length < count) console.log('Commons ran out of fresh candidates for now.');
+  if (saved.length < count)
+    console.log('Commons and iNaturalist ran out of fresh candidates for now.');
   if (!saved.length) return;
   await contactSheet(
     saved.map((name) => join(PREVIEW, name)),
@@ -228,6 +258,107 @@ Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${sav
   1. Look them over: tools/wall-hunter/last-run.jpg (in numbering order).
   2. Delete the ones you don't like from preview and run npm run hunt again: it closes the gaps.
   3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
+}
+
+/**
+ * Every candidate, best source first: { key, title, thumb, url, owner, series, credit, record }, or
+ * { key, reason } for one turned down on metadata alone. Keys: Commons page id, or "inat:<observation>".
+ */
+async function* everywhere(known) {
+  console.log('Searching Wikimedia Commons, best-rated cats first…');
+  for await (const page of search(known)) {
+    const reason = screen(page);
+    yield reason ? { key: String(page.pageid), reason } : fromCommons(page);
+  }
+  console.log('Commons is done, on to iNaturalist…');
+  yield* inaturalist(known);
+}
+
+function fromCommons(page) {
+  const info = page.imageinfo[0];
+  const text = (key) =>
+    String(info.extmetadata?.[key]?.value ?? '')
+      .replace(/<[^>]+>/g, '')
+      .trim();
+  return {
+    key: String(page.pageid),
+    title: page.title,
+    thumb: info.thumburl,
+    url: info.url,
+    owner: photographer(page),
+    series: series(page),
+    credit: credit(page),
+    record: {
+      pageid: page.pageid,
+      title: page.title,
+      url: info.descriptionurl,
+      license: text('LicenseShortName'),
+      licenseUrl: text('LicenseUrl'),
+      author: text('Artist'),
+      original: `${info.width}x${info.height}`,
+    },
+  };
+}
+
+/**
+ * iNaturalist observations, newest first, past the ones already seen. Only those with a free photo
+ * shot 16:9 or 3:2 come out; everything else is skipped unrecorded, like Commons files of other sizes.
+ */
+export async function* inaturalist(known) {
+  for (let below; ;) {
+    const { results } = await inat({ ...INAT_QUERY, ...(below && { id_below: below }) });
+    if (!results?.length) return;
+    for (const observation of results) {
+      const found = fromInaturalist(observation);
+      if (found && !known.has(found.key)) yield found;
+    }
+    below = results.at(-1).id;
+  }
+}
+
+/**
+ * The observation's first free 16:9 or 3:2 photo as a candidate, or null. One per observation: the
+ * other photos are the same cat a second later. No EXIF and no categories here, so the photo checks
+ * (focus, exposure, colour, frame, trail-camera stamp) do all the work.
+ */
+export function fromInaturalist(observation) {
+  const photo = observation.photos?.find(
+    (p) =>
+      INAT_LICENSES[p.license_code] &&
+      /\/square\.jpe?g$/i.test(p.url) &&
+      p.original_dimensions &&
+      shape(p.original_dimensions),
+  );
+  if (!photo) return null;
+  const [license, licenseUrl] = INAT_LICENSES[photo.license_code];
+  const author = observation.user.name?.trim() || observation.user.login;
+  const source = `https://www.inaturalist.org/photos/${photo.id}`;
+  const title = `iNaturalist ${observation.id} by ${author}`;
+  const { width, height } = photo.original_dimensions;
+  return {
+    key: `inat:${observation.id}`,
+    title,
+    thumb: photo.url.replace('/square.', '/large.'), // 1024 px
+    url: photo.url.replace('/square.', '/original.'), // 2048 px, iNaturalist keeps no bigger
+    owner: `inat:${observation.user.login}`,
+    series: `inat:${observation.id}`,
+    credit: photo.license_code === 'cc0' ? null : { author, license, licenseUrl, source },
+    record: {
+      inat: observation.id,
+      photo: photo.id,
+      title,
+      url: source,
+      license,
+      licenseUrl,
+      author,
+      original: `${width}x${height}`,
+    },
+  };
+}
+
+/** sources.json key of a saved wall's source. */
+function keyOf(record) {
+  return record.inat ? `inat:${record.inat}` : String(record.pageid);
 }
 
 /**
@@ -259,8 +390,8 @@ export async function* search(known) {
 }
 
 /**
- * One search read to the end, in relevance order. Only ~3 % of photos are shot 16:9, so it asks
- * for sizes alone, 500 at a time, and fetches full metadata just for the 16:9 ones not known yet.
+ * One search read to the end, in relevance order. Only about a third of photos are shot 16:9 or 3:2,
+ * so it asks for sizes alone, 500 at a time, and fetches full metadata just for those not known yet.
  * Returns how many results the search gave.
  */
 async function* matches(query, known) {
@@ -280,7 +411,7 @@ async function* matches(query, known) {
     total += pages.length;
     const wide = pages
       .filter(
-        (page) => page.imageinfo && is16by9(page.imageinfo[0]) && !known.has(String(page.pageid)),
+        (page) => page.imageinfo && shape(page.imageinfo[0]) && !known.has(String(page.pageid)),
       )
       .sort((a, b) => a.index - b.index);
     for (let i = 0; i < wide.length; i += 50) yield* await details(wide.slice(i, i + 50));
@@ -302,9 +433,15 @@ async function details(pages) {
   return pages.map((page) => full.get(page.pageid)).filter((page) => page?.imageinfo);
 }
 
-/** Shot 16:9 (within 1 %: a few pixels' trim at most) and at least Full HD. */
-export function is16by9({ width, height }) {
-  return width >= OUT_W && height >= OUT_H && Math.abs(width / height / RATIO - 1) <= 0.01;
+/**
+ * '16:9' when shot so (within 1 %: a few pixels' trim at most), '3:2' for the usual camera frame (a
+ * 16:9 window loses 16 % of its height), else null. At least Full HD after the crop either way.
+ */
+export function shape({ width, height }) {
+  if (width < OUT_W || height < OUT_H) return null;
+  if (Math.abs(width / height / RATIO - 1) <= 0.01) return '16:9';
+  if (Math.abs(width / height / 1.5 - 1) <= 0.01) return '3:2';
+  return null;
 }
 
 /** Cheap checks on metadata alone. Returns why a file is out, or null. */
@@ -323,7 +460,7 @@ export function screen(page) {
     (/public domain/i.test(license) && /PD-(self|user|author)/i.test(categories));
   if (!free) return 'licence';
   if (/^CC BY/i.test(license) && !author(page)) return 'no author to credit';
-  if (!is16by9(info)) return 'not 16:9';
+  if (!shape(info)) return 'not 16:9 or 3:2';
   // Also proves a camera took it: scans, renders and AI pictures carry no camera model.
   if (!GOOD_CAMERA.test(model) && !FLAGSHIP_PHONE.test(model)) return 'not a system camera';
   if (
@@ -379,28 +516,35 @@ export function credit(page) {
 }
 
 /**
- * Looks at the 960 px thumbnail: is the photo sharp, well exposed, colourful, frameless and new?
- * Returns { crop, hash } or { reason }. The crop only trims the ≤1 % that 16:9 is off by, evenly.
+ * Looks at the ~1000 px thumbnail: where does the 16:9 window go, and is the photo in it sharp, well
+ * exposed, colourful, frameless and new? Returns { crop, hash } or { reason }. A 16:9 photo only
+ * loses the ≤1 % it is off by, evenly; a 3:2 one loses 16 % of its height away from the cat.
  */
 export async function analyze(thumb, hashes = new Map()) {
-  const { width: w, height: h } = await sharp(thumb).metadata();
-  const box =
-    w / h < RATIO
-      ? {
-          left: 0,
-          top: Math.floor((h - Math.round(w / RATIO)) / 2),
-          width: w,
-          height: Math.round(w / RATIO),
-        }
-      : {
-          left: Math.floor((w - Math.round(h * RATIO)) / 2),
-          top: 0,
-          width: Math.round(h * RATIO),
-          height: h,
-        };
+  const { data: grey, info } = await sharp(thumb)
+    .rotate() // upright, as render() sees the original
+    .greyscale()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const [w, h] = [info.width, info.height];
+  let box;
+  if (w / h >= RATIO) {
+    box = {
+      left: Math.floor((w - Math.round(h * RATIO)) / 2),
+      top: 0,
+      width: Math.round(h * RATIO),
+      height: h,
+    };
+  } else {
+    const height = Math.round(w / RATIO);
+    const top =
+      h - height <= h * 0.02 ? Math.floor((h - height) / 2) : placeWindow(grey, w, h, height);
+    if (top === null) return { reason: 'cat would be cut' };
+    box = { left: 0, top, width: w, height };
+  }
   const crop = { x: box.left / w, y: box.top / h, w: box.width / w, h: box.height / h };
 
-  const framed = sharp(thumb).extract(box).resize(960, 540, { fit: 'fill' });
+  const framed = sharp(thumb).rotate().extract(box).resize(960, 540, { fit: 'fill' });
   const rgb = await framed.clone().removeAlpha().raw().toBuffer();
   const luma = await framed.clone().greyscale().raw().toBuffer();
   const metrics = measure(rgb, luma, 960, 540);
@@ -421,8 +565,85 @@ export function verdict(m) {
   if (m.luma > LIMITS.lumaMax) return 'too bright';
   if (m.blown > LIMITS.blown) return 'blown out';
   if (m.colorfulness < LIMITS.colorfulness) return 'no colour';
+  if (m.focus > LIMITS.focus) return 'everything in focus';
   if (m.framed) return 'frame or border';
+  if (m.stamped) return 'camera stamp';
   return null;
+}
+
+/**
+ * Where a 16:9 window `height` rows tall goes in a taller frame: its top row, or null when no window
+ * holds the cat. The cat is what's in focus: on a 16×16 grid, a tile with LIMITS.subject of the
+ * sharpest tile's detail is part of it, and the window keeps every row of such tiles plus two more
+ * above: focus sits on the eyes, and the ears over them are often soft. Of the windows that do, it
+ * takes the one that cuts away the least detail: blurred background goes first.
+ */
+export function placeWindow(luma, w, h, height) {
+  const grid = 16;
+  const tiles = new Float64Array(grid * grid);
+  const rows = new Float64Array(h); // detail per pixel row
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const l = 4 * luma[i] - luma[i - 1] - luma[i + 1] - luma[i - w] - luma[i + w];
+      rows[y] += l * l;
+      tiles[Math.floor((y * grid) / h) * grid + Math.floor((x * grid) / w)] += l * l;
+    }
+  }
+  const peak = Math.max(...tiles);
+  let [first, last] = [grid, -1];
+  for (let t = 0; t < tiles.length; t++)
+    if (tiles[t] >= peak * LIMITS.subject) {
+      first = Math.min(first, Math.floor(t / grid));
+      last = Math.max(last, Math.floor(t / grid));
+    }
+  const [top, bottom] = [
+    Math.floor((Math.max(0, first - 2) * h) / grid),
+    Math.ceil(((last + 1) * h) / grid),
+  ];
+  if (bottom - top > height) return null;
+  const sum = [0];
+  for (const r of rows) sum.push(sum.at(-1) + r);
+  let best = null;
+  for (let t = Math.max(0, bottom - height); t <= Math.min(h - height, top); t++)
+    if (
+      best === null ||
+      sum[t] + sum[h] - sum[t + height] < sum[best] + sum[h] - sum[best + height]
+    )
+      best = t;
+  return best;
+}
+
+/**
+ * A trail camera's info bar along the top or bottom edge: 2–12 % of the height of rows that are
+ * nearly all black or white (text on a plain bar, a logo; a photo row has over half mid-tones), with
+ * some text, ending in a straight line across most of the width. Studio backgrounds are two-tone at
+ * the edge too, but the cat never meets them in a straight line.
+ */
+export function stamped(luma, w, h) {
+  for (const edge of [0, 1]) {
+    const row = (depth) => (edge ? h - 1 - depth : depth) * w;
+    let rows = 0;
+    let [darkAll, lightAll] = [0, 0];
+    for (; rows < h * 0.12; rows++) {
+      let [dark, light] = [0, 0];
+      for (let x = 0; x < w; x++) {
+        const v = luma[row(rows) + x];
+        if (v < 50) dark++;
+        else if (v > 190) light++;
+      }
+      if (Math.max(dark, light) < w * 0.5 || dark + light < w * 0.8) break;
+      darkAll += dark;
+      lightAll += light;
+    }
+    const text = Math.min(darkAll, lightAll); // the bar is one tone, the text the other
+    if (rows < h * 0.02 || rows >= h * 0.12 || text < rows * w * 0.005) continue;
+    let step = 0; // columns where the bar's last row and the picture's first differ sharply
+    for (let x = 0; x < w; x++)
+      if (Math.abs(luma[row(rows - 2) + x] - luma[row(rows + 1) + x]) > 40) step++;
+    if (step >= w * 0.5) return true;
+  }
+  return false;
 }
 
 /** Sharpness, exposure and colourfulness of the 960×540 crop. */
@@ -483,8 +704,28 @@ export function measure(rgb, luma, w, h) {
     luma: sum / luma.length,
     blown: blown / luma.length,
     colorfulness,
+    focus: focus(luma, w, h),
     framed: framed(luma, w, h),
+    stamped: stamped(luma, w, h),
   };
+}
+
+/**
+ * Share of the frame in focus: 16×9 tiles with LIMITS.subject of the sharpest tile's detail. A wall
+ * is a cat sharp against something soft (median 0.13); a snapshot from across a yard has the whole
+ * yard in focus and a small cat somewhere in it.
+ */
+export function focus(luma, w, h) {
+  const tiles = new Float64Array(16 * 9);
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      const l = 4 * luma[i] - luma[i - 1] - luma[i + 1] - luma[i - w] - luma[i + w];
+      tiles[Math.floor((y * 9) / h) * 16 + Math.floor((x * 16) / w)] += l * l;
+    }
+  }
+  const peak = Math.max(...tiles);
+  return tiles.filter((v) => v >= peak * LIMITS.subject).length / tiles.length;
 }
 
 /**
@@ -571,10 +812,10 @@ export async function render(original, crop, owed) {
   };
   let image = sharp(original).rotate().extract(box).resize(OUT_W, OUT_H, { fit: 'fill' });
   if (!owed) return image.jpeg(JPEG).toBuffer();
-  // The licence asks to say what we changed: always the size, sometimes a few pixels' trim.
+  // The licence asks to say what we changed: always the size, often a crop.
   owed = {
     ...owed,
-    changes: box.width < w || box.height < h ? 'trimmed to 16:9, resized' : 'resized',
+    changes: box.width < w || box.height < h ? 'cropped to 16:9, resized' : 'resized',
   };
   image = image.withExif({
     IFD0: {
@@ -595,25 +836,6 @@ export function withComment(jpeg, text) {
   const header = Buffer.from([0xff, 0xfe, 0, 0]);
   header.writeUInt16BE(payload.length + 2, 2);
   return Buffer.concat([jpeg.subarray(0, at), header, payload, jpeg.subarray(at)]);
-}
-
-function provenance(page, crop) {
-  const info = page.imageinfo[0];
-  const text = (key) =>
-    String(info.extmetadata?.[key]?.value ?? '')
-      .replace(/<[^>]+>/g, '')
-      .trim();
-  return {
-    pageid: page.pageid,
-    title: page.title,
-    url: info.descriptionurl,
-    license: text('LicenseShortName'),
-    licenseUrl: text('LicenseUrl'),
-    author: text('Artist'),
-    original: `${info.width}x${info.height}`,
-    crop: Object.fromEntries(Object.entries(crop).map(([k, v]) => [k, +v.toFixed(4)])),
-    added: new Date().toISOString().slice(0, 10),
-  };
 }
 
 /**
@@ -657,10 +879,10 @@ async function numbers(dir) {
     .sort((a, b) => a - b);
 }
 
-/** Drops a photo's record and blocks its Commons source for good. */
+/** Drops a photo's record and blocks its source for good. */
 function forget(sources, name, reason) {
   const record = sources.walls[name];
-  if (record) sources.rejected[record.pageid] = reason;
+  if (record) sources.rejected[keyOf(record)] = reason;
   delete sources.walls[name];
   delete sources.hashes[name];
 }
@@ -698,14 +920,26 @@ async function contactSheet(paths, out) {
     .toFile(out);
 }
 
-async function api(params) {
-  const url = `${API}?${new URLSearchParams({ action: 'query', format: 'json', formatversion: '2', maxlag: '5', ...params })}`;
+function api(params) {
+  return getJson(
+    `${API}?${new URLSearchParams({ action: 'query', format: 'json', formatversion: '2', maxlag: '5', ...params })}`,
+  );
+}
+
+async function inat(params) {
+  await new Promise((r) => setTimeout(r, 1000)); // iNaturalist asks for about a request a second
+  return getJson(`${INAT}?${new URLSearchParams(params)}`);
+}
+
+async function getJson(url) {
   for (let attempt = 0; ; attempt++) {
     const response = await fetch(url, { headers: { 'User-Agent': UA } });
     const body = response.ok ? await response.json() : null;
     if (body && !body.error) return body;
     if (attempt === 4)
-      throw new Error(`Commons API ${response.status}: ${JSON.stringify(body?.error ?? '')}`);
+      throw new Error(
+        `${new URL(url).host} ${response.status}: ${JSON.stringify(body?.error ?? '')}`,
+      );
     await new Promise((r) => setTimeout(r, 2000 * 2 ** attempt)); // maxlag or rate limit: back off
   }
 }
@@ -715,6 +949,7 @@ async function download(url) {
     const response = await fetch(url, { headers: { 'User-Agent': UA } });
     if (response.ok) return Buffer.from(await response.arrayBuffer());
     // Commons rate-limits media downloads: wait as long as it asks, then a bit longer each time.
+    // (iNaturalist's come from Amazon's open-data bucket and don't.)
     if (![429, 503].includes(response.status) || attempt === 4)
       throw new Error(`${response.status} ${url}`);
     const wait = Number(response.headers.get('retry-after')) || 5 * 2 ** attempt;

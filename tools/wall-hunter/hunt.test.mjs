@@ -4,22 +4,28 @@ import sharp from 'sharp';
 import {
   credit,
   distance,
+  focus,
   framed,
-  is16by9,
+  fromInaturalist,
   photographer,
+  placeWindow,
   render,
   screen,
   series,
+  shape,
+  stamped,
   withComment,
 } from './hunt.mjs';
 
-test('only photos shot 16:9 at Full HD or more', () => {
-  assert.equal(is16by9({ width: 1920, height: 1080 }), true);
-  assert.equal(is16by9({ width: 6000, height: 3376 }), true); // 1.777…, a pixel off
-  assert.equal(is16by9({ width: 5184, height: 2912 }), true); // Canon's 16:9 mode, 0.1 % off
-  assert.equal(is16by9({ width: 6000, height: 4000 }), false); // 3:2
-  assert.equal(is16by9({ width: 4000, height: 3000 }), false); // 4:3
-  assert.equal(is16by9({ width: 1280, height: 720 }), false); // 16:9 but too small
+test('photos shot 16:9 or 3:2, Full HD or more after the crop', () => {
+  assert.equal(shape({ width: 1920, height: 1080 }), '16:9');
+  assert.equal(shape({ width: 6000, height: 3376 }), '16:9'); // 1.777…, a pixel off
+  assert.equal(shape({ width: 5184, height: 2912 }), '16:9'); // Canon's 16:9 mode, 0.1 % off
+  assert.equal(shape({ width: 6000, height: 4000 }), '3:2');
+  assert.equal(shape({ width: 2048, height: 1365 }), '3:2'); // iNaturalist's largest
+  assert.equal(shape({ width: 4000, height: 3000 }), null); // 4:3
+  assert.equal(shape({ width: 1280, height: 720 }), null); // 16:9 but too small
+  assert.equal(shape({ width: 1800, height: 1200 }), null); // 3:2, a 16:9 crop is under Full HD
 });
 
 const page = ({
@@ -57,10 +63,25 @@ test('metadata screen', () => {
   assert.equal(screen(page({ license: 'GFDL' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-USGov' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-self' })), null);
-  assert.equal(screen(page({ size: [6000, 4000] })), 'not 16:9');
-  for (const model of ['iPhone 8', 'iPhone X', 'SM-J701M', 'Lumia 930', 'Canon PowerShot SX50 HS', ''])
+  assert.equal(screen(page({ size: [4000, 3000] })), 'not 16:9 or 3:2');
+  assert.equal(screen(page({ size: [6000, 4000] })), null);
+  for (const model of [
+    'iPhone 8',
+    'iPhone X',
+    'SM-J701M',
+    'Lumia 930',
+    'Canon PowerShot SX50 HS',
+    '',
+  ])
     assert.equal(screen(page({ model })), 'not a system camera', model);
-  for (const model of ['iPhone 13', 'iPhone XS Max', 'Pixel 7a', 'SM-S911B', 'Galaxy S23', 'VOG-L29'])
+  for (const model of [
+    'iPhone 13',
+    'iPhone XS Max',
+    'Pixel 7a',
+    'SM-S911B',
+    'Galaxy S23',
+    'VOG-L29',
+  ])
     assert.equal(screen(page({ model })), null, model);
   assert.equal(screen(page({ title: 'File:Tucker Sno-Cat pic2.JPG' })), 'cat not the subject');
   assert.equal(screen(page({ title: 'File:Street market 17.jpg' })), 'cat not the subject');
@@ -164,7 +185,93 @@ test('render says what it changed: resized, or trimmed when 16:9 was a few pixel
     );
   };
   assert.equal((await comment(3840, 2160)).changes, 'resized');
-  assert.equal((await comment(3880, 2160)).changes, 'trimmed to 16:9, resized');
+  assert.equal((await comment(3880, 2160)).changes, 'cropped to 16:9, resized');
+});
+
+test('a 3:2 crop keeps what is in focus and cuts the blurred background', () => {
+  const [w, h] = [960, 640];
+  const height = 540; // 16:9
+  let seed = 7;
+  const noise = () => (seed = (seed * 16807) % 2147483647) % 256;
+  // flat grey with a sharp "cat" over the given rows, and a soft gradient elsewhere
+  const photo = (from, to) =>
+    Uint8Array.from({ length: w * h }, (_, i) => {
+      const y = Math.floor(i / w);
+      return y >= from && y < to && i % w > 300 && i % w < 660 ? noise() : 100 + y / 20;
+    });
+  const top = placeWindow(photo(20, 400), w, h, height);
+  assert.ok(top !== null && top <= 20 && top + height >= 400, `window at ${top}`);
+  const low = placeWindow(photo(250, 630), w, h, height);
+  assert.ok(low !== null && low <= 250 && low + height >= 630, `window at ${low}`);
+  assert.equal(placeWindow(photo(10, 630), w, h, height), null); // the cat fills the frame: no crop
+});
+
+test('a trail camera stamp is caught, a studio black background is not', () => {
+  const [w, h] = [960, 540];
+  let seed = 3;
+  const noise = () => ((seed = (seed * 16807) % 2147483647) % 140) + 60;
+  const photo = Uint8Array.from({ length: w * h }, noise);
+  // black bar 30 px tall along the bottom with white "text" in it
+  const bar = photo.map((v, i) => {
+    const [x, y] = [i % w, Math.floor(i / w)];
+    if (y < h - 30) return v;
+    return y > h - 22 && y < h - 8 && x % 12 < 3 && x < 600 ? 255 : 0;
+  });
+  const studio = photo.map((v, i) => (Math.floor(i / w) >= h - 60 ? 4 : v));
+  const light = bar.map((v, i) => (Math.floor(i / w) >= h - 30 ? 255 - v : v)); // dark text on white
+  assert.equal(stamped(bar, w, h), true);
+  assert.equal(stamped(light, w, h), true);
+  assert.equal(stamped(photo, w, h), false);
+  assert.equal(stamped(studio, w, h), false);
+});
+
+test('a cat in focus against a soft background, not a sharp field', () => {
+  const [w, h] = [960, 540];
+  let seed = 11;
+  const noise = () => (seed = (seed * 16807) % 2147483647) % 256;
+  const field = Uint8Array.from({ length: w * h }, noise);
+  const portrait = field.map((v, i) => {
+    const [x, y] = [i % w, Math.floor(i / w)];
+    return x > 380 && x < 580 && y > 170 && y < 370 ? v : 120 + (x + y) / 40;
+  });
+  assert.ok(focus(field, w, h) > 0.9);
+  assert.ok(focus(portrait, w, h) < 0.13);
+});
+
+test('an iNaturalist observation becomes one candidate with its credit', () => {
+  const photo = (id, license_code, width, height) => ({
+    id,
+    license_code,
+    url: `https://inaturalist-open-data.s3.amazonaws.com/photos/${id}/square.jpg`,
+    original_dimensions: { width, height },
+  });
+  const observation = (photos, name = 'Ann Lee') => ({
+    id: 42,
+    user: { login: 'ann', name },
+    photos,
+  });
+  const found = fromInaturalist(
+    observation([
+      photo(1, 'cc-by-nc', 1536, 2048),
+      photo(2, null, 2048, 1152),
+      photo(3, 'cc-by-nc', 2048, 1365),
+    ]),
+  );
+  assert.equal(found.key, 'inat:42');
+  assert.equal(found.url, 'https://inaturalist-open-data.s3.amazonaws.com/photos/3/original.jpg');
+  assert.deepEqual(found.credit, {
+    author: 'Ann Lee',
+    license: 'CC BY-NC 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    source: 'https://www.inaturalist.org/photos/3',
+  });
+  assert.equal(fromInaturalist(observation([photo(4, 'cc0', 2048, 1152)], '')).credit, null);
+  assert.equal(
+    fromInaturalist(observation([photo(5, 'cc-by', 2048, 1152)], '')).credit.author,
+    'ann',
+  );
+  assert.equal(fromInaturalist(observation([photo(6, 'cc-by-nd', 2048, 1152)])), null);
+  assert.equal(fromInaturalist(observation([photo(7, 'cc-by', 1536, 2048)])), null);
 });
 
 test('dHash distance counts differing bits', () => {
