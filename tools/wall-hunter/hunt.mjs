@@ -228,32 +228,62 @@ Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${sav
 }
 
 /**
- * Commons search results, finder by finder, in relevance order. Only ~2 % of photos are shot 16:9,
- * so the search asks for sizes alone, 500 at a time, and fetches the full metadata just for the
- * 16:9 ones that aren't known yet.
+ * A Commons search stops after 10,000 results, and the two broadest finders have more. Read again
+ * in width bands, each well under the cap (measured 2026-11-02: +1008 16:9 photos the first pass
+ * can't reach, versus +702 from re-sorting by date).
  */
-async function* search(known) {
-  for (const finder of FINDERS) {
-    let more = {};
-    do {
-      const response = await api({
-        generator: 'search',
-        gsrnamespace: '6',
-        gsrsearch: `${finder} ${BASE}`,
-        gsrlimit: '500',
-        prop: 'imageinfo',
-        iiprop: 'size',
-        ...more,
-      });
-      const wide = (response.query?.pages ?? [])
-        .filter(
-          (page) => page.imageinfo && is16by9(page.imageinfo[0]) && !known.has(String(page.pageid)),
-        )
-        .sort((a, b) => a.index - b.index);
-      for (let i = 0; i < wide.length; i += 50) yield* await details(wide.slice(i, i + 50));
-      more = response.continue;
-    } while (more);
-  }
+const CAP = 10_000;
+const WIDTH_BANDS = [
+  'filew:1920,2999',
+  'filew:3000,3999',
+  'filew:4000,4999',
+  'filew:5000,5999',
+  'filew:>5999',
+];
+
+/**
+ * Commons search results, finder by finder, best first. A finder that hits the cap gets a second
+ * pass in width bands once the first pass of every finder is done.
+ */
+export async function* search(known) {
+  const capped = [];
+  for (const finder of FINDERS)
+    if ((yield* matches(`${finder} ${BASE}`, known)) >= CAP) capped.push(finder);
+  for (const finder of capped)
+    for (const band of WIDTH_BANDS)
+      if ((yield* matches(`${finder} ${BASE} ${band}`, known)) >= CAP)
+        console.warn(`  "${finder}" at ${band} hits the search cap too: split that band`);
+}
+
+/**
+ * One search read to the end, in relevance order. Only ~3 % of photos are shot 16:9, so it asks
+ * for sizes alone, 500 at a time, and fetches full metadata just for the 16:9 ones not known yet.
+ * Returns how many results the search gave.
+ */
+async function* matches(query, known) {
+  let total = 0;
+  let more = {};
+  do {
+    const response = await api({
+      generator: 'search',
+      gsrnamespace: '6',
+      gsrsearch: query,
+      gsrlimit: '500',
+      prop: 'imageinfo',
+      iiprop: 'size',
+      ...more,
+    });
+    const pages = response.query?.pages ?? [];
+    total += pages.length;
+    const wide = pages
+      .filter(
+        (page) => page.imageinfo && is16by9(page.imageinfo[0]) && !known.has(String(page.pageid)),
+      )
+      .sort((a, b) => a.index - b.index);
+    for (let i = 0; i < wide.length; i += 50) yield* await details(wide.slice(i, i + 50));
+    more = response.continue;
+  } while (more);
+  return total;
 }
 
 /** Everything the checks need, for up to 50 pages, kept in the order given. */
