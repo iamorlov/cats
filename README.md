@@ -23,7 +23,7 @@ npm run hunt                 # a batch of 50 cats in tools/wall-hunter/preview (
 
 The hunter never touches the project. It saves the photos to `tools/wall-hunter/preview` under the names they will have here (`wall-<next>.jpg`) and puts the whole batch on one sheet, `tools/wall-hunter/last-run.jpg`. Then:
 
-1. Delete the ones you don't like from `preview` and run `npm run hunt` again. While the batch isn't copied in, a run renumbers what's left without gaps and fills the batch up with new photos after it; the deleted ones never come back.
+1. Delete the ones you don't like from `preview` and run `npm run hunt` again. While the batch isn't copied in, a run renumbers what's left without gaps and fills the batch up with new photos after it; the deleted ones never come back, nor do other photos from their shoot (same photographer, same numbered title). At most 2 photos per photographer and 1 per shoot in a batch, the kept ones included.
 2. Copy `preview` into `public/assets/walls` and set `WALLS` in `src/app/slideshow.ts`.
 3. The next `npm run hunt` sees the batch in the project, clears `preview` and hunts a new one.
 
@@ -31,7 +31,7 @@ It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)),
 
 - **free to redistribute:** CC0, public domain released by the author, or CC BY / CC BY-SA (any version). Never ND, "public domain because old" or a US-government work. The Commons page, author and licence of every cat go into `tools/wall-hunter/sources.json`.
 - **real:** a system camera (Canon EOS, Nikon D/Z, Sony α, Fujifilm X…) or a flagship phone from 2018 on (iPhone XS/11+, Pixel 3+, Galaxy S9+, Huawei P30+) in the EXIF, no category hinting at AI, renders, artwork, watermarks, borders or a licence dispute.
-- **about the cat:** a cat word in the file name, filed in a cat category, no people tagged, no lynx, skull or Sno-Cat.
+- **about the cat:** a cat word in the file name, filed in a cat category, no people tagged, no lynx, skull, Sno-Cat or dog.
 - **good enough for a wall:** a sharp subject on a softer background (not a whole yard in focus with a cat somewhere in it), sane exposure, in colour, no trail-camera stamp, not a duplicate of an existing wall. Every limit sits at about the worst 5 % of the walls picked by hand.
 
 When Commons runs dry it goes on to **[iNaturalist](https://www.inaturalist.org)**: house cats people photographed and annotated as alive (a tenth of the annotated ones are dead, so unannotated ones are skipped), CC0, CC BY, BY-SA, BY-NC or BY-NC-SA 4.0 (NC is fine: the site is personal and non-commercial), one photo per observation. iNaturalist strips EXIF and has no categories, so only the photo checks above apply, and expect to delete more from these batches: watermarks, people and prey get through.

@@ -11,7 +11,7 @@ import {
   placeWindow,
   render,
   screen,
-  series,
+  shoot,
   shape,
   stamped,
   withComment,
@@ -97,6 +97,8 @@ test('metadata screen', () => {
     "File:How To Take Your Cat's Blood Pressure - Omron BP791IT.jpg",
     'File:Half a jungle cat on the prowl.jpg',
     'File:Stuffed cat on a shelf.jpg',
+    'File:Can e gato, Santiago de Compostela.jpg',
+    'File:Dog and cat asleep.jpg',
   ])
     assert.equal(screen(page({ title })), 'cat not the subject', title);
   assert.equal(screen(page({ title: 'File:Kitten with toy mouse.jpg' })), null);
@@ -122,21 +124,23 @@ test('a white border is a frame, a studio black background is not', () => {
 
 test('one photographer under two names is one photographer', () => {
   assert.equal(
-    photographer(page({ artist: 'Trougnouf' })),
-    photographer(
-      page({
-        artist:
-          '<a href="//commons.wikimedia.org/wiki/User:Trougnouf">Trougnouf</a> (Benoit Brummer)',
-      }),
-    ),
+    photographer({ author: 'Trougnouf' }),
+    photographer({ author: 'Trougnouf (Benoit Brummer)' }),
   );
+  assert.notEqual(photographer({ author: 'Ann' }), photographer({ author: 'Ann', inat: 7 }));
 });
 
-test('one shoot is one series', () => {
-  const s = (title) => series({ title });
+test('one shoot: a numbered series by one photographer, or one iNaturalist observation', () => {
+  const s = (title, author = 'Jane') => shoot({ title, author });
   assert.equal(s('File:Feral cat 5.jpg'), s('File:Feral cat 7.jpg'));
   assert.equal(s('File:My house cat, Ada (1).JPG'), s('File:My house cat, Ada (4).JPG'));
+  assert.equal(
+    s('File:Felis silvestris catus (37533449280).jpg', 'LiCheng Shih'),
+    s('File:Felis silvestris catus (36381197023).jpg', 'LiCheng Shih'),
+  );
   assert.notEqual(s('File:Feral cat 5.jpg'), s('File:Kitten 5.jpg'));
+  assert.notEqual(s('File:Cat 1460.jpg', 'Ann'), s('File:Cat 1460.jpg', 'Bob'));
+  assert.equal(shoot({ inat: 42, author: 'Ann' }), 'inat:42');
 });
 
 test('credit is owed for CC BY / BY-SA only, and rides in a JPEG comment', async () => {

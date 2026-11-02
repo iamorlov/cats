@@ -115,10 +115,11 @@ export const CAT_TITLE =
 
 /**
  * Things called "cat" that are not a house cat or not alive, and titles where the cat is a prop:
- * "<gadget> with cat", "How to take your cat's blood pressure".
+ * "<gadget> with cat", "How to take your cat's blood pressure", or a dog in the frame ("Can e gato"
+ * is Galician for "dog and cat").
  */
 export const NOT_A_HOUSE_CAT =
-  /wild ?cat|wildkatze|jungle cat|lynx|bobcat|ringtail|civet|leopard|tiger|lion|cheetah|serval|caracal|ocelot|margay|puma|cougar|jaguar|manul|pallas|sno-?cat|catfish|catamaran|caterpillar|cat (ba|island|bay)|skull|skeleton|mummy|statue|sculpture|figurine|plush|(toy|stuffed) (cat|kitten)|robot|\bwith (a |the |my )?(cat|kitten)\b|\bhow to\b/i;
+  /wild ?cat|wildkatze|jungle cat|lynx|bobcat|ringtail|civet|leopard|tiger|lion|cheetah|serval|caracal|ocelot|margay|puma|cougar|jaguar|manul|pallas|sno-?cat|catfish|catamaran|caterpillar|cat (ba|island|bay)|skull|skeleton|mummy|statue|sculpture|figurine|plush|(toy|stuffed) (cat|kitten)|robot|\bwith (a |the |my )?(cat|kitten)\b|\bhow to\b|\b(dogs?|pupp(y|ies)|perros?|hunde?|chiens?|cane|can e)\b|собак/i;
 
 /** A person named in the title: the people tag is often missing. */
 export const PEOPLE =
@@ -208,9 +209,15 @@ async function main() {
     sources.rejected[key] = reason;
   };
 
+  // Variety counts over the whole batch, kept photos included; a shoot you deleted from stays out.
   const saved = [];
   const byAuthor = new Map();
-  const seriesTaken = new Set();
+  const shoots = new Set(sources.dropped);
+  for (const name of kept) {
+    const owner = photographer(sources.walls[name]);
+    byAuthor.set(owner, (byAuthor.get(owner) ?? 0) + 1);
+    shoots.add(shoot(sources.walls[name]));
+  }
   // ponytail: one candidate at a time keeps both sites happy; ~2–4 s each, fine for a manual run.
   for await (const found of wanted > 0 ? everywhere(known) : []) {
     if (saved.length >= wanted) break;
@@ -220,7 +227,8 @@ async function main() {
       reject(found.key, found.reason);
       continue;
     }
-    if ((byAuthor.get(found.owner) ?? 0) >= PER_AUTHOR || seriesTaken.has(found.series)) continue;
+    const owner = photographer(found.record);
+    if ((byAuthor.get(owner) ?? 0) >= PER_AUTHOR || shoots.has(shoot(found.record))) continue;
     let verdict;
     let jpeg;
     try {
@@ -238,8 +246,8 @@ async function main() {
     const name = `wall-${next}.jpg`;
     await writeFile(join(PREVIEW, name), jpeg);
     hashes.set(name, verdict.hash);
-    byAuthor.set(found.owner, (byAuthor.get(found.owner) ?? 0) + 1);
-    seriesTaken.add(found.series);
+    byAuthor.set(owner, (byAuthor.get(owner) ?? 0) + 1);
+    shoots.add(shoot(found.record));
     saved.push(name);
     sources.walls[name] = {
       ...found.record,
@@ -279,7 +287,7 @@ preview holds ${batch[0]} … ${batch.at(-1)}: ${saved.length} new${kept.length 
 }
 
 /**
- * Every candidate, best source first: { key, title, thumb, url, owner, series, credit, record }, or
+ * Every candidate, best source first: { key, title, thumb, url, credit, record }, or
  * { key, reason } for one turned down on metadata alone. Keys: Commons page id, or "inat:<observation>".
  */
 async function* everywhere(known) {
@@ -303,8 +311,6 @@ function fromCommons(page) {
     title: page.title,
     thumb: info.thumburl,
     url: info.url,
-    owner: photographer(page),
-    series: series(page),
     credit: credit(page),
     record: {
       pageid: page.pageid,
@@ -358,8 +364,6 @@ export function fromInaturalist(observation) {
     title,
     thumb: photo.url.replace('/square.', '/large.'), // 1024 px
     url: photo.url.replace('/square.', '/original.'), // 2048 px, iNaturalist keeps no bigger
-    owner: `inat:${observation.user.login}`,
-    series: `inat:${observation.id}`,
     credit: photo.license_code === 'cc0' ? null : { author, license, licenseUrl, source },
     record: {
       inat: observation.id,
@@ -493,14 +497,19 @@ export function screen(page) {
   return null;
 }
 
-/** "Feral cat 5.jpg" and "Feral cat 7.jpg", "Ada (1)" and "Ada (2)": one shoot, one wall per run. */
-export function series(page) {
-  return page.title
+/**
+ * "Feral cat 5.jpg" and "Feral cat 7.jpg", "Ada (1)" and "Ada (2)" by one photographer, or one
+ * iNaturalist observation: one shoot, one wall per batch, and none at all once you delete one.
+ */
+export function shoot(record) {
+  if (record.inat) return `inat:${record.inat}`;
+  const title = record.title
     .replace(/^File:|\.\w+$/g, '')
     .replace(/\(.*?\)|[\d_.,-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();
+  return `${photographer(record)}|${title}`;
 }
 
 function author(page) {
@@ -510,11 +519,12 @@ function author(page) {
 }
 
 /** One key per person: "Trougnouf" and "Trougnouf (Benoit Brummer)" are the same photographer. */
-export function photographer(page) {
-  return author(page)
+export function photographer(record) {
+  const name = record.author
     .replace(/\s*\(.*?\)/g, '')
     .trim()
     .toLowerCase();
+  return record.inat ? `inat:${name}` : name;
 }
 
 /**
@@ -897,11 +907,15 @@ function forget(sources, name, reason) {
   delete sources.hashes[name];
 }
 
-/** A photo that left preview without reaching the project was turned down: don't offer it again. */
+/**
+ * A photo that left preview without reaching the project was turned down: don't offer it again, nor
+ * the rest of its shoot.
+ */
 function forgetUncopied(sources) {
   let deleted = 0;
   for (const name of Object.keys(sources.walls))
     if (!existsSync(join(WALLS_DIR, name)) && !existsSync(join(PREVIEW, name))) {
+      sources.dropped = [...new Set([...(sources.dropped ?? []), shoot(sources.walls[name])])];
       forget(sources, name, 'deleted from preview');
       deleted++;
     }
