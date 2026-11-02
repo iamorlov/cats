@@ -2,29 +2,29 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import sharp from 'sharp';
 import {
-  LIMITS,
-  bestWindow,
   credit,
   distance,
   framed,
+  is16by9,
   photographer,
+  render,
   screen,
   series,
   withComment,
 } from './hunt.mjs';
 
-test('16:9 window follows the in-focus detail and notices a subject it would cut', () => {
-  const softTopSharpBottom = [...Array(30).fill(1), ...Array(70).fill(10)];
-  const { start, cut } = bestWindow(softTopSharpBottom, 70);
-  assert.equal(start, 30);
-  assert.ok(cut < 0.2);
-  const catFillsFrame = Array(100).fill(10);
-  assert.ok(bestWindow(catFillsFrame, 70).cut > LIMITS.cut);
+test('only photos shot 16:9 at Full HD or more', () => {
+  assert.equal(is16by9({ width: 1920, height: 1080 }), true);
+  assert.equal(is16by9({ width: 6000, height: 3376 }), true); // 1.777…, a pixel off
+  assert.equal(is16by9({ width: 5184, height: 2912 }), true); // Canon's 16:9 mode, 0.1 % off
+  assert.equal(is16by9({ width: 6000, height: 4000 }), false); // 3:2
+  assert.equal(is16by9({ width: 4000, height: 3000 }), false); // 4:3
+  assert.equal(is16by9({ width: 1280, height: 720 }), false); // 16:9 but too small
 });
 
 const page = ({
   title = 'File:Tabby cat on a sofa.jpg',
-  size = [6000, 4000],
+  size = [6000, 3375],
   model = 'Canon EOS 5D Mark III',
   license = 'CC0',
   artist = '<a href="//commons.wikimedia.org/wiki/User:Jane">Jane Doe</a>',
@@ -57,7 +57,7 @@ test('metadata screen', () => {
   assert.equal(screen(page({ license: 'GFDL' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-USGov' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-self' })), null);
-  assert.equal(screen(page({ size: [3000, 4000] })), 'not landscape');
+  assert.equal(screen(page({ size: [6000, 4000] })), 'not 16:9');
   assert.equal(screen(page({ model: 'iPhone 13' })), 'not a system camera');
   assert.equal(screen(page({ title: 'File:Tucker Sno-Cat pic2.JPG' })), 'cat not the subject');
   assert.equal(screen(page({ title: 'File:Street market 17.jpg' })), 'cat not the subject');
@@ -126,6 +126,33 @@ test('credit is owed for CC BY / BY-SA only, and rides in a JPEG comment', async
   const text = tagged.subarray(at + 4, at + 2 + length).toString('utf8');
   assert.deepEqual(JSON.parse(text.slice('cats-credit '.length)), owed);
   assert.equal((await sharp(tagged).metadata()).width, 64);
+});
+
+test('render says what it changed: resized, or trimmed when 16:9 was a few pixels off', async () => {
+  const owed = credit(page({ license: 'CC BY 4.0' }));
+  const comment = async (width, height) => {
+    const original = await sharp({ create: { width, height, channels: 3, background: '#468' } })
+      .jpeg()
+      .toBuffer();
+    const crop =
+      width / height > 16 / 9
+        ? { x: (1 - (height * 16) / 9 / width) / 2, y: 0, w: (height * 16) / 9 / width, h: 1 }
+        : { x: 0, y: 0, w: 1, h: 1 };
+    const jpeg = await render(original, crop, owed);
+    assert.deepEqual(
+      [(await sharp(jpeg).metadata()).width, (await sharp(jpeg).metadata()).height],
+      [1920, 1080],
+    );
+    const at = jpeg.indexOf(Buffer.from([0xff, 0xfe]));
+    return JSON.parse(
+      jpeg
+        .subarray(at + 4, at + 2 + jpeg.readUInt16BE(at + 2))
+        .toString()
+        .slice(12),
+    );
+  };
+  assert.equal((await comment(3840, 2160)).changes, 'resized');
+  assert.equal((await comment(3880, 2160)).changes, 'trimmed to 16:9, resized');
 });
 
 test('dHash distance counts differing bits', () => {

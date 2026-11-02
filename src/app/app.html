@@ -19,7 +19,8 @@
   @if (slide.credit; as credit) {
     <p class="photo-credit" animate.enter="credit-in" animate.leave="credit-out">
       Photo: <a [href]="credit.source" target="_blank">{{ credit.author }}</a> ·
-      <a [href]="credit.licenseUrl" target="_blank" rel="license">{{ credit.license }}</a> · cropped
+      <a [href]="credit.licenseUrl" target="_blank" rel="license">{{ credit.license }}</a> ·
+      {{ credit.changes ?? 'cropped' }}
     </p>
   }
 }

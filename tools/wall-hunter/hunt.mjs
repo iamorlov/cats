@@ -1,6 +1,6 @@
 // Wall hunter: finds real (camera-made) cat photos on Wikimedia Commons that are CC0, public domain or
-// CC BY / BY-SA (credit travels inside the file, the site shows it), crops them to 16:9 around the cat,
-// and saves them to tools/wall-hunter/preview/ under the names
+// CC BY / BY-SA (credit travels inside the file, the site shows it) and shot 16:9 at Full HD or more
+// (never cropped: crops cut cats), and saves them to tools/wall-hunter/preview/ under the names
 // they will have in the project (wall-<next>.jpg). It never touches the project itself: you look the
 // batch over, copy it into public/assets/walls and set WALLS by hand.
 //
@@ -70,7 +70,6 @@ const JPEG = { quality: 90, mozjpeg: true }; // visually lossless; the existing 
 
 // Calibrated on the 1131 hand-picked walls: each limit sits at about their worst 5 %.
 export const LIMITS = {
-  cut: 0.6, // detail density in the cropped-off strips vs the kept frame: higher means the cat gets cut
   sharpness: 400, // Laplacian variance of the sharpest tile: below this nothing is in focus
   isolation: 4.5, // sharpest tile vs the median one: a sharp cat on a soft background, not sharp clutter
   lumaMin: 30,
@@ -167,7 +166,7 @@ async function main() {
   const byAuthor = new Map();
   const seriesTaken = new Set();
   // ponytail: one candidate at a time keeps Commons happy; ~2–4 s each, fine for a manual run.
-  for await (const page of search()) {
+  for await (const page of search(known)) {
     if (saved.length === count) break;
     if (known.has(String(page.pageid))) continue;
     known.add(String(page.pageid)); // the finders overlap
@@ -228,8 +227,12 @@ Saved ${saved.length} photos to tools/wall-hunter/preview: ${saved[0]} … ${sav
   3. Copy what's left in preview into public/assets/walls and set WALLS = ${next} in src/app/slideshow.ts.`);
 }
 
-/** Commons search results, finder by finder and page by page, in relevance order, with metadata. */
-async function* search() {
+/**
+ * Commons search results, finder by finder, in relevance order. Only ~2 % of photos are shot 16:9,
+ * so the search asks for sizes alone, 500 at a time, and fetches the full metadata just for the
+ * 16:9 ones that aren't known yet.
+ */
+async function* search(known) {
   for (const finder of FINDERS) {
     let more = {};
     do {
@@ -237,18 +240,38 @@ async function* search() {
         generator: 'search',
         gsrnamespace: '6',
         gsrsearch: `${finder} ${BASE}`,
-        gsrlimit: '50',
+        gsrlimit: '500',
         prop: 'imageinfo',
-        iiprop: 'url|size|commonmetadata|extmetadata',
-        iiurlwidth: '960',
-        iiextmetadatafilter: 'LicenseShortName|LicenseUrl|Artist|Categories',
+        iiprop: 'size',
         ...more,
       });
-      const pages = (response.query?.pages ?? []).filter((page) => page.imageinfo);
-      yield* pages.sort((a, b) => a.index - b.index);
+      const wide = (response.query?.pages ?? [])
+        .filter(
+          (page) => page.imageinfo && is16by9(page.imageinfo[0]) && !known.has(String(page.pageid)),
+        )
+        .sort((a, b) => a.index - b.index);
+      for (let i = 0; i < wide.length; i += 50) yield* await details(wide.slice(i, i + 50));
       more = response.continue;
     } while (more);
   }
+}
+
+/** Everything the checks need, for up to 50 pages, kept in the order given. */
+async function details(pages) {
+  const response = await api({
+    pageids: pages.map((page) => page.pageid).join('|'),
+    prop: 'imageinfo',
+    iiprop: 'url|size|commonmetadata|extmetadata',
+    iiurlwidth: '960',
+    iiextmetadatafilter: 'LicenseShortName|LicenseUrl|Artist|Categories',
+  });
+  const full = new Map((response.query?.pages ?? []).map((page) => [page.pageid, page]));
+  return pages.map((page) => full.get(page.pageid)).filter((page) => page?.imageinfo);
+}
+
+/** Shot 16:9 (within 1 %: a few pixels' trim at most) and at least Full HD. */
+export function is16by9({ width, height }) {
+  return width >= OUT_W && height >= OUT_H && Math.abs(width / height / RATIO - 1) <= 0.01;
 }
 
 /** Cheap checks on metadata alone. Returns why a file is out, or null. */
@@ -267,8 +290,7 @@ export function screen(page) {
     (/public domain/i.test(license) && /PD-(self|user|author)/i.test(categories));
   if (!free) return 'licence';
   if (/^CC BY/i.test(license) && !author(page)) return 'no author to credit';
-  if (info.width / info.height < 1.3) return 'not landscape';
-  if (Math.min(info.width, info.height * RATIO) < OUT_W) return 'too small for 16:9';
+  if (!is16by9(info)) return 'not 16:9';
   // Also proves a camera took it: scans, renders and AI pictures carry no camera model.
   if (!GOOD_CAMERA.test(model)) return 'not a system camera';
   if (
@@ -309,7 +331,7 @@ export function photographer(page) {
 
 /**
  * What the site must show with a CC BY / BY-SA photo: author, licence, where it came from, and that
- * it was changed (cropped and resized). Null when nothing is owed: CC0 and public domain.
+ * it was changed (render() adds what). Null when nothing is owed: CC0 and public domain.
  */
 export function credit(page) {
   const info = page.imageinfo[0];
@@ -324,28 +346,31 @@ export function credit(page) {
 }
 
 /**
- * Looks at the 960 px thumbnail: where to cut 16:9, and whether the result is sharp, well exposed,
- * colourful, frameless and new. Returns { crop, hash } or { reason }.
+ * Looks at the 960 px thumbnail: is the photo sharp, well exposed, colourful, frameless and new?
+ * Returns { crop, hash } or { reason }. The crop only trims the ≤1 % that 16:9 is off by, evenly.
  */
 export async function analyze(thumb, hashes = new Map()) {
-  const { data: gray, info } = await sharp(thumb)
-    .greyscale()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-  const { width: w, height: h } = info;
-  const tall = w / h < RATIO;
-  const { rows, cols } = detail(gray, w, h);
-  const span = tall ? Math.round(w / RATIO) : Math.round(h * RATIO);
-  const { start, cut } = bestWindow(tall ? rows : cols, span);
-  const box = tall
-    ? { left: 0, top: start, width: w, height: span }
-    : { left: start, top: 0, width: span, height: h };
+  const { width: w, height: h } = await sharp(thumb).metadata();
+  const box =
+    w / h < RATIO
+      ? {
+          left: 0,
+          top: Math.floor((h - Math.round(w / RATIO)) / 2),
+          width: w,
+          height: Math.round(w / RATIO),
+        }
+      : {
+          left: Math.floor((w - Math.round(h * RATIO)) / 2),
+          top: 0,
+          width: Math.round(h * RATIO),
+          height: h,
+        };
   const crop = { x: box.left / w, y: box.top / h, w: box.width / w, h: box.height / h };
 
   const framed = sharp(thumb).extract(box).resize(960, 540, { fit: 'fill' });
   const rgb = await framed.clone().removeAlpha().raw().toBuffer();
   const luma = await framed.clone().greyscale().raw().toBuffer();
-  const metrics = { cut, ...measure(rgb, luma, 960, 540) };
+  const metrics = measure(rgb, luma, 960, 540);
   const reason = verdict(metrics);
   if (reason) return { reason, metrics };
 
@@ -357,7 +382,6 @@ export async function analyze(thumb, hashes = new Map()) {
 
 /** Why the picture falls short of the existing walls, or null. */
 export function verdict(m) {
-  if (m.cut > LIMITS.cut) return 'cat would be cut';
   if (m.sharpness < LIMITS.sharpness) return 'blurry';
   if (m.isolation < LIMITS.isolation) return 'busy background';
   if (m.luma < LIMITS.lumaMin) return 'too dark';
@@ -366,40 +390,6 @@ export function verdict(m) {
   if (m.colorfulness < LIMITS.colorfulness) return 'no colour';
   if (m.framed) return 'frame or border';
   return null;
-}
-
-/** Per-row and per-column sums of |gradient|: where the in-focus detail is. Pet shots keep the pet sharp. */
-function detail(gray, w, h) {
-  const rows = new Float64Array(h);
-  const cols = new Float64Array(w);
-  for (let y = 1; y < h; y++) {
-    for (let x = 1; x < w; x++) {
-      const i = y * w + x;
-      const g = Math.abs(gray[i] - gray[i - 1]) + Math.abs(gray[i] - gray[i - w]);
-      rows[y] += g;
-      cols[x] += g;
-    }
-  }
-  return { rows, cols };
-}
-
-/**
- * The window of `size` holding the most detail, and how dense the detail left outside it is compared
- * with the detail kept (0 = only blur is cut off, 1 = we cut as much detail as we keep).
- */
-export function bestWindow(energy, size) {
-  let sum = 0;
-  for (let i = 0; i < size; i++) sum += energy[i];
-  let best = sum;
-  let start = 0;
-  for (let i = size; i < energy.length; i++) {
-    sum += energy[i] - energy[i - size];
-    if (sum > best) [best, start] = [sum, i - size + 1];
-  }
-  const outside = energy.length - size;
-  if (!outside || !best) return { start, cut: 0 };
-  const total = energy.reduce((a, b) => a + b, 0);
-  return { start, cut: (total - best) / outside / (best / size) };
 }
 
 /** Sharpness, exposure and colourfulness of the 960×540 crop. */
@@ -548,10 +538,15 @@ export async function render(original, crop, owed) {
   };
   let image = sharp(original).rotate().extract(box).resize(OUT_W, OUT_H, { fit: 'fill' });
   if (!owed) return image.jpeg(JPEG).toBuffer();
+  // The licence asks to say what we changed: always the size, sometimes a few pixels' trim.
+  owed = {
+    ...owed,
+    changes: box.width < w || box.height < h ? 'trimmed to 16:9, resized' : 'resized',
+  };
   image = image.withExif({
     IFD0: {
       Artist: owed.author,
-      Copyright: `${owed.license} ${owed.licenseUrl}. Source: ${owed.source}. Cropped and resized.`,
+      Copyright: `${owed.license} ${owed.licenseUrl}. Source: ${owed.source}. Changes: ${owed.changes}.`,
     },
   });
   return withComment(await image.jpeg(JPEG).toBuffer(), CREDIT_TAG + JSON.stringify(owed));

@@ -34,9 +34,9 @@ It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)),
 - **about the cat:** a cat word in the file name, filed in a cat category, no people tagged, no lynx, skull or Sno-Cat.
 - **good enough for a wall:** a sharp subject on a softer background, sane exposure, in colour, not a duplicate of an existing wall. Every limit sits at about the worst 5 % of the walls picked by hand.
 
-It crops 16:9 around the sharpest part of the frame (dropping the photo if that would cut the cat) and saves 1920×1080 JPEGs with mozjpeg q90.
+It only takes photos **shot 16:9** (within 1 %) at Full HD or more and never crops them: automatic crops kept cutting cats. They are scaled to 1920×1080 with mozjpeg q90. Only about 2 % of photos are 16:9, so the search reads sizes 500 files at a time and fetches the rest only for those.
 
-**Credit.** A CC BY / BY-SA photo carries its credit inside the file: EXIF Artist/Copyright for anyone who downloads it, and a JPEG comment the site reads to show "Photo: author · licence · cropped" in the top left corner while the photo is up. Nothing to copy besides the `.jpg`. A wall whose credit can't be read is skipped rather than shown without it.
+**Credit.** A CC BY / BY-SA photo carries its credit inside the file: EXIF Artist/Copyright for anyone who downloads it, and a JPEG comment the site reads to show "Photo: author · licence · resized" in the top left corner while the photo is up. Nothing to copy besides the `.jpg`. A wall whose credit can't be read is skipped rather than shown without it.
 
 Whichever way cats arrive, `public/assets/walls` must stay numbered without gaps and `WALLS` must match the count: `npm test` fails otherwise.
 

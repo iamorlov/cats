@@ -13,6 +13,8 @@ export interface Credit {
   license: string;
   licenseUrl: string;
   source: string;
+  /** What was changed, e.g. "resized". Walls hunted before this field existed were cropped. */
+  changes?: string;
 }
 
 export interface Slide {
