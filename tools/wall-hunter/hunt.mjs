@@ -106,13 +106,6 @@ export const GOOD_CAMERA =
 export const BLOCKED =
   /watermark|with borders|border removal|remove border|ai-generated|artificial intelligence|midjourney|dall-e|stable diffusion|low quality|blurr|out of focus|deletion|copyright violation|missing permission|without (a )?source|license review needed|unverified|artwork|museum|painting|drawing|illustration|prints? by|engraving|caricature|cartoon|sculpture|statue|figurine|plush|in art\b|logo|poster|postcard|stamp|collage|montage|meme|screenshot|x-ray|dead|injur|wound|sick|disease|surgery|veterinar|necropsy|taxiderm|skeleton|roadkill|personality rights/i;
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  await main().catch((error) => {
-    console.error(error.message);
-    process.exitCode = 1;
-  });
-}
-
 async function main() {
   const { values } = parseArgs({ options: { count: { type: 'string', default: '50' } } });
   const sources = existsSync(SOURCES)
@@ -718,4 +711,13 @@ async function download(url) {
     console.warn(`  Commons asks to slow down, waiting ${wait} s…`);
     await new Promise((r) => setTimeout(r, wait * 1000));
   }
+}
+
+// Last line on purpose: by now every const above is initialised (a run that started earlier hit
+// "Cannot access … before initialization" twice).
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  await main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
 }
