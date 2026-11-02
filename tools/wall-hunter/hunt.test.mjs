@@ -67,6 +67,15 @@ test('metadata screen', () => {
     'person in the photo',
   );
   assert.equal(screen(page({ title: 'File:Manx cat in a mansion.jpg' })), null);
+  // the cat as a prop, or not a house cat
+  for (const title of [
+    'File:Olympus Air A01 with cat.jpg',
+    "File:How To Take Your Cat's Blood Pressure - Omron BP791IT.jpg",
+    'File:Half a jungle cat on the prowl.jpg',
+    'File:Stuffed cat on a shelf.jpg',
+  ])
+    assert.equal(screen(page({ title })), 'cat not the subject', title);
+  assert.equal(screen(page({ title: 'File:Kitten with toy mouse.jpg' })), null);
 });
 
 test('a white border is a frame, a studio black background is not', () => {

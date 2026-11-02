@@ -83,9 +83,12 @@ export const LIMITS = {
 export const CAT_TITLE =
   /\b(cats?|kittens?|kitty|kitties|katzen?|kätzchen|kater|mieze|chats?|chatons?|minou|gat[oa]s?|gatit[oa]s?|gatt[oi]|gattin[oi]|kot(ek|y|ka)?|ko[cč]ka|kocour|ma[cč]ka|ma[cč]ak|kedi\w*|kissa\w*|katt(en|unge)?|kat|poes|pusa|kucing|m[eè]o|felis|macska|pisic\w*)\b|кот(ик|ён|ята|ы|а)?(?![а-яё])|кошк|котён|кіт|кішк|кошен|猫|ねこ|ネコ|고양이|گربه|قطة|قطط|חתול|γάτ|बिल्ली|แมว/iu;
 
-/** Things called "cat" that are not a house cat, or not alive. */
+/**
+ * Things called "cat" that are not a house cat or not alive, and titles where the cat is a prop:
+ * "<gadget> with cat", "How to take your cat's blood pressure".
+ */
 export const NOT_A_HOUSE_CAT =
-  /wild ?cat|wildkatze|lynx|bobcat|ringtail|civet|leopard|tiger|lion|cheetah|serval|caracal|ocelot|margay|puma|cougar|jaguar|manul|pallas|sno-?cat|catfish|catamaran|caterpillar|cat (ba|island|bay)|skull|skeleton|mummy|statue|sculpture|figurine|plush|toy\b|robot/i;
+  /wild ?cat|wildkatze|jungle cat|lynx|bobcat|ringtail|civet|leopard|tiger|lion|cheetah|serval|caracal|ocelot|margay|puma|cougar|jaguar|manul|pallas|sno-?cat|catfish|catamaran|caterpillar|cat (ba|island|bay)|skull|skeleton|mummy|statue|sculpture|figurine|plush|(toy|stuffed) (cat|kitten)|robot|\bwith (a |the |my )?(cat|kitten)\b|\bhow to\b/i;
 
 /** A person named in the title: the people tag is often missing. */
 export const PEOPLE =
