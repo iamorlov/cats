@@ -58,7 +58,10 @@ test('metadata screen', () => {
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-USGov' })), 'licence');
   assert.equal(screen(page({ license: 'Public domain', categories: 'Cats|PD-self' })), null);
   assert.equal(screen(page({ size: [6000, 4000] })), 'not 16:9');
-  assert.equal(screen(page({ model: 'iPhone 13' })), 'not a system camera');
+  for (const model of ['iPhone 8', 'iPhone X', 'SM-J701M', 'Lumia 930', 'Canon PowerShot SX50 HS', ''])
+    assert.equal(screen(page({ model })), 'not a system camera', model);
+  for (const model of ['iPhone 13', 'iPhone XS Max', 'Pixel 7a', 'SM-S911B', 'Galaxy S23', 'VOG-L29'])
+    assert.equal(screen(page({ model })), null, model);
   assert.equal(screen(page({ title: 'File:Tucker Sno-Cat pic2.JPG' })), 'cat not the subject');
   assert.equal(screen(page({ title: 'File:Street market 17.jpg' })), 'cat not the subject');
   assert.equal(screen(page({ categories: 'Cats|Images with watermarks' })), 'category');

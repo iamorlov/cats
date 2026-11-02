@@ -30,7 +30,7 @@ The hunter never touches the project. It saves the photos to `tools/wall-hunter/
 It searches Wikimedia Commons ([tools/wall-hunter](tools/wall-hunter/hunt.mjs)), photos rated "quality" or "featured" first, and only takes ones that are:
 
 - **free to redistribute:** CC0, public domain released by the author, or CC BY / CC BY-SA (any version). Never NC or ND, "public domain because old" or a US-government work. The Commons page, author and licence of every cat go into `tools/wall-hunter/sources.json`.
-- **real:** a system camera (Canon EOS, Nikon D/Z, Sony α, Fujifilm X…) in the EXIF, no category hinting at AI, renders, artwork, watermarks, borders or a licence dispute.
+- **real:** a system camera (Canon EOS, Nikon D/Z, Sony α, Fujifilm X…) or a flagship phone from 2018 on (iPhone XS/11+, Pixel 3+, Galaxy S9+, Huawei P30+) in the EXIF, no category hinting at AI, renders, artwork, watermarks, borders or a licence dispute.
 - **about the cat:** a cat word in the file name, filed in a cat category, no people tagged, no lynx, skull or Sno-Cat.
 - **good enough for a wall:** a sharp subject on a softer background, sane exposure, in colour, not a duplicate of an existing wall. Every limit sits at about the worst 5 % of the walls picked by hand.
 

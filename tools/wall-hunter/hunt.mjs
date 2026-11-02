@@ -105,6 +105,13 @@ export const CAT_CATEGORY =
 export const GOOD_CAMERA =
   /\bEOS\b|NIKON (D\d|Z ?\d|Df)|\b(ILCE|ILCA|SLT|NEX)-|DSLR-A|DSC-RX|\bX-(T|H|Pro|E|S|M|A)\d|X100|GFX|\bE-(M|P|PL)\d|\bOM-\d|\bE-\d{1,3}\b|DMC-(G|GH|GX|GF|FZ[12]000|LX100)|DC-(G|GH|GX|S)\d|PENTAX K|LEICA|SIGMA (fp|sd)/i;
 
+/**
+ * Flagship phones from 2018 on: iPhone XS/XR/11+, Pixel 3+, Galaxy S9+/Note 9+ (SM- codes, or
+ * "Galaxy S2x"), Huawei P30/P40/Mate 20-40. Older and budget phones stay out: noise and smeared detail.
+ */
+export const FLAGSHIP_PHONE =
+  /iPhone (1\d|X[SR])|Pixel ([3-9]|1\d)|SM-(G9[6-9]|S9[0-3]|N9[6-8])\d|Galaxy S2\d|\b(ELE|VOG|ANA|ELS|LYA|LIO|NOH|NOP)-/i;
+
 /** Categories that mean "not a clean, real, pleasant cat photo" or "licence in doubt". */
 export const BLOCKED =
   /watermark|with borders|border removal|remove border|ai-generated|artificial intelligence|midjourney|dall-e|stable diffusion|low quality|blurr|out of focus|deletion|copyright violation|missing permission|without (a )?source|license review needed|unverified|artwork|museum|painting|drawing|illustration|prints? by|engraving|caricature|cartoon|sculpture|statue|figurine|plush|in art\b|logo|poster|postcard|stamp|collage|montage|meme|screenshot|x-ray|dead|injur|wound|sick|disease|surgery|veterinar|necropsy|taxiderm|skeleton|roadkill|personality rights/i;
@@ -318,7 +325,7 @@ export function screen(page) {
   if (/^CC BY/i.test(license) && !author(page)) return 'no author to credit';
   if (!is16by9(info)) return 'not 16:9';
   // Also proves a camera took it: scans, renders and AI pictures carry no camera model.
-  if (!GOOD_CAMERA.test(model)) return 'not a system camera';
+  if (!GOOD_CAMERA.test(model) && !FLAGSHIP_PHONE.test(model)) return 'not a system camera';
   if (
     !CAT_TITLE.test(page.title) ||
     NOT_A_HOUSE_CAT.test(page.title) ||
