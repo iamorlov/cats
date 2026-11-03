@@ -1,8 +1,8 @@
 import { Service, effect, inject, signal, untracked } from '@angular/core';
 import { Settings } from './settings';
 
-/** public/assets/walls/wall-0.jpg … wall-1240.jpg. Adding cats? Bump this; slideshow.spec.ts checks it. */
-export const WALLS = 1241;
+/** public/assets/walls/wall-0.jpg … wall-1270.jpg. Adding cats? Bump this; slideshow.spec.ts checks it. */
+export const WALLS = 1271;
 
 /** Walls from here on come from tools/wall-hunter and may owe a credit; the ones before were picked by hand. */
 const HUNTED_FROM = 1131;
