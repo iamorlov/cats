@@ -1152,22 +1152,6 @@
       },
       "added": "2026-11-02"
     },
-    "wall-1203.jpg": {
-      "pageid": 138371886,
-      "title": "File:Cat at mohammadpur 5.jpg",
-      "url": "https://commons.wikimedia.org/wiki/File:Cat_at_mohammadpur_5.jpg",
-      "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-      "author": "Wasiul Bahar",
-      "original": "6000x4000",
-      "crop": {
-        "x": 0,
-        "y": 0,
-        "w": 1,
-        "h": 0.8438
-      },
-      "added": "2026-11-02"
-    },
     "wall-1204.jpg": {
       "pageid": 148933559,
       "title": "File:Tabby Cat in Contrasting Light - Knoxville, Tennessee - June 4, 2015.jpg",
@@ -1291,22 +1275,6 @@
       "crop": {
         "x": 0,
         "y": 0,
-        "w": 1,
-        "h": 0.8438
-      },
-      "added": "2026-11-02"
-    },
-    "wall-1212.jpg": {
-      "pageid": 115200317,
-      "title": "File:2020-06-29 Katzen Bayern 01.jpg",
-      "url": "https://commons.wikimedia.org/wiki/File:2020-06-29_Katzen_Bayern_01.jpg",
-      "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-      "author": "Geoprofi Lars",
-      "original": "5184x3456",
-      "crop": {
-        "x": 0,
-        "y": 0.1563,
         "w": 1,
         "h": 0.8438
       },
@@ -3124,6 +3092,7 @@
     "114683251": "not landscape",
     "114922730": "cat would be cut",
     "115044134": "busy background",
+    "115200317": "deleted from preview",
     "115200358": "busy background",
     "115200373": "no colour",
     "115200412": "busy background",
@@ -3449,6 +3418,7 @@
     "138103095": "not landscape",
     "138156228": "not a system camera",
     "138304432": "cat not the subject",
+    "138371886": "deleted from preview",
     "138544653": "not landscape",
     "138678785": "cat not the subject",
     "138678945": "cat not the subject",
@@ -6279,7 +6249,6 @@
     "wall-1200.jpg": "f1f9fbebcbcbcf3d",
     "wall-1201.jpg": "939693b929294c98",
     "wall-1202.jpg": "4bcf4d4d0e278f2f",
-    "wall-1203.jpg": "1075bd9dadb1e36a",
     "wall-1204.jpg": "59c84e5c50801080",
     "wall-1205.jpg": "c1e092cac1c18181",
     "wall-1206.jpg": "736273703c185818",
@@ -6288,7 +6257,6 @@
     "wall-1209.jpg": "6819393979310f51",
     "wall-1210.jpg": "befaf9fdcace2cf3",
     "wall-1211.jpg": "65dace6e6a7bf3be",
-    "wall-1212.jpg": "4f25350761e1c70b",
     "wall-1213.jpg": "3333717d79393978",
     "wall-1214.jpg": "4fdfd636b6c6a6a2"
   },
@@ -6349,6 +6317,8 @@
     "pieter &amp; renée lanser from the netherlands|nl* titran's gunnarr male kitten weeks old",
     "jakub hałun|kot domowy w trawie podole województwo świętokrzyskie",
     "nikolai bulykin|байконур кот на крыльце на марта",
-    "marsilar|village kittens"
+    "marsilar|village kittens",
+    "wasiul bahar|cat at mohammadpur",
+    "geoprofi lars|katzen bayern"
   ]
 }
